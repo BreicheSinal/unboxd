@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { useAuth } from "../contexts/AuthContext";
 import { Mail, Lock, User as UserIcon, Eye, EyeOff } from "lucide-react";
 import { motion } from "motion/react";
 import { GoogleIcon } from "../components/GoogleIcon";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { signInWithGoogle, signUpWithEmail } from "../store/authSlice";
+import { mapFirebaseError } from "../services/errorService";
 
 export function SignUpPage() {
   const [name, setName] = useState("");
@@ -11,11 +13,16 @@ export function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  
-  const { signUp, signInWithGoogle } = useAuth();
+  const dispatch = useAppDispatch();
+  const { user, isLoading } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,29 +38,19 @@ export function SignUpPage() {
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      await signUp(email, password, name);
-      navigate("/dashboard", { replace: true });
+      await dispatch(signUpWithEmail({ email, password, name })).unwrap();
     } catch (err) {
-      setError("Failed to create account");
-    } finally {
-      setIsLoading(false);
+      setError(mapFirebaseError(err));
     }
   };
 
   const handleGoogleSignIn = async () => {
     setError("");
-    setIsLoading(true);
-
     try {
-      await signInWithGoogle();
-      navigate("/dashboard", { replace: true });
+      await dispatch(signInWithGoogle()).unwrap();
     } catch (err) {
-      setError("Failed to sign in with Google");
-    } finally {
-      setIsLoading(false);
+      setError(mapFirebaseError(err));
     }
   };
 
