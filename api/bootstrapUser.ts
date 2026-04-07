@@ -1,6 +1,6 @@
 import { FieldValue } from "firebase-admin/firestore";
-import { adminDb } from "./_lib/firebaseAdmin";
-import { handleError, json, requireAuthUid, requirePost } from "./_lib/http";
+import { adminDb } from "./_lib/firebaseAdmin.js";
+import { handleError, json, requireAuthUid, requirePost } from "./_lib/http.js";
 
 const DEFAULT_BADGES = [
   {
@@ -185,3 +185,4 @@ export default async function handler(req: any, res: any) {
     return handleError(res, error);
   }
 }
+

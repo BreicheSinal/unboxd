@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { FieldValue } from "firebase-admin/firestore";
-import { adminDb } from "./_lib/firebaseAdmin";
-import { ApiError, handleError, json } from "./_lib/http";
+import { adminDb } from "./_lib/firebaseAdmin.js";
+import { ApiError, handleError, json } from "./_lib/http.js";
 
 function safeEqual(a: string, b: string) {
   const left = Buffer.from(a, "utf8");
@@ -59,3 +59,4 @@ export default async function handler(req: any, res: any) {
     return handleError(res, error);
   }
 }
+

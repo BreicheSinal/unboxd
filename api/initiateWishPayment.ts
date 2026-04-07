@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { FieldValue } from "firebase-admin/firestore";
-import { adminDb } from "./_lib/firebaseAdmin";
-import { ApiError, handleError, json, requireAuthUid, requirePost, requireString } from "./_lib/http";
+import { adminDb } from "./_lib/firebaseAdmin.js";
+import { ApiError, handleError, json, requireAuthUid, requirePost, requireString } from "./_lib/http.js";
 
 function requireBilling(payload: Record<string, unknown>) {
   const billingInput = (payload.billing ?? {}) as Record<string, unknown>;
@@ -58,3 +58,4 @@ export default async function handler(req: any, res: any) {
     return handleError(res, error);
   }
 }
+
