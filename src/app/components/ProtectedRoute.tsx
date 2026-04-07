@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router";
-import { useAuth } from "../contexts/AuthContext";
+import { useAppSelector } from "../store/hooks";
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { user, isLoading } = useAuth();
+  const { user, isBootstrapping, isLoading } = useAppSelector((state) => state.auth);
   const location = useLocation();
 
-  if (isLoading) {
+  if (isBootstrapping || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
