@@ -17,6 +17,10 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+!.env.development.example
+!.env.staging.example
+!.env.production.example
+functions/.env
 
 # OS / Editor
 .DS_Store
@@ -32,6 +36,8 @@ Thumbs.db
 
 # Testing
 coverage/
+playwright-report/
+test-results/
 
 # Vite
 vite.svg
