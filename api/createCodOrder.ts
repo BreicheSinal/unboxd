@@ -1,0 +1,87 @@
+import { FieldValue } from "firebase-admin/firestore";
+import { adminDb } from "./_lib/firebaseAdmin";
+import {
+  ApiError,
+  createIdempotencyDocId,
+  handleError,
+  json,
+  requireAuthUid,
+  requirePost,
+  requireString,
+} from "./_lib/http";
+
+export default async function handler(req: any, res: any) {
+  try {
+    requirePost(req);
+    const uid = await requireAuthUid(req);
+    const payload = (req.body ?? {}) as Record<string, unknown>;
+
+    const size = requireString(payload.size, "size");
+    const idempotencyKey = requireString(payload.idempotencyKey, "idempotencyKey");
+    const exclusionsInput = (payload.exclusions ?? {}) as Record<string, unknown>;
+    const exclusions = {
+      clubs: Array.isArray(exclusionsInput.clubs) ? exclusionsInput.clubs : [],
+      leagues: Array.isArray(exclusionsInput.leagues) ? exclusionsInput.leagues : [],
+      colors: Array.isArray(exclusionsInput.colors) ? exclusionsInput.colors : [],
+    };
+
+    const result = await adminDb.runTransaction(async (tx) => {
+      const idemRef = adminDb.collection("_idempotency").doc(createIdempotencyDocId("createCodOrder", uid, idempotencyKey));
+      const idemSnap = await tx.get(idemRef);
+      if (idemSnap.exists) {
+        const data = idemSnap.data() as { result?: { orderId: string; status: string } };
+        if (data?.result) return data.result;
+        throw new ApiError("aborted", "Duplicate request in progress", 409);
+      }
+
+      tx.create(idemRef, {
+        scope: "createCodOrder",
+        uid,
+        key: idempotencyKey,
+        status: "processing",
+        createdAt: FieldValue.serverTimestamp(),
+      });
+
+      const orderRef = adminDb.collection("orders").doc();
+      tx.create(orderRef, {
+        buyerUid: uid,
+        provider: "cod",
+        status: "placed",
+        amount: 34.98,
+        currency: "USD",
+        size,
+        exclusions,
+        paymentState: "pending_collection",
+        reconciliationStatus: "n/a",
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+
+      const transactionRef = adminDb.collection("transactions").doc();
+      tx.create(transactionRef, {
+        type: "order",
+        buyerUid: uid,
+        amount: 34.98,
+        currency: "USD",
+        status: "pending",
+        orderId: orderRef.id,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+
+      const output = { orderId: orderRef.id, status: "placed" };
+      tx.set(idemRef, { status: "done", result: output, finishedAt: FieldValue.serverTimestamp() }, { merge: true });
+      return output;
+    });
+
+    await adminDb.collection("auditLogs").add({
+      action: "createCodOrder",
+      actorUid: uid,
+      metadata: result,
+      createdAt: FieldValue.serverTimestamp(),
+    });
+
+    return json(res, 200, result);
+  } catch (error) {
+    return handleError(res, error);
+  }
+}
