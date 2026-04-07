@@ -15,7 +15,9 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "audit": "npm audit --production",
-    "preview": "vite preview --host 127.0.0.1 --port 4173"
+    "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "migrate:preferences:dry": "node --env-file=.env.local scripts/migrate-user-preferences.mjs --dry-run",
+    "migrate:preferences": "node --env-file=.env.local scripts/migrate-user-preferences.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
