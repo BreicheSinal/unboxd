@@ -1,5 +1,7 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Calendar, DollarSign, ArrowUpDown, Package, TrendingUp, Download } from "lucide-react";
+import { useAsyncEffect } from "../hooks/useAsyncEffect";
+import { Spinner } from "../components/ui/spinner";
 import { useAppSelector } from "../store/hooks";
 import { getTransactionsForUser } from "../services/transactionService";
 import type { TransactionRecord } from "../types/domain";
@@ -44,33 +46,28 @@ export function TransactionHistoryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useAsyncEffect(async ({ isActive }) => {
     if (!user) {
       setTransactions([]);
       setIsLoading(false);
       return;
     }
 
-    let isMounted = true;
     setIsLoading(true);
     setLoadError(null);
-    getTransactionsForUser(user.uid)
-      .then((records) => {
-        if (!isMounted) return;
-        const mapped = records.map(mapTransactionRecord);
-        setTransactions(mapped);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setLoadError("Failed to load transactions from Firestore.");
-        setTransactions([]);
-        setIsLoading(false);
-      });
 
-    return () => {
-      isMounted = false;
-    };
+    try {
+      const records = await getTransactionsForUser(user.uid);
+      if (!isActive()) return;
+      const mapped = records.map(mapTransactionRecord);
+      setTransactions(mapped);
+      setIsLoading(false);
+    } catch {
+      if (!isActive()) return;
+      setLoadError("Failed to load transactions from Firestore.");
+      setTransactions([]);
+      setIsLoading(false);
+    }
   }, [user]);
 
   const filteredTransactions = useMemo(
@@ -216,8 +213,9 @@ export function TransactionHistoryPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center">
-            <p className="text-muted-foreground text-lg">Loading transactions...</p>
+          <div className="py-20 text-center flex flex-col items-center gap-3">
+            <Spinner className="h-8 w-8 text-red-500" />
+            <p className="text-muted-foreground text-lg">Loading transactions</p>
           </div>
         )}
 
