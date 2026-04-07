@@ -1,5 +1,5 @@
 import { FieldValue } from "firebase-admin/firestore";
-import { adminDb } from "./_lib/firebaseAdmin";
+import { adminDb } from "./_lib/firebaseAdmin.js";
 import {
   ApiError,
   createIdempotencyDocId,
@@ -8,8 +8,8 @@ import {
   requireAuthUid,
   requirePost,
   requireString,
-} from "./_lib/http";
-import { TRADE_TRANSITIONS, verifyTradeStatus } from "./_lib/domain";
+} from "./_lib/http.js";
+import { TRADE_TRANSITIONS, verifyTradeStatus } from "./_lib/domain.js";
 
 export default async function handler(req: any, res: any) {
   try {
@@ -104,3 +104,4 @@ export default async function handler(req: any, res: any) {
     return handleError(res, error);
   }
 }
+

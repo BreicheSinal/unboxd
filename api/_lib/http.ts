@@ -1,5 +1,5 @@
 import type { IncomingMessage } from "http";
-import { adminAuth } from "./firebaseAdmin";
+import { adminAuth } from "./firebaseAdmin.js";
 
 export class ApiError extends Error {
   code: string;
@@ -61,3 +61,4 @@ export function handleError(res: any, error: unknown) {
 export function createIdempotencyDocId(scope: string, uid: string, key: string) {
   return `${scope}:${uid}:${key}`;
 }
+
