@@ -1,6 +1,7 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { HomePage } from "./pages/HomePage";
 import { OrderFlowPage } from "./pages/OrderFlowPage";
+import { OrderSuccessPage } from "./pages/OrderSuccessPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ClosetPage } from "./pages/ClosetPage";
 import { MarketplacePage } from "./pages/MarketplacePage";
@@ -30,13 +31,29 @@ export const router = createBrowserRouter([
       { path: "help-center", Component: HelpCenterPage },
       { path: "contact-us", Component: ContactUsPage },
       { path: "returns", Component: ReturnsPage },
-      { 
-        path: "order", 
+      {
+        path: "order",
+        element: (
+          <ProtectedRoute>
+            <Navigate to="/order/size" replace />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "order/:step",
         element: (
           <ProtectedRoute>
             <OrderFlowPage />
           </ProtectedRoute>
-        )
+        ),
+      },
+      {
+        path: "order/success",
+        element: (
+          <ProtectedRoute>
+            <OrderSuccessPage />
+          </ProtectedRoute>
+        ),
       },
       { 
         path: "dashboard", 
