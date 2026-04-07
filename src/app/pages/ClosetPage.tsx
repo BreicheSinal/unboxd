@@ -262,8 +262,14 @@ export function ClosetPage() {
         )}
 
         {!isLoading && filteredShirts.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg">No closet items found in Firestore</p>
+          <div className="rounded-xl border border-dashed border-border bg-card/40 py-16 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+              <LayoutGrid className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <p className="text-lg font-semibold">Your closet is empty</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Place an order or complete a trade to start building your collection.
+            </p>
           </div>
         )}
       </div>

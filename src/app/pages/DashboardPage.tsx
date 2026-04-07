@@ -199,8 +199,14 @@ export function DashboardPage() {
                       </div>
                     ))}
                     {recentOrders.length === 0 && (
-                      <div className="rounded-lg bg-accent/30 p-4 text-sm text-muted-foreground">
-                        No recent orders found in Firestore.
+                      <div className="rounded-lg border border-dashed border-border bg-accent/20 p-6 text-center">
+                        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+                          <ShoppingBag className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                        <p className="text-sm font-semibold">No recent orders yet</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Your latest purchases will show up here after checkout.
+                        </p>
                       </div>
                     )}
                   </div>

@@ -33,6 +33,15 @@ npm run dev
 
 Use the existing `.env` file and fill/update values there.
 
+For local Vercel Function routes (`/api/*`), run a local API server and keep Vite running:
+
+```bash
+vercel dev --listen 3000
+```
+
+`vite.config.ts` proxies `/api/*` to `http://localhost:3000` by default.
+You can override this using `VITE_API_PROXY_TARGET` in `.env`.
+
 ## Scripts
 
 - `npm run dev` - start development server

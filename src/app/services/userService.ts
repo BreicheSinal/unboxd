@@ -15,7 +15,8 @@ function parseDate(input: unknown): Date | undefined {
 
 async function bootstrapUserProfileViaApi(firebaseUser: User): Promise<UserProfile> {
   const token = await firebaseUser.getIdToken();
-  const response = await fetch("/api/bootstrapUser", {
+  const endpoint = "/api/bootstrapUser";
+  const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +32,13 @@ async function bootstrapUserProfileViaApi(firebaseUser: User): Promise<UserProfi
 
   if (!response.ok) {
     const body = (await response.json().catch(() => ({}))) as { message?: string };
-    throw new Error(body.message || "Server user bootstrap failed");
+    if (response.status === 404) {
+      throw new Error(
+        `Server user bootstrap failed: ${endpoint} returned 404. Ensure your local API server is running (for example, Vercel dev on port 3000 with Vite proxying /api).`,
+      );
+    }
+
+    throw new Error(body.message || `Server user bootstrap failed (${response.status})`);
   }
 
   const data = (await response.json()) as Record<string, unknown>;

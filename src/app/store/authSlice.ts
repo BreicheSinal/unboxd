@@ -12,8 +12,13 @@ import { auth, googleProvider } from "../firebase/config";
 import { upsertUserProfile } from "../services/userService";
 import type { UserProfile } from "../types/domain";
 
+type SerializableUserProfile = Omit<UserProfile, "createdAt" | "updatedAt"> & {
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 interface AuthState {
-  user: UserProfile | null;
+  user: SerializableUserProfile | null;
   isLoading: boolean;
   isBootstrapping: boolean;
   error: string | null;
@@ -27,6 +32,14 @@ const initialState: AuthState = {
 };
 
 let persistenceInitialized = false;
+
+function serializeUserProfile(profile: UserProfile): SerializableUserProfile {
+  return {
+    ...profile,
+    createdAt: profile.createdAt ? profile.createdAt.toISOString() : undefined,
+    updatedAt: profile.updatedAt ? profile.updatedAt.toISOString() : undefined,
+  };
+}
 
 async function getFirebaseAuth() {
   if (!auth) {
@@ -82,11 +95,16 @@ const authSlice = createSlice({
       state.isBootstrapping = false;
       state.isLoading = false;
     },
-    setAuthenticatedUser(state, action: PayloadAction<UserProfile>) {
-      state.user = action.payload;
-      state.error = null;
-      state.isBootstrapping = false;
-      state.isLoading = false;
+    setAuthenticatedUser: {
+      reducer(state, action: PayloadAction<SerializableUserProfile>) {
+        state.user = action.payload;
+        state.error = null;
+        state.isBootstrapping = false;
+        state.isLoading = false;
+      },
+      prepare(profile: UserProfile) {
+        return { payload: serializeUserProfile(profile) };
+      },
     },
     clearAuthenticatedUser(state) {
       state.user = null;

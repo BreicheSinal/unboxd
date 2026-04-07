@@ -182,8 +182,14 @@ export function MarketplacePage() {
         </div>}
 
         {!isLoading && filteredItems.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg">No marketplace listings found in Firestore</p>
+          <div className="rounded-xl border border-dashed border-border bg-card/40 py-16 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+              <Search className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <p className="text-lg font-semibold">No marketplace listings yet</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Check back soon or adjust filters to see new trade opportunities.
+            </p>
           </div>
         )}
       </div>

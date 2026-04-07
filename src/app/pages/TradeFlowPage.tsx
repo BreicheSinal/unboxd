@@ -35,7 +35,7 @@ export function TradeFlowPage() {
       .then((result) => {
         if (!isMounted) return;
         if (!result) {
-          setListingError("This listing was not found in Firestore.");
+          setListingError("This listing was not found.");
           setIsListingLoading(false);
           return;
         }
@@ -248,7 +248,15 @@ export function TradeFlowPage() {
               ))}
             </div>
             {myShirts.length === 0 && (
-              <p className="mt-4 text-sm text-muted-foreground">No tradable shirts found in your Firestore closet.</p>
+              <div className="mt-4 rounded-lg border border-dashed border-border bg-accent/20 p-5 text-center">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+                  <Package className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <p className="text-sm font-semibold">No tradable shirts available</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Add shirts to your closet first, then return to make an offer.
+                </p>
+              </div>
             )}
           </div>
         )}
