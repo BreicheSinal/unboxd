@@ -23,12 +23,34 @@ export interface CreateCodOrderInput {
     leagues: string[];
     colors: string[];
   };
+  billing: {
+    fullName: string;
+    email: string;
+    phone: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state?: string;
+    postalCode?: string;
+    country: string;
+  };
   idempotencyKey: string;
 }
 
 export interface InitiateWishPaymentInput {
   provider: "wish";
   amount: number;
+  billing: {
+    fullName: string;
+    email: string;
+    phone: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state?: string;
+    postalCode?: string;
+    country: string;
+  };
   idempotencyKey: string;
 }
 

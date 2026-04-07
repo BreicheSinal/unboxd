@@ -1,12 +1,14 @@
 ﻿import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { ArrowLeft, Check, Clock, Package, Truck, CircleX } from "lucide-react";
+import { useAsyncEffect } from "../hooks/useAsyncEffect";
 import { useAppSelector } from "../store/hooks";
 import type { ClosetItem, MarketplaceListing, TradeStatus, TradeType } from "../types/domain";
 import { getListingById } from "../services/marketplaceService";
 import { createTradeOffer } from "../services/tradeService";
 import { subscribeCloset } from "../services/closetService";
 import { mapFirebaseError } from "../services/errorService";
+import { Spinner } from "../components/ui/spinner";
 
 export function TradeFlowPage() {
   const { id } = useParams();
@@ -24,33 +26,27 @@ export function TradeFlowPage() {
   const [listingError, setListingError] = useState<string | null>(null);
   const [closetError, setClosetError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useAsyncEffect(async ({ isActive }) => {
     if (!id) return;
 
-    let isMounted = true;
     setIsListingLoading(true);
     setListingError(null);
 
-    getListingById(id)
-      .then((result) => {
-        if (!isMounted) return;
-        if (!result) {
-          setListingError("This listing was not found in Firestore.");
-          setIsListingLoading(false);
-          return;
-        }
-        setListing(result);
+    try {
+      const result = await getListingById(id);
+      if (!isActive()) return;
+      if (!result) {
+        setListingError("This listing was not found.");
         setIsListingLoading(false);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setListingError("Failed to load listing details from Firestore.");
-        setIsListingLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
+        return;
+      }
+      setListing(result);
+      setIsListingLoading(false);
+    } catch {
+      if (!isActive()) return;
+      setListingError("Failed to load listing details from Firestore.");
+      setIsListingLoading(false);
+    }
   }, [id]);
 
   useEffect(() => {
@@ -113,8 +109,9 @@ export function TradeFlowPage() {
     return (
       <div className="min-h-screen py-8 md:py-12">
         <div className="container mx-auto px-4 max-w-4xl">
-          <div className="py-20 text-center">
-            <p className="text-muted-foreground text-lg">Loading listing...</p>
+          <div className="py-20 text-center flex flex-col items-center gap-3">
+            <Spinner className="h-8 w-8 text-red-500" />
+            <p className="text-muted-foreground text-lg">Loading listing</p>
           </div>
         </div>
       </div>
@@ -248,7 +245,15 @@ export function TradeFlowPage() {
               ))}
             </div>
             {myShirts.length === 0 && (
-              <p className="mt-4 text-sm text-muted-foreground">No tradable shirts found in your Firestore closet.</p>
+              <div className="mt-4 rounded-lg border border-dashed border-border bg-accent/20 p-5 text-center">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+                  <Package className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <p className="text-sm font-semibold">No tradable shirts available</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Add shirts to your closet first, then return to make an offer.
+                </p>
+              </div>
             )}
           </div>
         )}
@@ -272,9 +277,16 @@ export function TradeFlowPage() {
         <button
           onClick={handleSubmitTrade}
           disabled={!selectedTradeType || isSubmitting}
-          className="w-full min-h-11 py-4 bg-gradient-to-r from-rose-500 to-red-700 text-white rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
+          className="w-full min-h-11 py-4 bg-gradient-to-r from-rose-500 to-red-700 text-white rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold inline-flex items-center justify-center gap-2"
         >
-          {isSubmitting ? "Submitting..." : "Submit Trade Offer"}
+          {isSubmitting ? (
+            <>
+              <Spinner className="h-4 w-4" />
+              Submitting
+            </>
+          ) : (
+            "Submit Trade Offer"
+          )}
         </button>
         {submitError && (
           <div className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">

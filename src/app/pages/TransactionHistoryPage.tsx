@@ -1,5 +1,7 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Calendar, DollarSign, ArrowUpDown, Package, TrendingUp, Download } from "lucide-react";
+import { useAsyncEffect } from "../hooks/useAsyncEffect";
+import { Spinner } from "../components/ui/spinner";
 import { useAppSelector } from "../store/hooks";
 import { getTransactionsForUser } from "../services/transactionService";
 import type { TransactionRecord } from "../types/domain";
@@ -44,33 +46,28 @@ export function TransactionHistoryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useAsyncEffect(async ({ isActive }) => {
     if (!user) {
       setTransactions([]);
       setIsLoading(false);
       return;
     }
 
-    let isMounted = true;
     setIsLoading(true);
     setLoadError(null);
-    getTransactionsForUser(user.uid)
-      .then((records) => {
-        if (!isMounted) return;
-        const mapped = records.map(mapTransactionRecord);
-        setTransactions(mapped);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setLoadError("Failed to load transactions from Firestore.");
-        setTransactions([]);
-        setIsLoading(false);
-      });
 
-    return () => {
-      isMounted = false;
-    };
+    try {
+      const records = await getTransactionsForUser(user.uid);
+      if (!isActive()) return;
+      const mapped = records.map(mapTransactionRecord);
+      setTransactions(mapped);
+      setIsLoading(false);
+    } catch {
+      if (!isActive()) return;
+      setLoadError("Failed to load transactions from Firestore.");
+      setTransactions([]);
+      setIsLoading(false);
+    }
   }, [user]);
 
   const filteredTransactions = useMemo(
@@ -216,8 +213,9 @@ export function TransactionHistoryPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center">
-            <p className="text-muted-foreground text-lg">Loading transactions...</p>
+          <div className="py-20 text-center flex flex-col items-center gap-3">
+            <Spinner className="h-8 w-8 text-red-500" />
+            <p className="text-muted-foreground text-lg">Loading transactions</p>
           </div>
         )}
 
@@ -283,8 +281,14 @@ export function TransactionHistoryPage() {
         </div>}
 
         {!isLoading && filteredTransactions.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg">No transactions found in Firestore</p>
+          <div className="rounded-xl border border-dashed border-border bg-card/40 py-16 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+              <Package className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <p className="text-lg font-semibold">No transactions yet</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Your purchases, trades, and sales will appear here once activity starts.
+            </p>
           </div>
         )}
       </div>

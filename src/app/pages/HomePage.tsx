@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Sparkles, ShoppingCart, Package, Gift, Star } from "lucide-react";
+import { ShoppingCart, Package, Gift, Star } from "lucide-react";
 import { motion } from "motion/react";
 
 export function HomePage() {

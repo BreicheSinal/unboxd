@@ -1,5 +1,6 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, Filter, LayoutGrid, List, TrendingUp } from "lucide-react";
+import { Link } from "react-router";
 import {
   Select,
   SelectContent,
@@ -7,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { Spinner } from "../components/ui/spinner";
 import { useAppSelector } from "../store/hooks";
 import { subscribeCloset } from "../services/closetService";
 import type { ClosetItem } from "../types/domain";
@@ -148,8 +150,9 @@ export function ClosetPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center">
-            <p className="text-muted-foreground text-lg">Loading your closet...</p>
+          <div className="py-20 text-center flex flex-col items-center gap-3">
+            <Spinner className="h-8 w-8 text-red-500" />
+            <p className="text-muted-foreground text-lg">Loading your closet</p>
           </div>
         )}
 
@@ -262,11 +265,28 @@ export function ClosetPage() {
         )}
 
         {!isLoading && filteredShirts.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg">No closet items found in Firestore</p>
+          <div className="rounded-xl border border-dashed border-border bg-card/40 py-16 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+              <LayoutGrid className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <p className="text-lg font-semibold">Your closet is empty</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Place an order or complete a trade to start building your collection.
+            </p>
+            <div className="mt-6">
+              <Link
+                to="/transactions"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
+              >
+                Go to Recent Orders
+              </Link>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 }
+
+
+

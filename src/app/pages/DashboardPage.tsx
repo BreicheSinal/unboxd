@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Package, TrendingUp, Award, ShoppingBag } from "lucide-react";
 import { Link } from "react-router";
+import { useAsyncEffect } from "../hooks/useAsyncEffect";
+import { Spinner } from "../components/ui/spinner";
 import { useAppSelector } from "../store/hooks";
 import { getDashboardSummary } from "../services/dashboardService";
 import { getTransactionsForUser } from "../services/transactionService";
@@ -24,7 +26,7 @@ export function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useAsyncEffect(async ({ isActive }) => {
     if (!user) {
       setSummary({
         totalOrders: 0,
@@ -37,54 +39,51 @@ export function DashboardPage() {
       return;
     }
 
-    let isMounted = true;
     setIsLoading(true);
     setLoadError(null);
 
-    Promise.all([getDashboardSummary(user.uid), getTransactionsForUser(user.uid)])
-      .then(([result, transactions]) => {
-        if (!isMounted) return;
+    try {
+      const [result, transactions] = await Promise.all([
+        getDashboardSummary(user.uid),
+        getTransactionsForUser(user.uid),
+      ]);
+      if (!isActive()) return;
 
-        const orders = transactions
-          .filter((item) => item.type === "order" || item.type === "purchase")
-          .slice(0, 3)
-          .map((item) => ({
-            id: item.id,
-            date: item.createdAt ? item.createdAt.toISOString().slice(0, 10) : "Unknown",
-            status: item.status,
-            total: `$${item.amount.toFixed(2)}`,
-          }));
+      const orders = transactions
+        .filter((item) => item.type === "order" || item.type === "purchase")
+        .slice(0, 3)
+        .map((item) => ({
+          id: item.id,
+          date: item.createdAt ? item.createdAt.toISOString().slice(0, 10) : "Unknown",
+          status: item.status,
+          total: `$${item.amount.toFixed(2)}`,
+        }));
 
-        const badgesEarned =
-          Number(result.totalOrders >= 1) +
-          Number(result.shirtsOwned >= 10) +
-          Number(result.tradesMade >= 5) +
-          Number(result.totalOrders >= 15) +
-          Number(result.shirtsOwned >= 25);
+      const badgesEarned =
+        Number(result.totalOrders >= 1) +
+        Number(result.shirtsOwned >= 10) +
+        Number(result.tradesMade >= 5) +
+        Number(result.totalOrders >= 15) +
+        Number(result.shirtsOwned >= 25);
 
-        setSummary({
-          ...result,
-          badgesEarned,
-        });
-        setRecentOrders(orders);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setLoadError("Failed to load dashboard data from Firestore.");
-        setSummary({
-          totalOrders: 0,
-          shirtsOwned: 0,
-          tradesMade: 0,
-          badgesEarned: 0,
-        });
-        setRecentOrders([]);
-        setIsLoading(false);
+      setSummary({
+        ...result,
+        badgesEarned,
       });
-
-    return () => {
-      isMounted = false;
-    };
+      setRecentOrders(orders);
+      setIsLoading(false);
+    } catch {
+      if (!isActive()) return;
+      setLoadError("Failed to load dashboard data from Firestore.");
+      setSummary({
+        totalOrders: 0,
+        shirtsOwned: 0,
+        tradesMade: 0,
+        badgesEarned: 0,
+      });
+      setRecentOrders([]);
+      setIsLoading(false);
+    }
   }, [user]);
 
   const stats = useMemo(
@@ -143,8 +142,9 @@ export function DashboardPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center">
-            <p className="text-muted-foreground text-lg">Loading dashboard...</p>
+          <div className="py-20 text-center flex flex-col items-center gap-3">
+            <Spinner className="h-8 w-8 text-red-500" />
+            <p className="text-muted-foreground text-lg">Loading dashboard</p>
           </div>
         )}
 
@@ -199,8 +199,14 @@ export function DashboardPage() {
                       </div>
                     ))}
                     {recentOrders.length === 0 && (
-                      <div className="rounded-lg bg-accent/30 p-4 text-sm text-muted-foreground">
-                        No recent orders found in Firestore.
+                      <div className="rounded-lg border border-dashed border-border bg-accent/20 p-6 text-center">
+                        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+                          <ShoppingBag className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                        <p className="text-sm font-semibold">No recent orders yet</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Your latest purchases will show up here after checkout.
+                        </p>
                       </div>
                     )}
                   </div>

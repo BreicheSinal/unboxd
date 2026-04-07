@@ -10,6 +10,30 @@ import {
   requireString,
 } from "./_lib/http";
 
+function requireBilling(payload: Record<string, unknown>) {
+  const billingInput = (payload.billing ?? {}) as Record<string, unknown>;
+  return {
+    fullName: requireString(billingInput.fullName, "billing.fullName"),
+    email: requireString(billingInput.email, "billing.email"),
+    phone: requireString(billingInput.phone, "billing.phone"),
+    addressLine1: requireString(billingInput.addressLine1, "billing.addressLine1"),
+    addressLine2: typeof billingInput.addressLine2 === "string" ? billingInput.addressLine2.trim() : "",
+    city: requireString(billingInput.city, "billing.city"),
+    state: typeof billingInput.state === "string" ? billingInput.state.trim() : "",
+    postalCode: typeof billingInput.postalCode === "string" ? billingInput.postalCode.trim() : "",
+    country: requireString(billingInput.country, "billing.country"),
+  };
+}
+
+function asStringArray(value: unknown) {
+  return Array.isArray(value)
+    ? value
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
+}
+
 export default async function handler(req: any, res: any) {
   try {
     requirePost(req);
@@ -18,11 +42,12 @@ export default async function handler(req: any, res: any) {
 
     const size = requireString(payload.size, "size");
     const idempotencyKey = requireString(payload.idempotencyKey, "idempotencyKey");
+    const billing = requireBilling(payload);
     const exclusionsInput = (payload.exclusions ?? {}) as Record<string, unknown>;
     const exclusions = {
-      clubs: Array.isArray(exclusionsInput.clubs) ? exclusionsInput.clubs : [],
-      leagues: Array.isArray(exclusionsInput.leagues) ? exclusionsInput.leagues : [],
-      colors: Array.isArray(exclusionsInput.colors) ? exclusionsInput.colors : [],
+      clubs: asStringArray(exclusionsInput.clubs),
+      leagues: asStringArray(exclusionsInput.leagues),
+      colors: asStringArray(exclusionsInput.colors),
     };
 
     const result = await adminDb.runTransaction(async (tx) => {
@@ -51,6 +76,7 @@ export default async function handler(req: any, res: any) {
         currency: "USD",
         size,
         exclusions,
+        billing,
         paymentState: "pending_collection",
         reconciliationStatus: "n/a",
         createdAt: FieldValue.serverTimestamp(),

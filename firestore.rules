@@ -12,6 +12,18 @@ service cloud.firestore {
     match /users/{uid} {
       allow read, write: if isOwner(uid);
 
+      match /favoriteLeagues/{leagueId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      match /sizePreferences/{sizeId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      match /badges/{badgeId} {
+        allow read, write: if isOwner(uid);
+      }
+
       match /closet/{shirtId} {
         allow read, write: if isOwner(uid);
       }
