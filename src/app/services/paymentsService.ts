@@ -2,6 +2,18 @@ import { createCodOrderCallable, initiateWishPaymentCallable } from "./functions
 
 export type PaymentProvider = "cod" | "wish";
 
+export interface BillingDetails {
+  fullName: string;
+  email: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state?: string;
+  postalCode?: string;
+  country: string;
+}
+
 export interface CheckoutRequest {
   size: string;
   exclusions: {
@@ -9,17 +21,12 @@ export interface CheckoutRequest {
     leagues: string[];
     colors: string[];
   };
+  paymentProvider: PaymentProvider;
+  billing: BillingDetails;
 }
 
-function getPaymentProvider(): PaymentProvider {
-  const provider = (import.meta.env.VITE_PAYMENT_PROVIDER_DEFAULT || "cod") as PaymentProvider;
-  const wishEnabled = import.meta.env.VITE_WISH_ENABLED === "true";
-
-  if (provider === "wish" && wishEnabled) {
-    return "wish";
-  }
-
-  return "cod";
+function isWishEnabled() {
+  return import.meta.env.VITE_WISH_ENABLED === "true";
 }
 
 function createIdempotencyKey(prefix: string) {
@@ -27,12 +34,13 @@ function createIdempotencyKey(prefix: string) {
 }
 
 export async function createOrder(request: CheckoutRequest) {
-  const provider = getPaymentProvider();
+  const provider = request.paymentProvider === "wish" && isWishEnabled() ? "wish" : "cod";
 
   if (provider === "wish") {
     return initiateWishPaymentCallable({
       provider: "wish",
       amount: 34.98,
+      billing: request.billing,
       idempotencyKey: createIdempotencyKey("wish"),
     });
   }
@@ -40,6 +48,7 @@ export async function createOrder(request: CheckoutRequest) {
   return createCodOrderCallable({
     size: request.size,
     exclusions: request.exclusions,
+    billing: request.billing,
     idempotencyKey: createIdempotencyKey("cod"),
   });
 }
