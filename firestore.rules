@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      match /closet/{shirtId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    match /marketplaceListings/{listingId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == "active";
+
+      allow update: if isSignedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.status == resource.data.status;
+
+      allow delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    match /tradeOffers/{offerId} {
+      allow read: if isSignedIn() && (
+        resource.data.fromUid == request.auth.uid ||
+        resource.data.toUid == request.auth.uid
+      );
+
+      // Trade offer writes are server-only through Vercel Functions/Firebase Admin SDK.
+      allow create, update, delete: if false;
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if isSignedIn() && (
+        resource.data.buyerUid == request.auth.uid ||
+        resource.data.sellerUid == request.auth.uid
+      );
+
+      // Transactions are append-only and server-managed.
+      allow create, update, delete: if false;
+    }
+
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && resource.data.buyerUid == request.auth.uid;
+      allow create, update, delete: if false;
+    }
+
+    match /auditLogs/{logId} {
+      allow read, write: if false;
+    }
+
+    match /_idempotency/{id} {
+      allow read, write: if false;
+    }
+  }
+}

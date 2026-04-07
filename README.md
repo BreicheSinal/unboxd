@@ -1,82 +1,28 @@
-
 # Unboxd Frontend
 
-Unboxd is a frontend-only React app for a mystery sports shirt experience.
-It includes onboarding, ordering, collection management, marketplace trading flows, badges, and support/legal pages.
+Unboxd is a React + Firebase app for a mystery sports shirt experience.
+It includes onboarding, ordering, collection management, marketplace trading, badges, and support/legal pages.
 
 ## Tech Stack
 
 - React + Vite
-- TypeScript-flavored React (`.tsx`)
+- TypeScript (`.tsx`)
 - React Router (`react-router`)
 - Tailwind CSS v4 + CSS variable tokens
-- `next-themes` for dark/light theme support
-- Mock auth/session using React context + `localStorage`
+- `next-themes`
+- Firebase Auth + Firestore + Storage
+- Vercel Functions (`/api/*`) with Firebase Admin SDK
+- Redux Toolkit + React Redux
 
-## Current Status
+## Current Production Baseline
 
-- Frontend prototype (no backend/API integration yet)
-- Most product data is mocked in page-level arrays/state
-- Auth is simulated and persisted under `unboxd_user` in `localStorage` (with legacy fallback from `mysterykit_user`)
-
-## Route Map
-
-Public routes:
-
-- `/`
-- `/signin`
-- `/signup`
-- `/terms`
-- `/privacy`
-- `/help-center`
-- `/contact-us`
-- `/returns`
-
-Protected routes (wrapped in `ProtectedRoute`):
-
-- `/order`
-- `/dashboard`
-- `/closet`
-- `/marketplace`
-- `/trade/:id`
-- `/transactions`
-- `/badges`
-
-## Project Structure
-
-```text
-src/
-|- main.tsx
-|- styles/
-|  |- index.css
-|  |- tailwind.css
-|  |- theme.css
-|- app/
-   |- App.tsx
-   |- routes.tsx
-   |- contexts/
-   |  |- AuthContext.tsx
-   |- components/
-   |  |- Layout.tsx
-   |  |- ProtectedRoute.tsx
-   |  |- ui/
-   |- pages/
-      |- HomePage.tsx
-      |- OrderFlowPage.tsx
-      |- DashboardPage.tsx
-      |- ClosetPage.tsx
-      |- MarketplacePage.tsx
-      |- TradeFlowPage.tsx
-      |- TransactionHistoryPage.tsx
-      |- BadgesPage.tsx
-      |- SignInPage.tsx
-      |- SignUpPage.tsx
-      |- TermsOfServicePage.tsx
-      |- PrivacyPolicyPage.tsx
-      |- HelpCenterPage.tsx
-      |- ContactUsPage.tsx
-      |- ReturnsPage.tsx
-```
+- Redux-based auth/session with Firebase bootstrap
+- Firestore reads for closet/marketplace/trades/transactions
+- Sensitive writes moved to Vercel Functions (`/api/createTradeOffer`, `/api/transitionTradeOffer`, `/api/createCodOrder`, etc.)
+- App Check bootstrap support (`VITE_FIREBASE_APP_CHECK_SITE_KEY`)
+- Payments abstraction (`cod | wish`) with COD default and Wish toggle
+- CI quality gates + secret scanning + production secret gate
+- Runbooks under `docs/runbooks`
 
 ## Getting Started
 
@@ -85,24 +31,40 @@ npm install
 npm run dev
 ```
 
-Build for production:
-
-```bash
-npm run build
-```
+Use the existing `.env` file and fill/update values there.
 
 ## Scripts
 
 - `npm run dev` - start development server
-- `npm run build` - create production build
+- `npm run build` - production build
+- `npm run preview` - preview built app
+- `npm run typecheck` - TypeScript check
+- `npm run lint` - ESLint
+- `npm run test` - Vitest unit tests
+- `npm run test:e2e` - Playwright smoke test
+- `npm run audit` - production dependency audit
 
-## Notes For Contributors
+## Firebase + Security Artifacts
 
-- Keep styles tokenized (`bg-card`, `text-muted-foreground`, `border-border`, etc.) instead of hardcoded colors.
-- Preserve existing auth-guarded navigation behavior unless intentionally changing access rules.
-- If adding backend integration, prefer introducing shared domain types and a service layer first.
+- `firestore.rules`
+- `firestore.indexes.json`
+- `storage.rules`
+- `api/*.ts` server handlers
 
-## Reference
+## CI/CD and Ops
 
-For implementation details and architecture notes, see [REPO_REFERENCE.md](./REPO_REFERENCE.md).
-  
+- CI workflow: `.github/workflows/ci.yml`
+- Release policy: `docs/release-policy.md`
+- Incident runbooks: `docs/runbooks/*.md`
+
+## Notes
+
+- Trade offer and transaction writes are server-managed via Vercel Functions.
+- COD is enabled by default for testing and production fallback.
+- Wish integration is scaffolded and can be enabled when credentials are provided.
+
+## Auth Compatibility
+
+- Current auth flow uses email/password and Google popup sign-in.
+- Firebase Dynamic Links shutdown does not impact this current web implementation.
+- Avoid adding mobile email-link auth (`sendSignInLinkToEmail`) or Cordova OAuth flows without a migration plan, as those rely on deprecated Dynamic Links behavior.

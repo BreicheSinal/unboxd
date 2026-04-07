@@ -1,14 +1,18 @@
 import { RouterProvider } from "react-router";
 import { router } from "./routes";
 import { ThemeProvider } from "next-themes";
-import { AuthProvider } from "./contexts/AuthContext";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { AuthBootstrap } from "./store/AuthBootstrap";
 
 export default function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <AuthBootstrap>
+          <RouterProvider router={router} />
+        </AuthBootstrap>
+      </ThemeProvider>
+    </Provider>
   );
 }

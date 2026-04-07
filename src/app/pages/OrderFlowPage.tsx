@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { ChevronRight, ChevronLeft, Check, Package2, Palette, ShieldOff } from "lucide-react";
+import { useAppSelector } from "../store/hooks";
+import { createOrder } from "../services/paymentsService";
+import { mapFirebaseError } from "../services/errorService";
 
 type Size = "XS" | "S" | "M" | "L" | "XL" | "XXL";
 
@@ -11,8 +14,12 @@ interface Exclusions {
 }
 
 export function OrderFlowPage() {
+  const user = useAppSelector((state) => state.auth.user);
   const [step, setStep] = useState(1);
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
+  const [checkoutError, setCheckoutError] = useState("");
+  const [checkoutSuccess, setCheckoutSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [exclusions, setExclusions] = useState<Exclusions>({
     clubs: [],
     leagues: [],
@@ -69,8 +76,36 @@ export function OrderFlowPage() {
     }));
   };
 
-  const handleCheckout = () => {
-    alert("Proceeding to checkout! This would integrate with a payment provider.");
+  const handleCheckout = async () => {
+    if (!selectedSize) return;
+
+    if (!user) {
+      setCheckoutError("You must be signed in to place an order.");
+      return;
+    }
+
+    setCheckoutError("");
+    setCheckoutSuccess("");
+    setIsSubmitting(true);
+
+    try {
+      const result = await createOrder({
+        size: selectedSize,
+        exclusions,
+      });
+
+      if ("redirectUrl" in result) {
+        setCheckoutSuccess("Wish payment initialized. Redirecting to payment...");
+        window.location.href = result.redirectUrl;
+        return;
+      }
+
+      setCheckoutSuccess(`Order ${result.orderId} placed successfully with COD.`);
+    } catch (error) {
+      setCheckoutError(mapFirebaseError(error));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -361,11 +396,22 @@ export function OrderFlowPage() {
                 </button>
                 <button
                   onClick={handleCheckout}
-                  className="flex-1 py-4 bg-gradient-to-r from-rose-500 to-red-700 text-white rounded-lg hover:shadow-lg transition-all font-bold"
+                  disabled={isSubmitting}
+                  className="flex-1 py-4 bg-gradient-to-r from-rose-500 to-red-700 text-white rounded-lg hover:shadow-lg transition-all font-bold disabled:opacity-50"
                 >
-                  Proceed to Payment
+                  {isSubmitting ? "Processing..." : "Proceed to Payment"}
                 </button>
               </div>
+              {checkoutError && (
+                <p className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                  {checkoutError}
+                </p>
+              )}
+              {checkoutSuccess && (
+                <p className="mt-4 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
+                  {checkoutSuccess}
+                </p>
+              )}
             </div>
           </motion.div>
         )}

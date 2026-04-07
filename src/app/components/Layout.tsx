@@ -2,8 +2,9 @@ import { Outlet, Link, useLocation } from "react-router";
 import { Moon, Sun, Menu, X, Home, ShoppingBag, User, Grid3x3, Store, History, Bell, LogOut, ChevronDown, Award } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "../contexts/AuthContext";
 import { GoogleIcon } from "./GoogleIcon";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { signOutUser } from "../store/authSlice";
 
 export function Layout() {
   const { theme, setTheme } = useTheme();
@@ -12,7 +13,8 @@ export function Layout() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
-  const { user, signOut } = useAuth();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const isAuthPage = location.pathname === "/signin" || location.pathname === "/signup";
 
   useEffect(() => {
@@ -21,6 +23,11 @@ export function Layout() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setUserMenuOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -48,12 +55,13 @@ export function Layout() {
   ];
 
   const handleSignOut = () => {
-    signOut();
+    void dispatch(signOutUser());
     setUserMenuOpen(false);
+    setMobileMenuOpen(false);
   };
 
   return (
-    <div className={`${isAuthPage ? "h-dvh" : "min-h-screen"} bg-background flex flex-col`}>
+    <div className={`${isAuthPage ? "min-h-screen" : "min-h-screen"} bg-background flex flex-col`}>
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
         <div className="container mx-auto px-4">
@@ -98,7 +106,7 @@ export function Layout() {
               {user ? (
                 <>
                   {/* Notifications */}
-                  <button className="relative p-2 rounded-lg hover:bg-accent transition-colors">
+                  <button className="relative flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 hover:bg-accent transition-colors">
                     <Bell className="h-5 w-5" />
                     <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-600"></span>
                   </button>
@@ -107,17 +115,17 @@ export function Layout() {
                   <div ref={userMenuRef} className="relative hidden md:block">
                     <button
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent transition-colors"
+                      className="flex min-h-11 items-center gap-2 rounded-lg p-2 hover:bg-accent transition-colors"
                     >
-                      {user.avatar ? (
+                      {user.photoURL ? (
                         <img
-                          src={user.avatar}
-                          alt={user.name}
+                          src={user.photoURL}
+                          alt={user.displayName}
                           className="h-8 w-8 rounded-full object-cover"
                         />
                       ) : (
                         <div className="h-8 w-8 rounded-full bg-gradient-to-br from-rose-500 to-red-700 flex items-center justify-center text-white font-bold">
-                          {user.name[0].toUpperCase()}
+                          {(user.displayName?.[0] ?? "U").toUpperCase()}
                         </div>
                       )}
                       <ChevronDown className="h-4 w-4" />
@@ -126,7 +134,7 @@ export function Layout() {
                     {userMenuOpen && (
                       <div className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-lg shadow-xl py-2">
                         <div className="px-4 py-3 border-b border-border">
-                          <div className="font-bold">{user.name}</div>
+                          <div className="font-bold">{user.displayName}</div>
                           <div className="mt-1 flex items-center justify-between gap-2">
                             <div className="text-sm text-muted-foreground">{user.email}</div>
                             {user.provider === "google" && (
@@ -205,7 +213,7 @@ export function Layout() {
               {mounted && !user && (
                 <button
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="p-2 rounded-lg hover:bg-accent transition-colors"
+                  className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 hover:bg-accent transition-colors"
                   aria-label="Toggle theme"
                 >
                   {theme === "dark" ? (
@@ -219,7 +227,7 @@ export function Layout() {
               {/* Mobile menu button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-accent transition-colors"
+                className="md:hidden flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 hover:bg-accent transition-colors"
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
@@ -260,7 +268,7 @@ export function Layout() {
                 <>
                   <div className="border-t border-border my-2"></div>
                   <div className="px-4 py-2">
-                    <div className="font-bold">{user.name}</div>
+                    <div className="font-bold">{user.displayName}</div>
                     <div className="mt-1 flex items-center justify-between gap-2">
                       <div className="text-sm text-muted-foreground">{user.email}</div>
                       {user.provider === "google" && (
@@ -343,7 +351,7 @@ export function Layout() {
       <main
         className={
           isAuthPage
-            ? "flex-1 min-h-0 overflow-hidden bg-gradient-to-br from-red-700/12 via-rose-600/10 to-zinc-400/8 grid place-items-center"
+            ? "flex-1 overflow-y-auto bg-gradient-to-br from-red-700/12 via-rose-600/10 to-zinc-400/8 py-6 md:py-10 grid place-items-center"
             : "flex-1"
         }
       >

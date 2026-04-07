@@ -1,49 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
-import { useAuth } from "../contexts/AuthContext";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { motion } from "motion/react";
 import { GoogleIcon } from "../components/GoogleIcon";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { signInWithEmail, signInWithGoogle } from "../store/authSlice";
+import { mapFirebaseError } from "../services/errorService";
 
 export function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  
-  const { signIn, signInWithGoogle } = useAuth();
+  const dispatch = useAppDispatch();
+  const { user, isLoading } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
   
   const from = (location.state as any)?.from || "/dashboard";
 
+  useEffect(() => {
+    if (user) {
+      navigate(from, { replace: true });
+    }
+  }, [from, navigate, user]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
-
     try {
-      await signIn(email, password);
-      navigate(from, { replace: true });
+      await dispatch(signInWithEmail({ email, password })).unwrap();
     } catch (err) {
-      setError("Invalid email or password");
-    } finally {
-      setIsLoading(false);
+      setError(mapFirebaseError(err));
     }
   };
 
   const handleGoogleSignIn = async () => {
     setError("");
-    setIsLoading(true);
-
     try {
-      await signInWithGoogle();
-      navigate(from, { replace: true });
+      await dispatch(signInWithGoogle()).unwrap();
     } catch (err) {
-      setError("Failed to sign in with Google");
-    } finally {
-      setIsLoading(false);
+      setError(mapFirebaseError(err));
     }
   };
 
