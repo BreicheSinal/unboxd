@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Search, Filter, ArrowUpDown } from "lucide-react";
 import { Link } from "react-router";
 import {
@@ -8,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { Spinner } from "../components/ui/spinner";
+import { useAsyncEffect } from "../hooks/useAsyncEffect";
 import { getActiveListings } from "../services/marketplaceService";
 import type { MarketplaceListing } from "../types/domain";
 
@@ -19,27 +21,21 @@ export function MarketplacePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let isMounted = true;
+  useAsyncEffect(async ({ isActive }) => {
     setIsLoading(true);
     setLoadError(null);
 
-    getActiveListings()
-      .then((items) => {
-        if (!isMounted) return;
-        setTradeItems(items);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setLoadError("Failed to load marketplace listings from Firestore.");
-        setTradeItems([]);
-        setIsLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
+    try {
+      const items = await getActiveListings();
+      if (!isActive()) return;
+      setTradeItems(items);
+      setIsLoading(false);
+    } catch {
+      if (!isActive()) return;
+      setLoadError("Failed to load marketplace listings from Firestore.");
+      setTradeItems([]);
+      setIsLoading(false);
+    }
   }, []);
 
   const filteredItems = useMemo(() => {
@@ -126,8 +122,9 @@ export function MarketplacePage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center">
-            <p className="text-muted-foreground text-lg">Loading marketplace listings...</p>
+          <div className="py-20 text-center flex flex-col items-center gap-3">
+            <Spinner className="h-8 w-8 text-red-500" />
+            <p className="text-muted-foreground text-lg">Loading marketplace listings</p>
           </div>
         )}
 
