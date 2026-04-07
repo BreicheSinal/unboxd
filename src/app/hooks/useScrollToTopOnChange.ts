@@ -80,8 +80,8 @@ function scrollToTopNow(options: UseScrollToTopOnChangeOptions) {
   } else {
     try {
       window.scrollTo({ top: 0, left: 0, behavior });
-    } catch (e) {
-      // ignore
+    } catch {
+      // Ignore unsupported scroll options on older browsers.
     }
   }
 
@@ -89,11 +89,13 @@ function scrollToTopNow(options: UseScrollToTopOnChangeOptions) {
     if (shouldAnimateCustom) {
       try {
         animateElementToTop(el, durationMs);
-      } catch (e) {
+      } catch {
         try {
           el.scrollTop = 0;
           el.scrollLeft = 0;
-        } catch {}
+        } catch {
+          // Ignore elements that cannot be scrolled.
+        }
       }
     } else {
       try {
@@ -103,11 +105,13 @@ function scrollToTopNow(options: UseScrollToTopOnChangeOptions) {
           (el as any).scrollTop = 0;
           (el as any).scrollLeft = 0;
         }
-      } catch (e) {
+      } catch {
         try {
           (el as any).scrollTop = 0;
           (el as any).scrollLeft = 0;
-        } catch {}
+        } catch {
+          // Ignore elements that cannot be scrolled.
+        }
       }
     }
   }
@@ -118,7 +122,9 @@ function scrollToTopNow(options: UseScrollToTopOnChangeOptions) {
       block: "start",
       behavior,
     });
-  } catch {}
+  } catch {
+    // Ignore if target cannot be scrolled into view.
+  }
 }
 
 export function useScrollToTopOnChange(
