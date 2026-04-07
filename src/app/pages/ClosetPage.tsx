@@ -1,5 +1,6 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, Filter, LayoutGrid, List, TrendingUp } from "lucide-react";
+import { Link } from "react-router";
 import {
   Select,
   SelectContent,
@@ -7,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { Spinner } from "../components/ui/spinner";
 import { useAppSelector } from "../store/hooks";
 import { subscribeCloset } from "../services/closetService";
 import type { ClosetItem } from "../types/domain";
@@ -148,8 +150,9 @@ export function ClosetPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center">
-            <p className="text-muted-foreground text-lg">Loading your closet...</p>
+          <div className="py-20 text-center flex flex-col items-center gap-3">
+            <Spinner className="h-8 w-8 text-red-500" />
+            <p className="text-muted-foreground text-lg">Loading your closet</p>
           </div>
         )}
 
@@ -270,9 +273,20 @@ export function ClosetPage() {
             <p className="mt-2 text-sm text-muted-foreground">
               Place an order or complete a trade to start building your collection.
             </p>
+            <div className="mt-6">
+              <Link
+                to="/transactions"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
+              >
+                Go to Recent Orders
+              </Link>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 }
+
+
+
