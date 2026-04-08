@@ -5,6 +5,7 @@ import {
   setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
   updateProfile,
 } from "firebase/auth";
@@ -54,6 +55,18 @@ async function getFirebaseAuth() {
   return auth;
 }
 
+function isIOSDevice() {
+  if (typeof navigator === "undefined") {
+    return false;
+  }
+
+  const ua = navigator.userAgent || "";
+  const platform = navigator.platform || "";
+  const isIOSUserAgent = /iPad|iPhone|iPod/.test(ua);
+  const isIPadOSDesktopMode = platform === "MacIntel" && navigator.maxTouchPoints > 1;
+  return isIOSUserAgent || isIPadOSDesktopMode;
+}
+
 export const signInWithEmail = createAsyncThunk(
   "auth/signInWithEmail",
   async ({ email, password }: { email: string; password: string }) => {
@@ -78,8 +91,23 @@ export const signUpWithEmail = createAsyncThunk(
 
 export const signInWithGoogle = createAsyncThunk("auth/signInWithGoogle", async () => {
   const firebaseAuth = await getFirebaseAuth();
-  const credential = await signInWithPopup(firebaseAuth, googleProvider);
-  await upsertUserProfile(credential.user);
+
+  if (isIOSDevice()) {
+    await signInWithRedirect(firebaseAuth, googleProvider);
+    return;
+  }
+
+  try {
+    const credential = await signInWithPopup(firebaseAuth, googleProvider);
+    await upsertUserProfile(credential.user);
+  } catch (error: unknown) {
+    const code = (error as { code?: string } | null)?.code;
+    if (code === "auth/popup-blocked") {
+      await signInWithRedirect(firebaseAuth, googleProvider);
+      return;
+    }
+    throw error;
+  }
 });
 
 export const signOutUser = createAsyncThunk("auth/signOut", async () => {
