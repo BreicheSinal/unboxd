@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
@@ -17,14 +17,32 @@ export function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
-  const { user, isLoading } = useAppSelector((state) => state.auth);
+  const { user, isLoading, isBootstrapping } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const fallbackRedirect = "/dashboard";
+  const redirectFromState =
+    typeof location.state === "object" &&
+    location.state !== null &&
+    "from" in location.state &&
+    typeof (location.state as { from?: unknown }).from === "string"
+      ? (location.state as { from: string }).from
+      : null;
 
   useEffect(() => {
-    if (user) {
-      navigate("/dashboard", { replace: true });
+    if (redirectFromState) {
+      sessionStorage.setItem("postAuthRedirect", redirectFromState);
     }
-  }, [navigate, user]);
+  }, [redirectFromState]);
+
+  useEffect(() => {
+    if (!isBootstrapping && user) {
+      const target = sessionStorage.getItem("postAuthRedirect") || fallbackRedirect;
+      sessionStorage.removeItem("postAuthRedirect");
+      navigate(target, { replace: true });
+    }
+  }, [isBootstrapping, navigate, user]);
 
   useEffect(() => {
     setMounted(true);
@@ -48,6 +66,8 @@ export function SignInPage() {
   const handleGoogleSignIn = async () => {
     setError("");
     try {
+      const target = redirectFromState || fallbackRedirect;
+      sessionStorage.setItem("postAuthRedirect", target);
       await dispatch(signInWithGoogle()).unwrap();
     } catch (err) {
       setError(mapFirebaseError(err));
