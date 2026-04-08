@@ -1,5 +1,5 @@
 ﻿import { ReactNode, useEffect } from "react";
-import { User, onAuthStateChanged } from "firebase/auth";
+import { User, getRedirectResult, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { upsertUserProfile } from "../services/userService";
 import type { UserProfile } from "../types/domain";
@@ -33,10 +33,25 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
       return;
     }
 
+    // Process any pending redirect result before handling auth state.
+    // On iOS, signInWithRedirect stores a pending credential that must be
+    // consumed via getRedirectResult, otherwise onAuthStateChanged fires
+    // null first and the app incorrectly lands back on the sign-in page.
+    const redirectPromise = getRedirectResult(auth).catch((err) => {
+      console.error("getRedirectResult failed:", err);
+      return null;
+    });
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
         if (!firebaseUser) {
-          dispatch(clearAuthenticatedUser());
+          // Wait for any pending redirect to resolve before clearing auth.
+          // If the redirect signs the user in, onAuthStateChanged will fire
+          // again with the user; otherwise we clear as normal.
+          await redirectPromise;
+          if (!auth.currentUser) {
+            dispatch(clearAuthenticatedUser());
+          }
           return;
         }
 
