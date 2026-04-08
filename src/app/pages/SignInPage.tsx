@@ -14,7 +14,6 @@ export function SignInPage() {
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
@@ -54,11 +53,11 @@ export function SignInPage() {
       ? "/assets/icons/ICON_WHITE.svg"
       : "/assets/icons/ICON_BLACK.svg";
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setError("");
     try {
-      await dispatch(signInWithEmail({ email, password, rememberMe })).unwrap();
+      await dispatch(signInWithEmail({ email, password })).unwrap();
     } catch (err) {
       setError(mapFirebaseError(err));
     }
@@ -66,10 +65,10 @@ export function SignInPage() {
 
   const handleGoogleSignIn = async () => {
     setError("");
+    const target = redirectFromState || fallbackRedirect;
+    sessionStorage.setItem("postAuthRedirect", target);
     try {
-      const target = redirectFromState || fallbackRedirect;
-      sessionStorage.setItem("postAuthRedirect", target);
-      await dispatch(signInWithGoogle(rememberMe)).unwrap();
+      await dispatch(signInWithGoogle()).unwrap();
     } catch (err) {
       setError(mapFirebaseError(err));
     }
@@ -154,7 +153,7 @@ export function SignInPage() {
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="********"
+                        placeholder="••••••••"
                         required
                         className="w-full rounded-lg border border-border bg-accent py-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-red-500"
                       />
@@ -168,16 +167,7 @@ export function SignInPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-sm">
-                    <label className="flex cursor-pointer items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={rememberMe}
-                        onChange={(event) => setRememberMe(event.target.checked)}
-                        className="rounded"
-                      />
-                      <span className="text-muted-foreground">Remember me</span>
-                    </label>
+                  <div className="flex justify-end text-sm">
                     <Link to="/forgot-password" className="text-red-500 hover:underline">
                       Forgot password?
                     </Link>
