@@ -102,7 +102,12 @@ export const signInWithGoogle = createAsyncThunk("auth/signInWithGoogle", async 
     await upsertUserProfile(credential.user);
   } catch (error: unknown) {
     const code = (error as { code?: string } | null)?.code;
-    if (code === "auth/popup-blocked") {
+    if (
+      code === "auth/popup-blocked" ||
+      code === "auth/operation-not-supported-in-this-environment" ||
+      code === "auth/popup-closed-by-user" ||
+      code === "auth/cancelled-popup-request"
+    ) {
       await signInWithRedirect(firebaseAuth, googleProvider);
       return;
     }

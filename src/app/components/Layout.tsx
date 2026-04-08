@@ -326,7 +326,11 @@ export function Layout() {
       <main
         id="app-main"
         ref={mainRef}
-        className={`flex-1 overflow-x-hidden overflow-y-auto ${isAuthPage ? "bg-zinc-950 grid place-items-center" : ""}`}
+        className={`flex-1 overflow-x-hidden overflow-y-auto ${
+          isAuthPage
+            ? "bg-zinc-950 flex justify-center items-start pt-4 md:pt-6 xl:items-center xl:pt-0"
+            : ""
+        }`}
       >
         <Outlet />
       </main>
