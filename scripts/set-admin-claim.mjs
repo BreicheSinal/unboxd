@@ -1,9 +1,11 @@
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 
-const [, , uidArg, grantArg] = process.argv;
-if (!uidArg || !grantArg) {
-  console.error("Usage: node --env-file=.env.local scripts/set-admin-claim.mjs <uid> <true|false>");
+const [, , userArg, grantArg] = process.argv;
+if (!userArg || !grantArg) {
+  console.error(
+    "Usage: node --env-file=.env.local scripts/set-admin-claim.mjs <uid-or-email> <true|false>",
+  );
   process.exit(1);
 }
 
@@ -33,8 +35,9 @@ if (getApps().length === 0) {
 }
 
 const auth = getAuth();
-const user = await auth.getUser(uidArg);
+const isEmail = userArg.includes("@");
+const user = isEmail ? await auth.getUserByEmail(userArg) : await auth.getUser(userArg);
 const nextClaims = { ...(user.customClaims ?? {}), admin: grant };
-await auth.setCustomUserClaims(uidArg, nextClaims);
+await auth.setCustomUserClaims(user.uid, nextClaims);
 
-console.log(`Updated ${uidArg}: admin=${grant}`);
+console.log(`Updated ${user.uid} (${user.email ?? "no-email"}): admin=${grant}`);

@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from "react";
-import { User, getRedirectResult, onAuthStateChanged } from "firebase/auth";
+import { User, getRedirectResult, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
+import { hasAdminClaim, isAdminOnlyEmail } from "../services/adminOnlyAccess";
 import { upsertUserProfile } from "../services/userService";
 import type { UserProfile } from "../types/domain";
 import { useAppDispatch } from "./hooks";
@@ -51,6 +52,14 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
         if (!auth.currentUser) {
           dispatch(clearAuthenticatedUser());
         }
+        return;
+      }
+
+      const blockedByEmail = isAdminOnlyEmail(firebaseUser.email);
+      const blockedByClaim = blockedByEmail ? false : await hasAdminClaim(firebaseUser, true).catch(() => false);
+      if (blockedByEmail || blockedByClaim) {
+        await signOut(auth).catch(() => undefined);
+        dispatch(clearAuthenticatedUser());
         return;
       }
 

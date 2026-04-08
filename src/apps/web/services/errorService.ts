@@ -34,6 +34,8 @@ export function mapFirebaseError(error: unknown): string {
       return "Firebase app credential is invalid. Verify your Firebase web app config values.";
     case "auth/network-request-failed":
       return "Network error while contacting Firebase Auth. Check connection and try again.";
+    case "auth/admin-only-web-access":
+      return "This account is admin-only. Please sign in from the admin portal.";
     case "permission-denied":
     case "firestore/permission-denied":
       return "You do not have permission to perform this action.";
