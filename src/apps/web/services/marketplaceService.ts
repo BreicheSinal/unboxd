@@ -73,6 +73,7 @@ export async function upsertMarketplaceListing(
     listingRef,
     {
       ...listing,
+      status: listing.id ? listing.status : "pending_approval",
       createdAt: listing.createdAt ?? serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
