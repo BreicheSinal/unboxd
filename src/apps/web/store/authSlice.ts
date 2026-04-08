@@ -8,6 +8,11 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth, googleProvider } from "../firebase/config";
+import {
+  createAdminOnlyWebAccessError,
+  hasAdminClaim,
+  isAdminOnlyEmail,
+} from "../services/adminOnlyAccess";
 import { upsertUserProfile } from "../services/userService";
 import type { UserProfile } from "../types/domain";
 
@@ -49,7 +54,15 @@ export const signInWithEmail = createAsyncThunk(
   "auth/signInWithEmail",
   async ({ email, password }: { email: string; password: string }) => {
     const firebaseAuth = getFirebaseAuth();
+    if (isAdminOnlyEmail(email)) {
+      throw createAdminOnlyWebAccessError();
+    }
     const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+    const isAdmin = await hasAdminClaim(credential.user, true);
+    if (isAdmin || isAdminOnlyEmail(credential.user.email)) {
+      await signOut(firebaseAuth);
+      throw createAdminOnlyWebAccessError();
+    }
     await upsertUserProfile(credential.user);
   },
 );
@@ -57,6 +70,9 @@ export const signInWithEmail = createAsyncThunk(
 export const signUpWithEmail = createAsyncThunk(
   "auth/signUpWithEmail",
   async ({ email, password, name }: { email: string; password: string; name: string }) => {
+    if (isAdminOnlyEmail(email)) {
+      throw createAdminOnlyWebAccessError();
+    }
     const firebaseAuth = getFirebaseAuth();
     const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
     if (name.trim()) {
@@ -75,6 +91,11 @@ export const signInWithGoogle = createAsyncThunk(
       // before it breaks iOS Safari's user-gesture context and causes the popup
       // to be blocked by the browser.
       const credential = await signInWithPopup(firebaseAuth, googleProvider);
+      const isAdmin = await hasAdminClaim(credential.user, true);
+      if (isAdmin || isAdminOnlyEmail(credential.user.email)) {
+        await signOut(firebaseAuth);
+        throw createAdminOnlyWebAccessError();
+      }
       await upsertUserProfile(credential.user);
     } catch (error: unknown) {
       const code = (error as { code?: string } | null)?.code;

@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "./_lib/firebaseAdmin.js";
 import { ApiError, handleError, json } from "./_lib/http.js";
+import { syncOrderTransactions } from "./_lib/orderTransactions.js";
 
 function safeEqual(a: string, b: string) {
   const left = Buffer.from(a, "utf8");
@@ -46,11 +47,13 @@ export default async function handler(req: any, res: any) {
       },
       { merge: true },
     );
+    const orderSnap = await adminDb.collection("orders").doc(orderId).get();
+    const syncResult = await syncOrderTransactions(orderId, (orderSnap.data() ?? {}) as Record<string, unknown>);
 
     await adminDb.collection("auditLogs").add({
       action: "wishWebhook",
       actorUid: "system",
-      metadata: { orderId, paymentStatus },
+      metadata: { orderId, paymentStatus, ...syncResult },
       createdAt: FieldValue.serverTimestamp(),
     });
 

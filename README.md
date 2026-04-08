@@ -45,13 +45,28 @@ You can override this using `VITE_API_PROXY_TARGET` in `.env`.
 ## Scripts
 
 - `npm run dev` - start development server
+- `npm run dev:admin` - start admin dashboard dev server
 - `npm run build` - production build
+- `npm run build:admin` - admin dashboard build (`dist-admin`)
 - `npm run preview` - preview built app
+- `npm run preview:admin` - preview admin build
 - `npm run typecheck` - TypeScript check
 - `npm run lint` - ESLint
 - `npm run test` - Vitest unit tests
 - `npm run test:e2e` - Playwright smoke test
 - `npm run audit` - production dependency audit
+- `npm run admin:claim -- <uid> <true|false>` - grant/revoke Firebase `admin` custom claim
+
+## Admin Dashboard (Subdomain)
+
+- Entry file: `apps/admin/index.html`
+- Frontend source: `src/apps/admin/*`
+- Vercel config for admin project: `vercel.admin.json`
+- API surface: `/api/admin/*` guarded by Firebase custom claim `admin:true`
+
+Typical deployment model:
+1. Main app project uses `vercel.json` and root domain.
+2. Admin project uses `vercel.admin.json` + `npm run build:admin` and is bound to `admin.<domain>`.
 
 ## Firebase + Security Artifacts
 

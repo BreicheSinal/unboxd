@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite",
+    "build:admin": "vite build --config vite.admin.config.ts",
+    "dev": "vite --open /",
+    "dev:admin": "vite --config vite.admin.config.ts --open /",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "vitest run",
@@ -13,8 +15,10 @@
     "test:e2e": "playwright test",
     "audit": "npm audit --omit=dev",
     "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "preview:admin": "vite preview --config vite.admin.config.ts --host 127.0.0.1 --port 4174",
     "migrate:preferences:dry": "node --env-file=.env.local scripts/migrate-user-preferences.mjs --dry-run",
-    "migrate:preferences": "node --env-file=.env.local scripts/migrate-user-preferences.mjs"
+    "migrate:preferences": "node --env-file=.env.local scripts/migrate-user-preferences.mjs",
+    "admin:claim": "node --env-file=.env.local scripts/set-admin-claim.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -58,6 +62,8 @@
     "firebase": "^11.10.0",
     "firebase-admin": "^12.7.0",
     "input-otp": "1.4.2",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
     "lucide-react": "0.487.0",
     "motion": "12.23.24",
     "next-themes": "0.4.6",

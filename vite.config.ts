@@ -8,6 +8,9 @@ export default defineConfig(({ mode }) => {
   const apiProxyTarget = env.VITE_API_PROXY_TARGET || 'http://localhost:3000'
 
   return {
+    root: path.resolve(__dirname, 'apps/web'),
+    publicDir: path.resolve(__dirname, 'public'),
+    envDir: path.resolve(__dirname),
     plugins: [
       // The React and Tailwind plugins are both required for Make, even if
       // Tailwind is not being actively used - do not remove them
@@ -21,6 +24,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      fs: {
+        allow: [path.resolve(__dirname)],
+      },
       proxy: {
         '/api': {
           target: apiProxyTarget,
@@ -30,6 +36,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
+      outDir: path.resolve(__dirname, 'dist'),
+      emptyOutDir: true,
       chunkSizeWarningLimit: 2000,
     },
 

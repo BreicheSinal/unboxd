@@ -37,7 +37,12 @@ export interface ListingTradeOptions {
   platformExchange: boolean;
 }
 
-export type ListingStatus = "active" | "reserved" | "closed";
+export type ListingStatus =
+  | "pending_approval"
+  | "active"
+  | "rejected"
+  | "reserved"
+  | "closed";
 
 export interface MarketplaceListing {
   id: string;
