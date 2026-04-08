@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from "react-router";
+﻿import { Outlet, Link, useLocation } from "react-router";
 import {
   Menu,
   X,
@@ -448,7 +448,19 @@ export function Layout() {
               </div>
             </div>
             <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-              © 2026 Unboxd. All rights reserved.
+              &copy; 2026 Unboxd. All rights reserved.
+              <span className="mx-2" aria-hidden="true">
+                &bull;
+              </span>
+              Developed by{" "}
+              <a
+                href="https://invixlab.com"
+                target="_blank"
+                rel="noreferrer"
+                className="text-red-500 hover:text-red-400"
+              >
+                InvixLab
+              </a>
             </div>
           </div>
         </footer>
@@ -456,3 +468,5 @@ export function Layout() {
     </div>
   );
 }
+
+
