@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  browserLocalPersistence,
   createUserWithEmailAndPassword,
-  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
@@ -32,8 +30,6 @@ const initialState: AuthState = {
   error: null,
 };
 
-let persistenceInitialized = false;
-
 function serializeUserProfile(profile: UserProfile): SerializableUserProfile {
   return {
     ...profile,
@@ -42,35 +38,18 @@ function serializeUserProfile(profile: UserProfile): SerializableUserProfile {
   };
 }
 
-async function getFirebaseAuth() {
+function getFirebaseAuth() {
   if (!auth) {
     throw new Error("Firebase Auth is not configured");
   }
-
-  if (!persistenceInitialized) {
-    await setPersistence(auth, browserLocalPersistence);
-    persistenceInitialized = true;
-  }
-
   return auth;
 }
 
-function isIOSDevice() {
-  if (typeof navigator === "undefined") {
-    return false;
-  }
-
-  const ua = navigator.userAgent || "";
-  const platform = navigator.platform || "";
-  const isIOSUserAgent = /iPad|iPhone|iPod/.test(ua);
-  const isIPadOSDesktopMode = platform === "MacIntel" && navigator.maxTouchPoints > 1;
-  return isIOSUserAgent || isIPadOSDesktopMode;
-}
 
 export const signInWithEmail = createAsyncThunk(
   "auth/signInWithEmail",
   async ({ email, password }: { email: string; password: string }) => {
-    const firebaseAuth = await getFirebaseAuth();
+    const firebaseAuth = getFirebaseAuth();
     const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
     await upsertUserProfile(credential.user);
   },
@@ -79,7 +58,7 @@ export const signInWithEmail = createAsyncThunk(
 export const signUpWithEmail = createAsyncThunk(
   "auth/signUpWithEmail",
   async ({ email, password, name }: { email: string; password: string; name: string }) => {
-    const firebaseAuth = await getFirebaseAuth();
+    const firebaseAuth = getFirebaseAuth();
     const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
 
     if (name.trim()) {
@@ -90,12 +69,10 @@ export const signUpWithEmail = createAsyncThunk(
 );
 
 export const signInWithGoogle = createAsyncThunk("auth/signInWithGoogle", async () => {
-  const firebaseAuth = await getFirebaseAuth();
-
-  if (isIOSDevice()) {
-    await signInWithRedirect(firebaseAuth, googleProvider);
-    return;
-  }
+  // getFirebaseAuth is now synchronous — no await means the user-gesture context is
+  // preserved on iOS Safari, which requires window.open() to be reachable without
+  // crossing an async boundary caused by a network/storage operation.
+  const firebaseAuth = getFirebaseAuth();
 
   try {
     const credential = await signInWithPopup(firebaseAuth, googleProvider);
@@ -104,9 +81,7 @@ export const signInWithGoogle = createAsyncThunk("auth/signInWithGoogle", async 
     const code = (error as { code?: string } | null)?.code;
     if (
       code === "auth/popup-blocked" ||
-      code === "auth/operation-not-supported-in-this-environment" ||
-      code === "auth/popup-closed-by-user" ||
-      code === "auth/cancelled-popup-request"
+      code === "auth/operation-not-supported-in-this-environment"
     ) {
       await signInWithRedirect(firebaseAuth, googleProvider);
       return;
@@ -116,7 +91,7 @@ export const signInWithGoogle = createAsyncThunk("auth/signInWithGoogle", async 
 });
 
 export const signOutUser = createAsyncThunk("auth/signOut", async () => {
-  const firebaseAuth = await getFirebaseAuth();
+  const firebaseAuth = getFirebaseAuth();
   await signOut(firebaseAuth);
 });
 
