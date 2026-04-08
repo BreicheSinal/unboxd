@@ -55,7 +55,7 @@ export function SignUpPage() {
       ? "/assets/icons/ICON_WHITE.svg"
       : "/assets/icons/ICON_BLACK.svg";
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setError("");
 
@@ -81,7 +81,7 @@ export function SignUpPage() {
     try {
       const target = redirectFromState || fallbackRedirect;
       sessionStorage.setItem("postAuthRedirect", target);
-      await dispatch(signInWithGoogle(true)).unwrap();
+      await dispatch(signInWithGoogle()).unwrap();
     } catch (err) {
       setError(mapFirebaseError(err));
     }
