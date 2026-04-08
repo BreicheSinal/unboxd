@@ -165,7 +165,7 @@ export function SignInPage() {
                     {isLoading ? (
                       <>
                         <Spinner className="h-4 w-4" />
-                        Signing in
+                        <span className="loading-shimmer-text-light">Signing in</span>
                       </>
                     ) : (
                       "Sign In"
