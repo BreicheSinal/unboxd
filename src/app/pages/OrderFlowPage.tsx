@@ -207,6 +207,19 @@ export function OrderFlowPage() {
   const isCheckoutReady =
     Boolean(user) && missingBillingFields().length === 0 && isEmailValid();
 
+  const redirectToPayment = (url: string) => {
+    const target = new URL(url, window.location.origin).toString();
+
+    // In embedded/sandboxed frames, direct navigation can be blocked by the browser.
+    // A new-tab redirect from this click interaction is more reliable.
+    if (window.self !== window.top) {
+      const opened = window.open(target, "_blank", "noopener,noreferrer");
+      if (opened) return;
+    }
+
+    window.location.assign(target);
+  };
+
   const handleCheckout = async () => {
     if (!selectedSize) return;
 
@@ -250,7 +263,7 @@ export function OrderFlowPage() {
         setCheckoutSuccess(
           "Whish payment initialized. Redirecting to payment...",
         );
-        window.location.href = result.redirectUrl;
+        redirectToPayment(result.redirectUrl);
         return;
       }
 
