@@ -1,5 +1,6 @@
 import type { IncomingMessage } from "http";
 import { adminAuth } from "./firebaseAdmin.js";
+import type { DecodedIdToken } from "firebase-admin/auth";
 
 export class ApiError extends Error {
   code: string;
@@ -38,6 +39,13 @@ export function asOptionalNumber(value: unknown, field: string) {
 }
 
 export async function requireAuthUid(req: IncomingMessage & { headers: Record<string, string | string[] | undefined> }) {
+  const decoded = await requireAuthToken(req);
+  return decoded.uid;
+}
+
+export async function requireAuthToken(
+  req: IncomingMessage & { headers: Record<string, string | string[] | undefined> },
+): Promise<DecodedIdToken> {
   const header = req.headers.authorization;
   const authHeader = Array.isArray(header) ? header[0] : header;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -45,7 +53,20 @@ export async function requireAuthUid(req: IncomingMessage & { headers: Record<st
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
-  const decoded = await adminAuth.verifyIdToken(token);
+  try {
+    return await adminAuth.verifyIdToken(token, true);
+  } catch {
+    throw new ApiError("unauthenticated", "Invalid or expired authentication token.", 401);
+  }
+}
+
+export async function requireAdminUid(
+  req: IncomingMessage & { headers: Record<string, string | string[] | undefined> },
+) {
+  const decoded = await requireAuthToken(req);
+  if (decoded.admin !== true) {
+    throw new ApiError("permission-denied", "Admin privileges required.", 403);
+  }
   return decoded.uid;
 }
 
