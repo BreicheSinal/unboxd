@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Mail, Lock, User as UserIcon, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
+import { useTheme } from "next-themes";
 import { GoogleIcon } from "../components/GoogleIcon";
 import { Spinner } from "../components/ui/spinner";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -9,6 +10,8 @@ import { signInWithGoogle, signUpWithEmail } from "../store/authSlice";
 import { mapFirebaseError } from "../services/errorService";
 
 export function SignUpPage() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +27,15 @@ export function SignUpPage() {
       navigate("/dashboard", { replace: true });
     }
   }, [navigate, user]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const authIconSrc =
+    mounted && resolvedTheme === "dark"
+      ? "/assets/icons/ICON_WHITE.svg"
+      : "/assets/icons/ICON_BLACK.svg";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,9 +86,7 @@ export function SignUpPage() {
           <div className="rounded-2xl border border-border bg-card p-4 shadow-xl md:p-6 [@media(max-width:450px)]:rounded-none [@media(max-width:450px)]:border-0 [@media(max-width:450px)]:p-0 [@media(max-width:450px)]:shadow-none">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
               <div className="rounded-xl border border-border bg-accent/20 p-6">
-                <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-red-700">
-                  <span className="text-2xl font-bold text-white">UB</span>
-                </div>
+                <img src={authIconSrc} alt="Unboxd" className="mb-4 h-8 w-auto" />
                 <h1 className="mb-2 text-3xl font-bold">Create Account</h1>
                 <p className="text-muted-foreground">Join Unboxd and start collecting</p>
               </div>
