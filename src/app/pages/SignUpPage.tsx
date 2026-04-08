@@ -81,7 +81,7 @@ export function SignUpPage() {
     try {
       const target = redirectFromState || fallbackRedirect;
       sessionStorage.setItem("postAuthRedirect", target);
-      await dispatch(signInWithGoogle()).unwrap();
+      await dispatch(signInWithGoogle(true)).unwrap();
     } catch (err) {
       setError(mapFirebaseError(err));
     }

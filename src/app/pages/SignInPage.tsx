@@ -14,6 +14,7 @@ export function SignInPage() {
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
@@ -57,7 +58,7 @@ export function SignInPage() {
     e.preventDefault();
     setError("");
     try {
-      await dispatch(signInWithEmail({ email, password })).unwrap();
+      await dispatch(signInWithEmail({ email, password, rememberMe })).unwrap();
     } catch (err) {
       setError(mapFirebaseError(err));
     }
@@ -68,7 +69,7 @@ export function SignInPage() {
     try {
       const target = redirectFromState || fallbackRedirect;
       sessionStorage.setItem("postAuthRedirect", target);
-      await dispatch(signInWithGoogle()).unwrap();
+      await dispatch(signInWithGoogle(rememberMe)).unwrap();
     } catch (err) {
       setError(mapFirebaseError(err));
     }
@@ -169,12 +170,17 @@ export function SignInPage() {
 
                   <div className="flex items-center justify-between text-sm">
                     <label className="flex cursor-pointer items-center gap-2">
-                      <input type="checkbox" className="rounded" />
+                      <input
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(event) => setRememberMe(event.target.checked)}
+                        className="rounded"
+                      />
                       <span className="text-muted-foreground">Remember me</span>
                     </label>
-                    <a href="#" className="text-red-500 hover:underline">
+                    <Link to="/forgot-password" className="text-red-500 hover:underline">
                       Forgot password?
-                    </a>
+                    </Link>
                   </div>
 
                   <button

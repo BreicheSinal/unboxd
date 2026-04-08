@@ -9,6 +9,7 @@ import { TradeFlowPage } from "./pages/TradeFlowPage";
 import { TransactionHistoryPage } from "./pages/TransactionHistoryPage";
 import { SignInPage } from "./pages/SignInPage";
 import { SignUpPage } from "./pages/SignUpPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { TermsOfServicePage } from "./pages/TermsOfServicePage";
 import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
 import { HelpCenterPage } from "./pages/HelpCenterPage";
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
       { index: true, Component: HomePage },
       { path: "signin", Component: SignInPage },
       { path: "signup", Component: SignUpPage },
+      { path: "forgot-password", Component: ForgotPasswordPage },
       { path: "terms", Component: TermsOfServicePage },
       { path: "privacy", Component: PrivacyPolicyPage },
       { path: "help-center", Component: HelpCenterPage },

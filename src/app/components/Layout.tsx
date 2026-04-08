@@ -29,7 +29,9 @@ export function Layout() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const isAuthPage =
-    location.pathname === "/signin" || location.pathname === "/signup";
+    location.pathname === "/signin" ||
+    location.pathname === "/signup" ||
+    location.pathname === "/forgot-password";
 
   useEffect(() => {
     setMounted(true);

@@ -1,6 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  browserLocalPersistence,
+  browserSessionPersistence,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
@@ -45,10 +49,26 @@ function getFirebaseAuth() {
   return auth;
 }
 
+async function applyAuthPersistence(rememberMe: boolean) {
+  const firebaseAuth = getFirebaseAuth();
+  await setPersistence(
+    firebaseAuth,
+    rememberMe ? browserLocalPersistence : browserSessionPersistence,
+  );
+}
 
 export const signInWithEmail = createAsyncThunk(
   "auth/signInWithEmail",
-  async ({ email, password }: { email: string; password: string }) => {
+  async ({
+    email,
+    password,
+    rememberMe = true,
+  }: {
+    email: string;
+    password: string;
+    rememberMe?: boolean;
+  }) => {
+    await applyAuthPersistence(rememberMe);
     const firebaseAuth = getFirebaseAuth();
     const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
     await upsertUserProfile(credential.user);
@@ -68,27 +88,37 @@ export const signUpWithEmail = createAsyncThunk(
   },
 );
 
-export const signInWithGoogle = createAsyncThunk("auth/signInWithGoogle", async () => {
-  // getFirebaseAuth is now synchronous — no await means the user-gesture context is
-  // preserved on iOS Safari, which requires window.open() to be reachable without
-  // crossing an async boundary caused by a network/storage operation.
-  const firebaseAuth = getFirebaseAuth();
+export const signInWithGoogle = createAsyncThunk(
+  "auth/signInWithGoogle",
+  async (rememberMe: boolean = true) => {
+    // Keep popup open call in user-gesture path for iOS Safari compatibility.
+    await applyAuthPersistence(rememberMe);
+    const firebaseAuth = getFirebaseAuth();
 
-  try {
-    const credential = await signInWithPopup(firebaseAuth, googleProvider);
-    await upsertUserProfile(credential.user);
-  } catch (error: unknown) {
-    const code = (error as { code?: string } | null)?.code;
-    if (
-      code === "auth/popup-blocked" ||
-      code === "auth/operation-not-supported-in-this-environment"
-    ) {
-      await signInWithRedirect(firebaseAuth, googleProvider);
-      return;
+    try {
+      const credential = await signInWithPopup(firebaseAuth, googleProvider);
+      await upsertUserProfile(credential.user);
+    } catch (error: unknown) {
+      const code = (error as { code?: string } | null)?.code;
+      if (
+        code === "auth/popup-blocked" ||
+        code === "auth/operation-not-supported-in-this-environment"
+      ) {
+        await signInWithRedirect(firebaseAuth, googleProvider);
+        return;
+      }
+      throw error;
     }
-    throw error;
-  }
-});
+  },
+);
+
+export const sendPasswordReset = createAsyncThunk(
+  "auth/sendPasswordReset",
+  async ({ email }: { email: string }) => {
+    const firebaseAuth = getFirebaseAuth();
+    await sendPasswordResetEmail(firebaseAuth, email);
+  },
+);
 
 export const signOutUser = createAsyncThunk("auth/signOut", async () => {
   const firebaseAuth = getFirebaseAuth();
@@ -135,6 +165,10 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
+      .addCase(sendPasswordReset.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(signOutUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -144,6 +178,7 @@ const authSlice = createSlice({
           action.type === signInWithEmail.rejected.type ||
           action.type === signUpWithEmail.rejected.type ||
           action.type === signInWithGoogle.rejected.type ||
+          action.type === sendPasswordReset.rejected.type ||
           action.type === signOutUser.rejected.type,
         (state, action: any) => {
           state.isLoading = false;
@@ -155,6 +190,7 @@ const authSlice = createSlice({
           action.type === signInWithEmail.fulfilled.type ||
           action.type === signUpWithEmail.fulfilled.type ||
           action.type === signInWithGoogle.fulfilled.type ||
+          action.type === sendPasswordReset.fulfilled.type ||
           action.type === signOutUser.fulfilled.type,
         (state) => {
           state.isLoading = false;
