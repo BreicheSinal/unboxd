@@ -50,6 +50,25 @@ function animateElementToTop(el: HTMLElement, durationMs: number) {
 function scrollToTopNow(options: UseScrollToTopOnChangeOptions) {
   const behavior = options.behavior ?? "smooth";
   const durationMs = Math.max(120, options.durationMs ?? 800);
+
+  // If URL has a hash, preserve anchor-navigation behavior and avoid forcing top scroll.
+  const rawHash = window.location.hash || "";
+  const hashId = rawHash.startsWith("#")
+    ? decodeURIComponent(rawHash.slice(1))
+    : decodeURIComponent(rawHash);
+
+  if (hashId) {
+    const hashTarget = document.getElementById(hashId);
+    if (hashTarget) {
+      try {
+        hashTarget.scrollIntoView({ block: "start", behavior });
+      } catch {
+        // Ignore if target cannot be scrolled into view.
+      }
+    }
+    return;
+  }
+
   const tried: HTMLElement[] = [];
 
   const pushIfPresent = (el: unknown) => {

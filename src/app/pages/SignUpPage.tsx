@@ -219,7 +219,7 @@ export function SignUpPage() {
                     {isLoading ? (
                       <>
                         <Spinner className="h-4 w-4" />
-                        Creating account
+                        <span className="loading-shimmer-text-light">Creating account</span>
                       </>
                     ) : (
                       "Sign Up"

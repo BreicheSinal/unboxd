@@ -1,14 +1,8 @@
 import { useMemo, useState } from "react";
-import { Search, Filter, ArrowUpDown } from "lucide-react";
+import { Search } from "lucide-react";
 import { Link } from "react-router";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import { Spinner } from "../components/ui/spinner";
+import { MarketplaceToolsBar } from "../components/marketplace/MarketplaceToolsBar";
+import { LoadingScreen } from "../components/ui/loading-screen";
 import { useAsyncEffect } from "../hooks/useAsyncEffect";
 import { getActiveListings } from "../services/marketplaceService";
 import type { MarketplaceListing } from "../types/domain";
@@ -68,52 +62,16 @@ export function MarketplacePage() {
           </p>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 md:p-6 mb-8">
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_auto_auto] lg:gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search by team or league..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 w-full pl-10 pr-4 bg-accent rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5 text-muted-foreground" />
-              <Select value={filterSize} onValueChange={setFilterSize}>
-                <SelectTrigger className="h-11 min-w-36 rounded-lg border border-border bg-card shadow-sm data-[state=open]:border-red-500 data-[state=open]:shadow-xl focus-visible:border-red-500 focus-visible:ring-0">
-                  <SelectValue placeholder="All Sizes" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg border border-border bg-card shadow-xl">
-                  <SelectItem value="all">All Sizes</SelectItem>
-                  <SelectItem value="XS">XS</SelectItem>
-                  <SelectItem value="S">S</SelectItem>
-                  <SelectItem value="M">M</SelectItem>
-                  <SelectItem value="L">L</SelectItem>
-                  <SelectItem value="XL">XL</SelectItem>
-                  <SelectItem value="XXL">XXL</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <ArrowUpDown className="h-5 w-5 text-muted-foreground" />
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="h-11 min-w-40 rounded-lg border border-border bg-card shadow-sm data-[state=open]:border-red-500 data-[state=open]:shadow-xl focus-visible:border-red-500 focus-visible:ring-0">
-                  <SelectValue placeholder="Most Recent" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg border border-border bg-card shadow-xl">
-                  <SelectItem value="recent">Most Recent</SelectItem>
-                  <SelectItem value="popular">Most Popular</SelectItem>
-                  <SelectItem value="team">Team A-Z</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
+        {!isLoading && tradeItems.length > 0 && (
+          <MarketplaceToolsBar
+            searchQuery={searchQuery}
+            onSearchQueryChange={setSearchQuery}
+            filterSize={filterSize}
+            onFilterSizeChange={setFilterSize}
+            sortBy={sortBy}
+            onSortByChange={setSortBy}
+          />
+        )}
 
         {loadError && (
           <div className="mb-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
@@ -122,10 +80,7 @@ export function MarketplacePage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center flex flex-col items-center gap-3">
-            <Spinner className="h-8 w-8 text-red-500" />
-            <p className="text-muted-foreground text-lg">Loading marketplace listings</p>
-          </div>
+          <LoadingScreen message="Loading marketplace listings" />
         )}
 
         {!isLoading && <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 md:gap-6">

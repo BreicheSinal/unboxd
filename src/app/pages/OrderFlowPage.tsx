@@ -792,7 +792,7 @@ export function OrderFlowPage() {
                   {isSubmitting ? (
                     <>
                       <Spinner className="h-4 w-4" />
-                      Processing
+                      <span className="loading-shimmer-text-light">Processing</span>
                     </>
                   ) : paymentProvider === "wish" ? (
                     "Proceed to Whish"

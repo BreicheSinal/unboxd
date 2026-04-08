@@ -1,14 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Filter, LayoutGrid, List, TrendingUp } from "lucide-react";
+import { LayoutGrid, TrendingUp } from "lucide-react";
 import { Link } from "react-router";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import { Spinner } from "../components/ui/spinner";
+import { LoadingScreen } from "../components/ui/loading-screen";
+import { ClosetToolsBar } from "../components/closet/ClosetToolsBar";
 import { useAppSelector } from "../store/hooks";
 import { subscribeCloset } from "../services/closetService";
 import type { ClosetItem } from "../types/domain";
@@ -88,60 +82,16 @@ export function ClosetPage() {
           <p className="text-muted-foreground">Your collection of {shirts.length} mystery shirts</p>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 md:p-6 mb-8">
-          <div className="flex flex-col gap-3 md:gap-4 md:flex-row md:items-center">
-            <div className="relative flex-1 w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search by team or league..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 w-full pl-10 pr-4 bg-accent rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5 text-muted-foreground" />
-              <Select
-                value={filterStatus}
-                onValueChange={(value) => setFilterStatus(value as typeof filterStatus)}
-              >
-                <SelectTrigger className="h-11 min-w-36 rounded-lg border border-border bg-card shadow-sm data-[state=open]:border-red-500 data-[state=open]:shadow-xl focus-visible:border-red-500 focus-visible:ring-0">
-                  <SelectValue placeholder="All Status" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg border border-border bg-card shadow-xl">
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="owned">Owned</SelectItem>
-                  <SelectItem value="trading">Trading</SelectItem>
-                  <SelectItem value="sold">Sold</SelectItem>
-                  <SelectItem value="duplicate">Duplicate</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex gap-2 bg-accent rounded-lg p-1 self-end md:self-auto">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`min-h-11 min-w-11 rounded ${
-                  viewMode === "grid" ? "bg-card shadow" : "hover:bg-card/50"
-                }`}
-                aria-label="Grid view"
-              >
-                <LayoutGrid className="mx-auto h-5 w-5" />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`min-h-11 min-w-11 rounded ${
-                  viewMode === "list" ? "bg-card shadow" : "hover:bg-card/50"
-                }`}
-                aria-label="List view"
-              >
-                <List className="mx-auto h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
+        {!isLoading && shirts.length > 0 && (
+          <ClosetToolsBar
+            searchQuery={searchQuery}
+            onSearchQueryChange={setSearchQuery}
+            filterStatus={filterStatus}
+            onFilterStatusChange={setFilterStatus}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
+        )}
 
         {loadError && (
           <div className="mb-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
@@ -150,10 +100,7 @@ export function ClosetPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center flex flex-col items-center gap-3">
-            <Spinner className="h-8 w-8 text-red-500" />
-            <p className="text-muted-foreground text-lg">Loading your closet</p>
-          </div>
+          <LoadingScreen message="Loading your closet" />
         )}
 
         {!isLoading && viewMode === "grid" && (

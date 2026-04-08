@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Calendar, DollarSign, ArrowUpDown, Package, TrendingUp, Download } from "lucide-react";
 import { useAsyncEffect } from "../hooks/useAsyncEffect";
-import { Spinner } from "../components/ui/spinner";
+import { LoadingScreen } from "../components/ui/loading-screen";
 import { useAppSelector } from "../store/hooks";
 import { getTransactionsForUser } from "../services/transactionService";
 import type { TransactionRecord } from "../types/domain";
@@ -213,10 +213,7 @@ export function TransactionHistoryPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center flex flex-col items-center gap-3">
-            <Spinner className="h-8 w-8 text-red-500" />
-            <p className="text-muted-foreground text-lg">Loading transactions</p>
-          </div>
+          <LoadingScreen message="Loading transactions" />
         )}
 
         {!isLoading && <div className="space-y-4">

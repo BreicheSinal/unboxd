@@ -8,6 +8,7 @@ import { getListingById } from "../services/marketplaceService";
 import { createTradeOffer } from "../services/tradeService";
 import { subscribeCloset } from "../services/closetService";
 import { mapFirebaseError } from "../services/errorService";
+import { LoadingScreen } from "../components/ui/loading-screen";
 import { Spinner } from "../components/ui/spinner";
 
 export function TradeFlowPage() {
@@ -109,10 +110,7 @@ export function TradeFlowPage() {
     return (
       <div className="min-h-screen py-8 md:py-12">
         <div className="container mx-auto px-4 max-w-4xl">
-          <div className="py-20 text-center flex flex-col items-center gap-3">
-            <Spinner className="h-8 w-8 text-red-500" />
-            <p className="text-muted-foreground text-lg">Loading listing</p>
-          </div>
+          <LoadingScreen message="Loading listing" />
         </div>
       </div>
     );
@@ -282,7 +280,7 @@ export function TradeFlowPage() {
           {isSubmitting ? (
             <>
               <Spinner className="h-4 w-4" />
-              Submitting
+              <span className="loading-shimmer-text-light">Submitting</span>
             </>
           ) : (
             "Submit Trade Offer"

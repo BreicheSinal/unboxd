@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Award, Lock, Sparkles } from "lucide-react";
 import { useAsyncEffect } from "../hooks/useAsyncEffect";
-import { Spinner } from "../components/ui/spinner";
+import { LoadingScreen } from "../components/ui/loading-screen";
 import { getUserBadges, type UserBadge } from "../services/badgeService";
 import { useAppSelector } from "../store/hooks";
 
@@ -63,10 +63,7 @@ export function BadgesPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center flex flex-col items-center gap-3">
-            <Spinner className="h-8 w-8 text-red-500" />
-            <p className="text-muted-foreground text-lg">Loading badges</p>
-          </div>
+          <LoadingScreen message="Loading badges" />
         )}
 
         {!isLoading && badges.length === 0 && (
