@@ -1,13 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  browserLocalPersistence,
-  browserSessionPersistence,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
-  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signInWithRedirect,
   signOut,
   updateProfile,
 } from "firebase/auth";
@@ -49,26 +45,9 @@ function getFirebaseAuth() {
   return auth;
 }
 
-async function applyAuthPersistence(rememberMe: boolean) {
-  const firebaseAuth = getFirebaseAuth();
-  await setPersistence(
-    firebaseAuth,
-    rememberMe ? browserLocalPersistence : browserSessionPersistence,
-  );
-}
-
 export const signInWithEmail = createAsyncThunk(
   "auth/signInWithEmail",
-  async ({
-    email,
-    password,
-    rememberMe = true,
-  }: {
-    email: string;
-    password: string;
-    rememberMe?: boolean;
-  }) => {
-    await applyAuthPersistence(rememberMe);
+  async ({ email, password }: { email: string; password: string }) => {
     const firebaseAuth = getFirebaseAuth();
     const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
     await upsertUserProfile(credential.user);
@@ -80,7 +59,6 @@ export const signUpWithEmail = createAsyncThunk(
   async ({ email, password, name }: { email: string; password: string; name: string }) => {
     const firebaseAuth = getFirebaseAuth();
     const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-
     if (name.trim()) {
       await updateProfile(credential.user, { displayName: name.trim() });
     }
@@ -90,12 +68,12 @@ export const signUpWithEmail = createAsyncThunk(
 
 export const signInWithGoogle = createAsyncThunk(
   "auth/signInWithGoogle",
-  async (rememberMe: boolean = true) => {
-    // Keep popup open call in user-gesture path for iOS Safari compatibility.
-    await applyAuthPersistence(rememberMe);
+  async () => {
     const firebaseAuth = getFirebaseAuth();
-
     try {
+      // signInWithPopup must be the first async call in the thunk — any await
+      // before it breaks iOS Safari's user-gesture context and causes the popup
+      // to be blocked by the browser.
       const credential = await signInWithPopup(firebaseAuth, googleProvider);
       await upsertUserProfile(credential.user);
     } catch (error: unknown) {
@@ -104,8 +82,15 @@ export const signInWithGoogle = createAsyncThunk(
         code === "auth/popup-blocked" ||
         code === "auth/operation-not-supported-in-this-environment"
       ) {
-        await signInWithRedirect(firebaseAuth, googleProvider);
-        return;
+        // signInWithRedirect is unreliable on iOS Safari: ITP clears IndexedDB
+        // during cross-origin navigation, so the sign-in silently fails on return.
+        // Surface a clear message so the user knows what to do.
+        throw Object.assign(
+          new Error(
+            "Popups are blocked by your browser. Please allow popups for this site to sign in with Google, or use email/password instead.",
+          ),
+          { code: "auth/popup-blocked-ios" },
+        );
       }
       throw error;
     }
@@ -199,5 +184,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { authBootstrapCompleted, setAuthenticatedUser, clearAuthenticatedUser } = authSlice.actions;
+export const { authBootstrapCompleted, setAuthenticatedUser, clearAuthenticatedUser } =
+  authSlice.actions;
 export default authSlice.reducer;
