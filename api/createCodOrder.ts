@@ -1,5 +1,6 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "./_lib/firebaseAdmin.js";
+import { deriveOrderTransactionStatus } from "./_lib/orderTransactions.js";
 import {
   ApiError,
   createIdempotencyDocId,
@@ -68,17 +69,20 @@ export default async function handler(req: any, res: any) {
       });
 
       const orderRef = adminDb.collection("orders").doc();
+      const orderStatus = "placed";
+      const paymentState = "pending_collection";
+      const reconciliationStatus = "n/a";
       tx.create(orderRef, {
         buyerUid: uid,
         provider: "cod",
-        status: "placed",
+        status: orderStatus,
         amount: 34.98,
         currency: "USD",
         size,
         exclusions,
         billing,
-        paymentState: "pending_collection",
-        reconciliationStatus: "n/a",
+        paymentState,
+        reconciliationStatus,
         createdAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       });
@@ -89,9 +93,13 @@ export default async function handler(req: any, res: any) {
         buyerUid: uid,
         amount: 34.98,
         currency: "USD",
-        status: "pending",
+        status: deriveOrderTransactionStatus({ status: orderStatus, paymentState, reconciliationStatus }),
+        orderStatus,
+        paymentState,
+        reconciliationStatus,
         orderId: orderRef.id,
         createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
 
       const output = { orderId: orderRef.id, status: "placed" };
