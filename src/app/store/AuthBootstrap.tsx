@@ -1,4 +1,4 @@
-﻿import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { User, getRedirectResult, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { upsertUserProfile } from "../services/userService";
@@ -10,13 +10,15 @@ import {
   setAuthenticatedUser,
 } from "./authSlice";
 
-function fallbackProfileFromFirebaseUser(firebaseUser: User): UserProfile {
+function profileFromFirebaseUser(firebaseUser: User): UserProfile {
   return {
     uid: firebaseUser.uid,
     email: firebaseUser.email ?? "",
-    displayName: firebaseUser.displayName ?? (firebaseUser.email?.split("@")[0] ?? "User"),
+    displayName:
+      firebaseUser.displayName ?? (firebaseUser.email?.split("@")[0] ?? "User"),
     photoURL: firebaseUser.photoURL ?? undefined,
-    provider: firebaseUser.providerData[0]?.providerId === "google.com" ? "google" : "email",
+    provider:
+      firebaseUser.providerData[0]?.providerId === "google.com" ? "google" : "email",
     role: "user",
     favoriteLeagues: [],
     sizePreferences: [],
@@ -33,38 +35,37 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Process any pending redirect result before handling auth state.
-    // On iOS, signInWithRedirect stores a pending credential that must be
-    // consumed via getRedirectResult, otherwise onAuthStateChanged fires
-    // null first and the app incorrectly lands back on the sign-in page.
+    // Consume any pending redirect result first. We no longer use
+    // signInWithRedirect, but call this as a safety net for any session that
+    // was initiated before this version was deployed.
     const redirectPromise = getRedirectResult(auth).catch((err) => {
       console.error("getRedirectResult failed:", err);
       return null;
     });
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      try {
-        if (!firebaseUser) {
-          // Wait for any pending redirect to resolve before clearing auth.
-          // If the redirect signs the user in, onAuthStateChanged will fire
-          // again with the user; otherwise we clear as normal.
-          await redirectPromise;
-          if (!auth.currentUser) {
-            dispatch(clearAuthenticatedUser());
-          }
-          return;
+      if (!firebaseUser) {
+        // Wait for a potential redirect result before declaring the user
+        // signed out — avoids a flash to the sign-in page on redirect return.
+        await redirectPromise;
+        if (!auth.currentUser) {
+          dispatch(clearAuthenticatedUser());
         }
+        return;
+      }
 
+      // Immediately admit the user with Firebase Auth data so the app is
+      // accessible without blocking on Firestore round-trips. Critical on iOS
+      // where network latency or App Check can make Firestore slow to respond.
+      dispatch(setAuthenticatedUser(profileFromFirebaseUser(firebaseUser)));
+
+      // Enrich with full Firestore profile in the background.
+      try {
         const profile = await upsertUserProfile(firebaseUser);
         dispatch(setAuthenticatedUser(profile));
       } catch (error) {
-        console.error("Firestore user bootstrap failed:", error);
-        if (firebaseUser) {
-          // Keep user signed in even if Firestore profile bootstrap fails.
-          dispatch(setAuthenticatedUser(fallbackProfileFromFirebaseUser(firebaseUser)));
-          return;
-        }
-        dispatch(clearAuthenticatedUser());
+        console.error("Firestore profile sync failed:", error);
+        // User is already signed in with the fallback profile above; no action needed.
       }
     });
 
