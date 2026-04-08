@@ -14,6 +14,12 @@ export function mapFirebaseError(error: unknown): string {
       return "Invalid email or password.";
     case "auth/email-already-in-use":
       return "This email is already registered.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/missing-email":
+      return "Please enter your email address.";
+    case "auth/too-many-requests":
+      return "Too many attempts. Please wait a bit and try again.";
     case "auth/popup-closed-by-user":
       return "Sign-in popup was closed before completion.";
     case "auth/popup-blocked":
