@@ -208,8 +208,12 @@ export function DashboardPage() {
                 <div className="bg-card border border-border rounded-xl p-5 md:p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl md:text-2xl font-bold">Recent Orders</h2>
-                    <Link to="/transactions" className="text-sm text-red-500 hover:underline">
-                      View All
+                    <Link
+                      to="/transactions"
+                      className="group inline-flex items-center gap-1 text-sm text-red-500 hover:underline"
+                    >
+                      <span>View All</span>
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
 
@@ -250,8 +254,12 @@ export function DashboardPage() {
                 <div className="bg-card border border-border rounded-xl p-5 md:p-6">
                   <div className="mb-6 flex items-center justify-between">
                     <h2 className="text-xl md:text-2xl font-bold">Your Badges</h2>
-                    <Link to="/badges" className="text-sm text-red-500 hover:underline">
-                      View All
+                    <Link
+                      to="/badges"
+                      className="group inline-flex items-center gap-1 text-sm text-red-500 hover:underline"
+                    >
+                      <span>View All</span>
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
 
@@ -285,8 +293,9 @@ export function DashboardPage() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 mt-8">
               <Link
                 to="/order"
-                className="bg-gradient-to-br from-rose-500 to-red-700 text-white rounded-xl p-5 md:p-6 hover:shadow-xl transition-shadow group"
+                className="group relative cursor-pointer overflow-hidden rounded-xl bg-gradient-to-br from-rose-500 to-red-700 p-5 text-white ring-1 ring-transparent transition-all hover:-translate-y-0.5 hover:shadow-xl hover:ring-white/30 md:p-6"
               >
+                <ArrowRight className="absolute right-4 top-4 h-5 w-5 text-white/80 transition-transform group-hover:translate-x-1" />
                 <ShoppingBag className="h-8 w-8 mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="text-xl font-bold mb-1">Order Again</h3>
                 <p className="text-sm opacity-90">Get another mystery shirt</p>
@@ -294,8 +303,9 @@ export function DashboardPage() {
 
               <Link
                 to="/closet"
-                className="bg-card border border-border rounded-xl p-5 md:p-6 hover:shadow-lg transition-shadow group"
+                className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card p-5 ring-1 ring-transparent transition-all hover:-translate-y-0.5 hover:border-red-500/40 hover:shadow-lg hover:ring-red-500/20 md:p-6"
               >
+                <ArrowRight className="absolute right-4 top-4 h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-red-500" />
                 <Package className="h-8 w-8 mb-3 text-zinc-400 group-hover:scale-110 transition-transform" />
                 <h3 className="text-xl font-bold mb-1">My Closet</h3>
                 <p className="text-sm text-muted-foreground">View your collection</p>
@@ -303,8 +313,9 @@ export function DashboardPage() {
 
               <Link
                 to="/marketplace"
-                className="bg-card border border-border rounded-xl p-5 md:p-6 hover:shadow-lg transition-shadow group"
+                className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card p-5 ring-1 ring-transparent transition-all hover:-translate-y-0.5 hover:border-red-500/40 hover:shadow-lg hover:ring-red-500/20 md:p-6"
               >
+                <ArrowRight className="absolute right-4 top-4 h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-red-500" />
                 <TrendingUp className="h-8 w-8 mb-3 text-green-500 group-hover:scale-110 transition-transform" />
                 <h3 className="text-xl font-bold mb-1">Marketplace</h3>
                 <p className="text-sm text-muted-foreground">Trade your shirts</p>

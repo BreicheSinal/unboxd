@@ -218,7 +218,7 @@ export function SignUpPage() {
                   >
                     {isLoading ? (
                       <>
-                        <Spinner className="h-4 w-4" />
+                        <Spinner className="h-4 w-4" tone="black" />
                         <span className="loading-shimmer-text-light">Creating account</span>
                       </>
                     ) : (

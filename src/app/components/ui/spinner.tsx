@@ -1,23 +1,20 @@
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { cn } from "./utils";
 
 interface SpinnerProps {
   className?: string;
+  tone?: "white" | "black";
 }
 
-export function Spinner({ className }: SpinnerProps) {
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+export function Spinner({ className, tone = "white" }: SpinnerProps) {
   const spinnerIconSrc =
-    mounted && resolvedTheme === "dark" ? "/assets/icons/ICON_WHITE.svg" : "/assets/icons/ICON_BLACK.svg";
+    tone === "black" ? "/assets/icons/ICON_BLACK.svg" : "/assets/icons/ICON_WHITE.svg";
 
   return (
-    <img src={spinnerIconSrc} alt="" aria-hidden="true" className={cn("h-4 w-4 animate-spin", className)} />
+    <img
+      src={spinnerIconSrc}
+      alt=""
+      aria-hidden="true"
+      className={cn("h-4 w-4 animate-spin", className)}
+    />
   );
 }
