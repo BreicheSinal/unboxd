@@ -8,7 +8,12 @@ import { AuthBootstrap } from "./store/AuthBootstrap";
 export default function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        forcedTheme="dark"
+        enableSystem={false}
+      >
         <AuthBootstrap>
           <RouterProvider router={router} />
         </AuthBootstrap>

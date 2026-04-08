@@ -1,7 +1,5 @@
-import { Outlet, Link, useLocation } from "react-router";
+﻿import { Outlet, Link, useLocation } from "react-router";
 import {
-  Moon,
-  Sun,
   Menu,
   X,
   Home,
@@ -22,7 +20,7 @@ import { signOutUser } from "../store/authSlice";
 import { useScrollToTopOnChange } from "../hooks/useScrollToTopOnChange";
 
 export function Layout() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -89,6 +87,10 @@ export function Layout() {
       location.pathname === href || location.pathname.startsWith(`${href}/`)
     );
   };
+  const logoSrc =
+    mounted && resolvedTheme === "dark"
+      ? "/assets/logos/WHITE_LOGO.svg"
+      : "/assets/logos/BLACK_LOGO.svg";
 
   return (
     <div
@@ -101,10 +103,11 @@ export function Layout() {
             <div className="flex h-16 items-center justify-between">
               {/* Logo */}
               <Link to="/" className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-rose-500 to-red-700">
-                  <span className="text-xl font-bold text-white">UB</span>
-                </div>
-                <span className="text-xl font-bold">Unboxd</span>
+                <img
+                  src={logoSrc}
+                  alt="Unboxd"
+                  className="h-[1.625rem] w-auto"
+                />
               </Link>
 
               {/* Desktop Navigation */}
@@ -162,8 +165,8 @@ export function Layout() {
                         <div className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-lg shadow-xl py-2">
                           <div className="px-4 py-3 border-b border-border">
                             <div className="font-bold">{user.displayName}</div>
-                            <div className="mt-1 flex items-center justify-between gap-2">
-                              <div className="text-sm text-muted-foreground">
+                            <div className="mt-1 flex min-w-0 items-center gap-2">
+                              <div className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
                                 {user.email}
                               </div>
                               {user.provider === "google" && (
@@ -203,24 +206,6 @@ export function Layout() {
                             <LogOut className="h-4 w-4" />
                             <span>Sign Out</span>
                           </button>
-                          <div className="my-2 border-t border-border"></div>
-                          {mounted && (
-                            <button
-                              onClick={() =>
-                                setTheme(theme === "dark" ? "light" : "dark")
-                              }
-                              className="w-full flex items-center gap-3 px-4 py-2 hover:bg-accent transition-colors"
-                            >
-                              {theme === "dark" ? (
-                                <Sun className="h-4 w-4" />
-                              ) : (
-                                <Moon className="h-4 w-4" />
-                              )}
-                              <span>
-                                {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                              </span>
-                            </button>
-                          )}
                         </div>
                       )}
                     </div>
@@ -240,23 +225,6 @@ export function Layout() {
                       Sign Up
                     </Link>
                   </div>
-                )}
-
-                {/* Theme Toggle (logged-out only) */}
-                {mounted && !user && (
-                  <button
-                    onClick={() =>
-                      setTheme(theme === "dark" ? "light" : "dark")
-                    }
-                    className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 hover:bg-accent transition-colors"
-                    aria-label="Toggle theme"
-                  >
-                    {theme === "dark" ? (
-                      <Sun className="h-5 w-5" />
-                    ) : (
-                      <Moon className="h-5 w-5" />
-                    )}
-                  </button>
                 )}
 
                 {/* Mobile menu button */}
@@ -308,8 +276,8 @@ export function Layout() {
                     <div className="border-t border-border my-2"></div>
                     <div className="px-4 py-2">
                       <div className="font-bold">{user.displayName}</div>
-                      <div className="mt-1 flex items-center justify-between gap-2">
-                        <div className="text-sm text-muted-foreground">
+                      <div className="mt-1 flex min-w-0 items-center gap-2">
+                        <div className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
                           {user.email}
                         </div>
                         {user.provider === "google" && (
@@ -349,24 +317,6 @@ export function Layout() {
                       <LogOut className="h-5 w-5" />
                       <span>Sign Out</span>
                     </button>
-                    <div className="border-t border-border my-2"></div>
-                    {mounted && (
-                      <button
-                        onClick={() =>
-                          setTheme(theme === "dark" ? "light" : "dark")
-                        }
-                        className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
-                      >
-                        {theme === "dark" ? (
-                          <Sun className="h-5 w-5" />
-                        ) : (
-                          <Moon className="h-5 w-5" />
-                        )}
-                        <span>
-                          {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                        </span>
-                      </button>
-                    )}
                   </>
                 ) : (
                   <>
@@ -408,7 +358,7 @@ export function Layout() {
           <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div>
-                <h4 className="font-bold mb-4">Unboxd</h4>
+                <img src={logoSrc} alt="Unboxd" className="h-6 w-auto mb-4" />
                 <p className="text-sm text-muted-foreground">
                   Discover the thrill of mystery sports shirts. Every order is a
                   surprise!
@@ -498,7 +448,19 @@ export function Layout() {
               </div>
             </div>
             <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-              © 2026 Unboxd. All rights reserved.
+              &copy; 2026 Unboxd. All rights reserved.
+              <span className="mx-2" aria-hidden="true">
+                &bull;
+              </span>
+              Developed by{" "}
+              <a
+                href="https://invixlab.com"
+                target="_blank"
+                rel="noreferrer"
+                className="text-red-500 hover:text-red-400"
+              >
+                InvixLab
+              </a>
             </div>
           </div>
         </footer>
@@ -506,3 +468,5 @@ export function Layout() {
     </div>
   );
 }
+
+
