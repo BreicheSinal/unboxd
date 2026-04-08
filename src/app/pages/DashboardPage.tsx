@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
-import { Package, TrendingUp, Award, ShoppingBag } from "lucide-react";
+import { Package, TrendingUp, Award, ShoppingBag, ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 import { useAsyncEffect } from "../hooks/useAsyncEffect";
-import { Spinner } from "../components/ui/spinner";
+import { LoadingScreen } from "../components/ui/loading-screen";
 import { useAppSelector } from "../store/hooks";
 import { getDashboardSummary } from "../services/dashboardService";
 import { getTransactionsForUser } from "../services/transactionService";
@@ -142,14 +142,47 @@ export function DashboardPage() {
         )}
 
         {isLoading && (
-          <div className="py-20 text-center flex flex-col items-center gap-3">
-            <Spinner className="h-8 w-8 text-red-500" />
-            <p className="text-muted-foreground text-lg">Loading dashboard</p>
-          </div>
+          <LoadingScreen message="Loading dashboard" />
         )}
 
         {!isLoading && (
           <>
+            <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+              <Link
+                to="/#how-it-works"
+                className="group rounded-xl border border-border bg-card p-5 transition-all hover:border-red-500/40 hover:bg-red-500/5 hover:shadow-lg md:p-6"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-lg font-bold">How It Works</h3>
+                  <ArrowRight className="h-4 w-4 text-red-500 transition-transform group-hover:translate-x-1" />
+                </div>
+                <p className="text-sm text-muted-foreground">Review the 3-step order flow.</p>
+                <p className="mt-3 text-xs font-semibold text-red-500">Open section</p>
+              </Link>
+              <Link
+                to="/#you-might-get"
+                className="group rounded-xl border border-border bg-card p-5 transition-all hover:border-red-500/40 hover:bg-red-500/5 hover:shadow-lg md:p-6"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-lg font-bold">You Might Get</h3>
+                  <ArrowRight className="h-4 w-4 text-red-500 transition-transform group-hover:translate-x-1" />
+                </div>
+                <p className="text-sm text-muted-foreground">Preview example shirts in the collection.</p>
+                <p className="mt-3 text-xs font-semibold text-red-500">Open section</p>
+              </Link>
+              <Link
+                to="/#what-customers-say"
+                className="group rounded-xl border border-border bg-card p-5 transition-all hover:border-red-500/40 hover:bg-red-500/5 hover:shadow-lg md:p-6"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-lg font-bold">What Customers Say</h3>
+                  <ArrowRight className="h-4 w-4 text-red-500 transition-transform group-hover:translate-x-1" />
+                </div>
+                <p className="text-sm text-muted-foreground">See testimonials from other collectors.</p>
+                <p className="mt-3 text-xs font-semibold text-red-500">Open section</p>
+              </Link>
+            </div>
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 md:gap-6 mb-8">
               {stats.map((stat) => {
                 const Icon = stat.icon;

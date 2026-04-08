@@ -2,9 +2,8 @@
 import {
   Menu,
   X,
-  Home,
+  LayoutDashboard,
   ShoppingBag,
-  User,
   Grid3x3,
   Store,
   History,
@@ -69,7 +68,7 @@ export function Layout() {
   }, [userMenuOpen]);
 
   const navigation = [
-    { name: "Home", href: "/", icon: Home, protected: false },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, protected: true },
     { name: "Order", href: "/order", icon: ShoppingBag, protected: true },
     { name: "Marketplace", href: "/marketplace", icon: Store, protected: true },
     { name: "Closet", href: "/closet", icon: Grid3x3, protected: true },
@@ -99,10 +98,10 @@ export function Layout() {
       {/* Header */}
       {!isAuthPage && (
         <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
-          <div className="container mx-auto px-4">
+          <div className="w-full px-4 md:px-6">
             <div className="flex h-16 items-center justify-between">
               {/* Logo */}
-              <Link to="/" className="flex items-center gap-2">
+              <Link to="/" className="flex shrink-0 items-center gap-2 md:mr-5 lg:mr-8">
                 <img
                   src={logoSrc}
                   alt="Unboxd"
@@ -111,12 +110,10 @@ export function Layout() {
               </Link>
 
               {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center gap-6">
+              <nav className="hidden md:mx-4 md:flex md:flex-1 md:items-center md:justify-center md:gap-3 lg:mx-8 lg:gap-6">
                 {navigation.map((item) => {
                   // Only show protected routes if user is logged in
                   if (item.protected && !user) return null;
-                  // Hide Home tab when logged out (route remains public)
-                  if (item.name === "Home" && !user) return null;
 
                   const Icon = item.icon;
                   const isActive = isRouteActive(item.href);
@@ -124,7 +121,7 @@ export function Layout() {
                     <Link
                       key={item.name}
                       to={item.href}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                      className={`flex items-center gap-2 rounded-lg px-2 py-2 text-sm transition-colors lg:px-3 lg:text-base ${
                         isActive
                           ? "bg-accent text-accent-foreground"
                           : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
@@ -138,7 +135,7 @@ export function Layout() {
               </nav>
 
               {/* Right side actions */}
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2 md:ml-5 lg:ml-8">
                 {user ? (
                   <>
                     {/* User Menu */}
@@ -174,14 +171,6 @@ export function Layout() {
                               )}
                             </div>
                           </div>
-                          <Link
-                            to="/dashboard"
-                            onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2 hover:bg-accent transition-colors"
-                          >
-                            <User className="h-4 w-4" />
-                            <span>Dashboard</span>
-                          </Link>
                           <Link
                             to="/badges"
                             onClick={() => setUserMenuOpen(false)}
@@ -245,12 +234,10 @@ export function Layout() {
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-border">
-              <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
+              <nav className="w-full px-4 md:px-6 py-4 flex flex-col gap-2">
                 {navigation.map((item) => {
                   // Only show protected routes if user is logged in
                   if (item.protected && !user) return null;
-                  // Hide Home tab when logged out (route remains public)
-                  if (item.name === "Home" && !user) return null;
 
                   const Icon = item.icon;
                   const isActive = isRouteActive(item.href);
@@ -285,14 +272,6 @@ export function Layout() {
                         )}
                       </div>
                     </div>
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
-                    >
-                      <User className="h-5 w-5" />
-                      <span>Dashboard</span>
-                    </Link>
                     <Link
                       to="/badges"
                       onClick={() => setMobileMenuOpen(false)}

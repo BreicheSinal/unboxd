@@ -152,6 +152,7 @@ export function HomePage() {
 
       {/* Preview Section */}
       <motion.section
+        id="you-might-get"
         className="py-20"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -199,6 +200,7 @@ export function HomePage() {
 
       {/* Testimonials */}
       <motion.section
+        id="what-customers-say"
         className="py-20 bg-accent/30"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
