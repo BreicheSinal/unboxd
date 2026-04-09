@@ -28,12 +28,12 @@ export function AdminPageHeader({
   const actionControlClass = "h-8 min-w-[110px] justify-center";
 
   return (
-    <header className="flex flex-wrap items-start justify-between gap-3">
+    <header className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
       <div>
         <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
         {typeof count === "number" ? (
           <Badge variant="outline" className={cn("px-2.5 text-xs", actionControlClass)}>
             {count} {countLabel}
@@ -97,11 +97,11 @@ export function AdminSearch({ value, onChange, placeholder, total, totalLabel = 
   };
 
   return (
-    <div className="mt-4 ml-auto flex items-center justify-end gap-2">
+    <div className="mt-4 flex w-full flex-wrap items-center justify-end gap-2 sm:ml-auto sm:w-auto">
       <div
         className={cn(
-          "relative origin-right overflow-hidden transition-[width] duration-200 ease-out",
-          isExpanded || hasValue ? "w-80" : "w-36",
+          "relative w-full origin-right overflow-hidden transition-[width] duration-200 ease-out sm:max-w-[20rem]",
+          isExpanded || hasValue ? "sm:w-80" : "sm:w-36",
         )}
       >
         <Search className="pointer-events-none absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

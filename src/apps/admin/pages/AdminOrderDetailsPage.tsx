@@ -435,22 +435,22 @@ export function AdminOrderDetailsPage() {
           </div>
 
           <div className="overflow-x-auto rounded-xl border border-border bg-card">
-            <table className="min-w-full text-sm">
+            <table className="w-full min-w-[640px] text-sm">
               <tbody>
                 <tr className="border-b border-border">
-                  <th className="w-56 bg-accent/20 px-3 py-2 text-left text-muted-foreground">Order ID</th>
-                  <td className="px-3 py-2 font-mono text-xs">{order.id}</td>
+                  <th className="w-40 bg-accent/20 px-3 py-2 text-left text-muted-foreground sm:w-56">Order ID</th>
+                  <td className="px-3 py-2 font-mono text-xs break-all">{order.id}</td>
                 </tr>
                 <tr className="border-b border-border">
                   <th className="bg-accent/20 px-3 py-2 text-left text-muted-foreground">Buyer</th>
                   <td className="px-3 py-2">
                     <p>{order.buyerName ?? "-"}</p>
-                    <p className="font-mono text-xs text-muted-foreground">{order.buyerUid}</p>
+                    <p className="font-mono text-xs text-muted-foreground break-all">{order.buyerUid}</p>
                   </td>
                 </tr>
                 <tr className="border-b border-border">
                   <th className="bg-accent/20 px-3 py-2 text-left text-muted-foreground">Buyer Email</th>
-                  <td className="px-3 py-2">{order.buyerEmail ?? "-"}</td>
+                  <td className="px-3 py-2 break-all">{order.buyerEmail ?? "-"}</td>
                 </tr>
                 <tr className="border-b border-border">
                   <th className="bg-accent/20 px-3 py-2 text-left text-muted-foreground">Provider</th>
@@ -547,20 +547,20 @@ export function AdminOrderDetailsPage() {
                 className="py-10"
               />
             ) : (
-              <table className="min-w-full text-sm">
+              <table className="w-full min-w-[760px] text-sm">
                 <thead className="bg-accent/30 text-left text-muted-foreground">
                   <tr>
                     <th className="px-3 py-2">Transaction</th>
                     <th className="px-3 py-2">Type</th>
                     <th className="px-3 py-2">Status</th>
                     <th className="px-3 py-2">Amount</th>
-                    <th className="px-3 py-2">Created</th>
+                    <th className="hidden px-3 py-2 md:table-cell">Created</th>
                   </tr>
                 </thead>
                 <tbody>
                   {transactions.map((tx) => (
                     <tr key={tx.id} className="border-t border-border">
-                      <td className="px-3 py-2 font-mono text-xs">{tx.id}</td>
+                      <td className="max-w-[220px] px-3 py-2 font-mono text-xs break-all">{tx.id}</td>
                       <td className="px-3 py-2">{tx.type || "-"}</td>
                       <td className="px-3 py-2">
                         <AdminStatusBadge value={tx.status} />
@@ -568,7 +568,7 @@ export function AdminOrderDetailsPage() {
                       <td className="px-3 py-2">
                         {tx.amount} {tx.currency}
                       </td>
-                      <td className="px-3 py-2 text-xs text-muted-foreground">{formatDateTime(tx.createdAt)}</td>
+                      <td className="hidden px-3 py-2 text-xs text-muted-foreground md:table-cell">{formatDateTime(tx.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>

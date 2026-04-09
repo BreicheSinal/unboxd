@@ -71,12 +71,12 @@ export function AdminLayout() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-        <div className="mx-auto flex h-20 w-full max-w-[1600px] items-center justify-between px-4 lg:px-6">
+        <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center justify-between px-4 sm:h-20 lg:px-6">
           <div className="flex items-center gap-3">
             <img src="/assets/icons/ICON_WHITE.svg" alt="Unboxd Admin" className="h-7 w-7" />
             <div>
               <p className="text-sm text-muted-foreground">Unboxd</p>
-              <h1 className="text-base font-semibold">Admin Dashboard</h1>
+              <h1 className="text-sm font-semibold sm:text-base">Admin Dashboard</h1>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -130,15 +130,15 @@ export function AdminLayout() {
         </div>
       </header>
 
-      <div className="mx-auto grid w-full max-w-[1600px] items-start gap-6 px-4 py-6 lg:grid-cols-[16rem_minmax(0,1fr)] lg:px-6">
-        <aside className="h-fit self-start rounded-xl border border-border bg-card p-3 lg:w-64 lg:min-w-64 lg:max-w-64">
+      <div className="mx-auto grid w-full max-w-[1600px] items-start gap-4 px-4 py-4 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-6 lg:px-6 lg:py-6">
+        <aside className="h-fit w-full self-start rounded-xl border border-border bg-card p-3 lg:w-64 lg:min-w-64 lg:max-w-64">
           <div className="mb-3 hidden items-center gap-2 px-2 lg:flex">
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Navigation</p>
           </div>
           <div className="mb-3 hidden px-2 lg:block">
             <div className="h-px w-full bg-border" />
           </div>
-          <nav className="flex gap-2 overflow-x-auto pb-1 lg:block lg:space-y-1 lg:overflow-visible lg:pb-0">
+          <nav className="flex gap-2 overflow-x-auto pb-1 max-[750px]:snap-x max-[750px]:snap-mandatory max-[750px]:scroll-px-1 max-[750px]:[-ms-overflow-style:none] max-[750px]:[scrollbar-width:none] max-[750px]:[&::-webkit-scrollbar]:hidden lg:block lg:space-y-1 lg:overflow-visible lg:pb-0">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = item.to === "/" ? location.pathname === "/" : location.pathname.startsWith(item.to);
@@ -146,7 +146,7 @@ export function AdminLayout() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`flex min-w-fit items-center gap-2 rounded-lg px-3 py-2 text-sm ${
+                  className={`flex min-w-fit items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm max-[750px]:min-w-[120px] max-[750px]:shrink-0 max-[750px]:snap-start ${
                     isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent/50"
                   }`}
                 >

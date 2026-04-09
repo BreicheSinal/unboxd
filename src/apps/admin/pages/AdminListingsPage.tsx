@@ -70,65 +70,119 @@ export function AdminListingsPage() {
           />
         </div>
       ) : (
-        <div className="mt-5 overflow-x-auto rounded-xl border border-border bg-card">
-          <table className="min-w-full text-sm">
-            <thead className="bg-accent/30 text-left text-muted-foreground">
-              <tr>
-                <th className="px-3 py-2">Listing</th>
-                <th className="px-3 py-2">Owner</th>
-                <th className="px-3 py-2">Team</th>
-                <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2">Created</th>
-                <th className="px-3 py-2" aria-label="Actions" />
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading && listings.length === 0 && <AdminTableLoadingRow colSpan={6} label="Loading listings..." />}
-              {filteredListings.map((listing) => (
-                <tr key={listing.id} className="border-t border-border">
-                <td className="px-3 py-2 font-mono text-xs">{listing.id}</td>
-                <td className="px-3 py-2 font-mono text-xs">{listing.ownerUid}</td>
-                <td className="px-3 py-2">{String((listing.shirtSnapshot.team as string) ?? "-")}</td>
-                <td className="px-3 py-2">
+        <div className="mt-5">
+          <div className="space-y-3 md:hidden">
+            {isLoading && listings.length === 0 ? (
+              <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">Loading listings...</div>
+            ) : null}
+            {filteredListings.map((listing) => (
+              <article key={listing.id} className="rounded-xl border border-border bg-card p-4">
+                <p className="font-mono text-xs text-muted-foreground break-all">{listing.id}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
                   <AdminStatusBadge value={listing.status} />
-                </td>
-                <td className="px-3 py-2 text-xs text-muted-foreground">{formatDateTime(listing.createdAt)}</td>
-                <td className="px-3 py-2">
-                  <div className="flex gap-2">
-                    {listing.status === "pending_approval" ? (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-green-500/40 text-green-300 hover:bg-green-500/10 hover:text-green-200"
-                          disabled={isUpdating}
-                          onClick={() => void handleModeration(listing.id, "approve")}
-                        >
-                          {pendingActionKey === `${listing.id}:approve` ? <Spinner className="h-4 w-4" /> : null}
-                          Approve
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-red-500/40 text-red-300 hover:bg-red-500/10 hover:text-red-200"
-                          disabled={isUpdating}
-                          onClick={() => void handleModeration(listing.id, "reject")}
-                        >
-                          {pendingActionKey === `${listing.id}:reject` ? <Spinner className="h-4 w-4" /> : null}
-                          Reject
-                        </Button>
-                      </>
-                    ) : (
-                      <Badge variant="outline" className="text-xs text-muted-foreground">
-                        No moderation action
-                      </Badge>
-                    )}
+                </div>
+                <div className="mt-3 grid gap-2 text-sm">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Owner</p>
+                    <p className="font-mono text-xs break-all">{listing.ownerUid}</p>
                   </div>
-                </td>
-              </tr>
-              ))}
-            </tbody>
-          </table>
+                  <p>Team: {String((listing.shirtSnapshot.team as string) ?? "-")}</p>
+                  <p className="text-xs text-muted-foreground">Created: {formatDateTime(listing.createdAt)}</p>
+                </div>
+                <div className="mt-3 flex gap-2">
+                  {listing.status === "pending_approval" ? (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 border-green-500/40 text-green-300 hover:bg-green-500/10 hover:text-green-200"
+                        disabled={isUpdating}
+                        onClick={() => void handleModeration(listing.id, "approve")}
+                      >
+                        {pendingActionKey === `${listing.id}:approve` ? <Spinner className="h-4 w-4" /> : null}
+                        Approve
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 border-red-500/40 text-red-300 hover:bg-red-500/10 hover:text-red-200"
+                        disabled={isUpdating}
+                        onClick={() => void handleModeration(listing.id, "reject")}
+                      >
+                        {pendingActionKey === `${listing.id}:reject` ? <Spinner className="h-4 w-4" /> : null}
+                        Reject
+                      </Button>
+                    </>
+                  ) : (
+                    <Badge variant="outline" className="text-xs text-muted-foreground">
+                      No moderation action
+                    </Badge>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
+            <table className="w-full min-w-[860px] text-sm">
+              <thead className="bg-accent/30 text-left text-muted-foreground">
+                <tr>
+                  <th className="px-3 py-2">Listing</th>
+                  <th className="px-3 py-2">Owner</th>
+                  <th className="px-3 py-2">Team</th>
+                  <th className="px-3 py-2">Status</th>
+                  <th className="hidden px-3 py-2 md:table-cell">Created</th>
+                  <th className="px-3 py-2" aria-label="Actions" />
+                </tr>
+              </thead>
+              <tbody>
+                {isLoading && listings.length === 0 && <AdminTableLoadingRow colSpan={6} label="Loading listings..." />}
+                {filteredListings.map((listing) => (
+                  <tr key={listing.id} className="border-t border-border">
+                    <td className="max-w-[220px] px-3 py-2 font-mono text-xs break-all">{listing.id}</td>
+                    <td className="max-w-[220px] px-3 py-2 font-mono text-xs break-all">{listing.ownerUid}</td>
+                    <td className="px-3 py-2">{String((listing.shirtSnapshot.team as string) ?? "-")}</td>
+                    <td className="px-3 py-2">
+                      <AdminStatusBadge value={listing.status} />
+                    </td>
+                    <td className="hidden px-3 py-2 text-xs text-muted-foreground md:table-cell">{formatDateTime(listing.createdAt)}</td>
+                    <td className="px-3 py-2">
+                      <div className="flex gap-2">
+                        {listing.status === "pending_approval" ? (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-green-500/40 text-green-300 hover:bg-green-500/10 hover:text-green-200"
+                              disabled={isUpdating}
+                              onClick={() => void handleModeration(listing.id, "approve")}
+                            >
+                              {pendingActionKey === `${listing.id}:approve` ? <Spinner className="h-4 w-4" /> : null}
+                              Approve
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-red-500/40 text-red-300 hover:bg-red-500/10 hover:text-red-200"
+                              disabled={isUpdating}
+                              onClick={() => void handleModeration(listing.id, "reject")}
+                            >
+                              {pendingActionKey === `${listing.id}:reject` ? <Spinner className="h-4 w-4" /> : null}
+                              Reject
+                            </Button>
+                          </>
+                        ) : (
+                          <Badge variant="outline" className="text-xs text-muted-foreground">
+                            No moderation action
+                          </Badge>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       {isUpdating ? (
