@@ -85,84 +85,150 @@ export function AdminOrdersPage() {
           />
         </div>
       ) : (
-        <div className="mt-5 overflow-x-auto rounded-xl border border-border bg-card">
-          <table className="min-w-full text-sm">
-            <thead className="bg-accent/30 text-left text-muted-foreground">
-              <tr>
-                <th className="px-3 py-2">Order</th>
-                <th className="px-3 py-2">Buyer</th>
-                <th className="px-3 py-2">Provider</th>
-                <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2">Payment</th>
-                <th className="px-3 py-2">Reconciliation</th>
-                <th className="px-3 py-2">Created</th>
-                <th className="px-3 py-2" aria-label="Actions" />
-                <th className="px-3 py-2" aria-label="View" />
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading && orders.length === 0 && <AdminTableLoadingRow colSpan={9} label="Loading orders..." />}
-              {filteredOrders.map((order) => (
-                <tr key={order.id} className="border-t border-border">
-                <td className="px-3 py-2 font-mono text-xs">{order.id}</td>
-                <td className="px-3 py-2">
-                  <p className="text-sm">{order.buyerName ?? "Unknown user"}</p>
-                  <p className="font-mono text-xs text-muted-foreground">{order.buyerUid}</p>
-                </td>
-                <td className="px-3 py-2">{formatProvider(order.provider)}</td>
-                <td className="px-3 py-2">
-                  <AdminStatusBadge value={order.status} />
-                </td>
-                <td className="px-3 py-2">
-                  <AdminStatusBadge value={order.paymentState} />
-                </td>
-                <td className="px-3 py-2">
-                  <AdminStatusBadge value={order.reconciliationStatus} />
-                </td>
-                <td className="px-3 py-2 text-xs text-muted-foreground">{formatDateTime(order.createdAt)}</td>
-                <td className="px-3 py-2">
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 w-8 p-0"
-                      title="Mark completed"
-                      aria-label="Mark completed"
-                      disabled={isUpdating}
-                      onClick={() => void handleOrderAction(`${order.id}:completed`, { orderId: order.id, status: "completed" })}
-                    >
-                      {pendingActionKey === `${order.id}:completed` ? <Spinner className="h-4 w-4" /> : <Check className="h-4 w-4" />}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 w-8 p-0"
-                      title="Reconcile payment"
-                      aria-label="Reconcile payment"
-                      disabled={isUpdating}
-                      onClick={() =>
-                        void handleOrderAction(`${order.id}:reconcile`, {
-                          orderId: order.id,
-                          reconciliationStatus: "reconciled",
-                          paymentState: "paid",
-                        })
-                      }
-                    >
-                      {pendingActionKey === `${order.id}:reconcile` ? <Spinner className="h-4 w-4" /> : <Banknote className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                </td>
-                <td className="px-3 py-2">
+        <div className="mt-5">
+          <div className="space-y-3 md:hidden">
+            {isLoading && orders.length === 0 ? (
+              <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">Loading orders...</div>
+            ) : null}
+            {filteredOrders.map((order) => (
+              <article key={order.id} className="rounded-xl border border-border bg-card p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-mono text-xs text-muted-foreground break-all">{order.id}</p>
                   <Button size="icon" variant="outline" asChild aria-label={`View order ${order.id}`} title="View order">
                     <Link to={`/orders/${order.id}`}>
                       <Eye className="h-4 w-4" />
                     </Link>
                   </Button>
-                </td>
-              </tr>
-              ))}
-            </tbody>
-          </table>
+                </div>
+                <div className="mt-2 grid gap-2 text-sm">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Buyer</p>
+                    <p>{order.buyerName ?? "Unknown user"}</p>
+                    <p className="font-mono text-xs text-muted-foreground break-all">{order.buyerUid}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <AdminStatusBadge value={order.status} />
+                    <AdminStatusBadge value={order.paymentState} />
+                    <AdminStatusBadge value={order.reconciliationStatus} />
+                  </div>
+                  <p className="text-xs text-muted-foreground">Provider: {formatProvider(order.provider)}</p>
+                  <p className="text-xs text-muted-foreground">Created: {formatDateTime(order.createdAt)}</p>
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1"
+                    title="Mark completed"
+                    aria-label="Mark completed"
+                    disabled={isUpdating}
+                    onClick={() => void handleOrderAction(`${order.id}:completed`, { orderId: order.id, status: "completed" })}
+                  >
+                    {pendingActionKey === `${order.id}:completed` ? <Spinner className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                    Complete
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1"
+                    title="Reconcile payment"
+                    aria-label="Reconcile payment"
+                    disabled={isUpdating}
+                    onClick={() =>
+                      void handleOrderAction(`${order.id}:reconcile`, {
+                        orderId: order.id,
+                        reconciliationStatus: "reconciled",
+                        paymentState: "paid",
+                      })
+                    }
+                  >
+                    {pendingActionKey === `${order.id}:reconcile` ? <Spinner className="h-4 w-4" /> : <Banknote className="h-4 w-4" />}
+                    Reconcile
+                  </Button>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
+            <table className="w-full min-w-[980px] text-sm">
+              <thead className="bg-accent/30 text-left text-muted-foreground">
+                <tr>
+                  <th className="px-3 py-2">Order</th>
+                  <th className="px-3 py-2">Buyer</th>
+                  <th className="hidden px-3 py-2 md:table-cell">Provider</th>
+                  <th className="px-3 py-2">Status</th>
+                  <th className="px-3 py-2">Payment</th>
+                  <th className="hidden px-3 py-2 lg:table-cell">Reconciliation</th>
+                  <th className="hidden px-3 py-2 md:table-cell">Created</th>
+                  <th className="px-3 py-2" aria-label="Actions" />
+                  <th className="px-3 py-2" aria-label="View" />
+                </tr>
+              </thead>
+              <tbody>
+                {isLoading && orders.length === 0 && <AdminTableLoadingRow colSpan={9} label="Loading orders..." />}
+                {filteredOrders.map((order) => (
+                  <tr key={order.id} className="border-t border-border">
+                    <td className="max-w-[220px] px-3 py-2 font-mono text-xs break-all">{order.id}</td>
+                    <td className="px-3 py-2">
+                      <p className="text-sm">{order.buyerName ?? "Unknown user"}</p>
+                      <p className="font-mono text-xs text-muted-foreground break-all">{order.buyerUid}</p>
+                    </td>
+                    <td className="hidden px-3 py-2 md:table-cell">{formatProvider(order.provider)}</td>
+                    <td className="px-3 py-2">
+                      <AdminStatusBadge value={order.status} />
+                    </td>
+                    <td className="px-3 py-2">
+                      <AdminStatusBadge value={order.paymentState} />
+                    </td>
+                    <td className="hidden px-3 py-2 lg:table-cell">
+                      <AdminStatusBadge value={order.reconciliationStatus} />
+                    </td>
+                    <td className="hidden px-3 py-2 text-xs text-muted-foreground md:table-cell">{formatDateTime(order.createdAt)}</td>
+                    <td className="px-3 py-2">
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 w-8 p-0"
+                          title="Mark completed"
+                          aria-label="Mark completed"
+                          disabled={isUpdating}
+                          onClick={() => void handleOrderAction(`${order.id}:completed`, { orderId: order.id, status: "completed" })}
+                        >
+                          {pendingActionKey === `${order.id}:completed` ? <Spinner className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 w-8 p-0"
+                          title="Reconcile payment"
+                          aria-label="Reconcile payment"
+                          disabled={isUpdating}
+                          onClick={() =>
+                            void handleOrderAction(`${order.id}:reconcile`, {
+                              orderId: order.id,
+                              reconciliationStatus: "reconciled",
+                              paymentState: "paid",
+                            })
+                          }
+                        >
+                          {pendingActionKey === `${order.id}:reconcile` ? <Spinner className="h-4 w-4" /> : <Banknote className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                    </td>
+                    <td className="px-3 py-2">
+                      <Button size="icon" variant="outline" asChild aria-label={`View order ${order.id}`} title="View order">
+                        <Link to={`/orders/${order.id}`}>
+                          <Eye className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       {isUpdating ? (

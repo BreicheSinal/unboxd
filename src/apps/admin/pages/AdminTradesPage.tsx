@@ -72,46 +72,44 @@ export function AdminTradesPage() {
           />
         </div>
       ) : (
-        <div className="mt-5 overflow-x-auto rounded-xl border border-border bg-card">
-          <table className="min-w-full text-sm">
-            <thead className="bg-accent/30 text-left text-muted-foreground">
-              <tr>
-                <th className="px-3 py-2">Offer</th>
-                <th className="px-3 py-2">Type</th>
-                <th className="px-3 py-2">From</th>
-                <th className="px-3 py-2">To</th>
-                <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2">Created</th>
-                <th className="px-3 py-2" aria-label="Actions" />
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading && trades.length === 0 && <AdminTableLoadingRow colSpan={7} label="Loading trades..." />}
-              {filteredTrades.map((trade) => {
-                const nextStatus = nextStatusByCurrent[trade.status];
-                return (
-                  <tr key={trade.id} className="border-t border-border">
-                  <td className="px-3 py-2 font-mono text-xs">{trade.id}</td>
-                  <td className="px-3 py-2">{trade.tradeType}</td>
-                  <td className="px-3 py-2">
-                    <p className="text-sm">{trade.fromName ?? "Unknown user"}</p>
-                    <p className="font-mono text-xs text-muted-foreground">{trade.fromUid}</p>
-                  </td>
-                  <td className="px-3 py-2">
-                    <p className="text-sm">{trade.toName ?? "Unknown user"}</p>
-                    <p className="font-mono text-xs text-muted-foreground">{trade.toUid}</p>
-                  </td>
-                  <td className="px-3 py-2">
+        <div className="mt-5 max-[750px]:mt-4">
+          <div className="space-y-3 md:hidden max-[750px]:space-y-2">
+            {isLoading && trades.length === 0 ? (
+              <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">Loading trades...</div>
+            ) : null}
+            {filteredTrades.map((trade) => {
+              const nextStatus = nextStatusByCurrent[trade.status];
+              return (
+                <article key={trade.id} className="rounded-xl border border-border bg-card p-4 max-[750px]:p-3">
+                  <p className="font-mono text-xs text-muted-foreground break-all max-[750px]:text-[11px]">{trade.id}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
                     <AdminStatusBadge value={trade.status} />
-                  </td>
-                  <td className="px-3 py-2 text-xs text-muted-foreground">{formatDateTime(trade.createdAt)}</td>
-                  <td className="px-3 py-2">
+                    <Badge variant="outline" className="capitalize">{trade.tradeType}</Badge>
+                  </div>
+                  <div className="mt-3 grid gap-3 text-sm min-[480px]:grid-cols-2 max-[750px]:mt-2 max-[750px]:gap-2">
+                    <div>
+                      <p className="text-xs text-muted-foreground">From</p>
+                      <p className="break-words">{trade.fromName ?? "Unknown user"}</p>
+                      <p className="font-mono text-xs text-muted-foreground break-all">{trade.fromUid}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">To</p>
+                      <p className="break-words">{trade.toName ?? "Unknown user"}</p>
+                      <p className="font-mono text-xs text-muted-foreground break-all">{trade.toUid}</p>
+                    </div>
+                    <div className="min-[480px]:col-span-2">
+                      <p className="text-xs text-muted-foreground">Created</p>
+                      <p>{formatDateTime(trade.createdAt)}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 max-[750px]:mt-2">
                     {nextStatus ? (
                       <Button
                         size="sm"
                         variant="outline"
                         disabled={isUpdating}
                         onClick={() => void handleTransition(trade.id, nextStatus)}
+                        className="w-full"
                       >
                         {pendingActionKey === `${trade.id}:${nextStatus}` ? <Spinner className="h-4 w-4" /> : null}
                         Move to {nextStatus}
@@ -121,12 +119,68 @@ export function AdminTradesPage() {
                         No further transition
                       </Badge>
                     )}
-                  </td>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
+            <table className="w-full min-w-[920px] text-sm">
+              <thead className="bg-accent/30 text-left text-muted-foreground">
+                <tr>
+                  <th className="px-3 py-2">Offer</th>
+                  <th className="hidden px-3 py-2 md:table-cell">Type</th>
+                  <th className="px-3 py-2">From</th>
+                  <th className="px-3 py-2">To</th>
+                  <th className="px-3 py-2">Status</th>
+                  <th className="hidden px-3 py-2 lg:table-cell">Created</th>
+                  <th className="px-3 py-2" aria-label="Actions" />
                 </tr>
-                );
-              })}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {isLoading && trades.length === 0 && <AdminTableLoadingRow colSpan={7} label="Loading trades..." />}
+                {filteredTrades.map((trade) => {
+                  const nextStatus = nextStatusByCurrent[trade.status];
+                  return (
+                    <tr key={trade.id} className="border-t border-border">
+                      <td className="max-w-[220px] px-3 py-2 font-mono text-xs break-all">{trade.id}</td>
+                      <td className="hidden px-3 py-2 md:table-cell">{trade.tradeType}</td>
+                      <td className="px-3 py-2">
+                        <p className="text-sm">{trade.fromName ?? "Unknown user"}</p>
+                        <p className="font-mono text-xs text-muted-foreground break-all">{trade.fromUid}</p>
+                      </td>
+                      <td className="px-3 py-2">
+                        <p className="text-sm">{trade.toName ?? "Unknown user"}</p>
+                        <p className="font-mono text-xs text-muted-foreground break-all">{trade.toUid}</p>
+                      </td>
+                      <td className="px-3 py-2">
+                        <AdminStatusBadge value={trade.status} />
+                      </td>
+                      <td className="hidden px-3 py-2 text-xs text-muted-foreground lg:table-cell">{formatDateTime(trade.createdAt)}</td>
+                      <td className="px-3 py-2">
+                        {nextStatus ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={isUpdating}
+                            onClick={() => void handleTransition(trade.id, nextStatus)}
+                          >
+                            {pendingActionKey === `${trade.id}:${nextStatus}` ? <Spinner className="h-4 w-4" /> : null}
+                            Move to {nextStatus}
+                          </Button>
+                        ) : (
+                          <Badge variant="outline" className="text-xs text-muted-foreground">
+                            No further transition
+                          </Badge>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       {isUpdating ? (
