@@ -38,6 +38,7 @@ export function AdminUsersPage() {
         .includes(query),
     );
   }, [users, searchQuery]);
+  const showSearchControls = isLoading || users.length > 0 || searchQuery.trim().length > 0;
 
   const handleAccessChange = async (uid: string, disabled: boolean) => {
     const actionKey = `${uid}:${disabled ? "disable" : "enable"}`;
@@ -74,7 +75,9 @@ export function AdminUsersPage() {
         isRefreshing={isLoading}
         onRefresh={() => void dispatch(loadAdminUsers({ limit: 50 }))}
       />
-      <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by uid, email, name, role..." total={filteredUsers.length} totalLabel="Total" />
+      {showSearchControls ? (
+        <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by uid, email, name, role..." />
+      ) : null}
       {error ? <AdminErrorAlert message={error} /> : null}
 
       {!isLoading && filteredUsers.length === 0 ? (
@@ -90,7 +93,10 @@ export function AdminUsersPage() {
         <div className="mt-5">
           <div className="space-y-3 md:hidden">
             {isLoading && users.length === 0 ? (
-              <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">Loading users...</div>
+              <div className="flex items-center justify-center rounded-xl border border-border bg-card p-6">
+                <Spinner className="h-5 w-5" />
+                <span className="sr-only">Loading users</span>
+              </div>
             ) : null}
             {filteredUsers.map((user) => (
               <article key={user.uid} className="rounded-xl border border-border bg-card p-4">

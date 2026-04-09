@@ -76,11 +76,9 @@ interface AdminSearchProps {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
-  total?: number;
-  totalLabel?: string;
 }
 
-export function AdminSearch({ value, onChange, placeholder, total, totalLabel = "Total" }: AdminSearchProps) {
+export function AdminSearch({ value, onChange, placeholder }: AdminSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isExpanded, setIsExpanded] = useState(() => value.trim().length > 0);
   const hasValue = value.trim().length > 0;
@@ -140,11 +138,6 @@ export function AdminSearch({ value, onChange, placeholder, total, totalLabel = 
           </Button>
         ) : null}
       </div>
-      {typeof total === "number" ? (
-        <Badge variant="outline" className="h-10 px-3 text-xs">
-          {totalLabel}: {total}
-        </Badge>
-      ) : null}
     </div>
   );
 }
