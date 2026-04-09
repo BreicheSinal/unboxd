@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   const apiProxyTarget = env.VITE_API_PROXY_TARGET || "http://localhost:3000";
 
   // Resolve the admin app root so build output is `apps/admin/dist`
-  const appRoot = path.resolve(__dirname, "apps", "admin")
+  const appRoot = path.resolve(__dirname, "apps", "admin");
 
   return {
     root: appRoot,

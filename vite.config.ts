@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   const apiProxyTarget = env.VITE_API_PROXY_TARGET || "http://localhost:3000";
 
   // Use an explicit app root so outputs are always written to `apps/web/dist`
-  const appRoot = path.resolve(__dirname, "apps", "web")
+  const appRoot = path.resolve(__dirname, "apps", "web");
 
   return {
     root: appRoot,
