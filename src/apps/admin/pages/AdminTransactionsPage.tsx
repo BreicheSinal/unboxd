@@ -9,12 +9,14 @@ import { AdminTableLoadingRow } from "../components/AdminTableLoadingRow";
 import { AdminEmptyState, AdminErrorAlert, AdminPageHeader, AdminSearch, AdminStatusBadge, formatDateTime } from "../components/AdminUi";
 import { Badge } from "../../web/components/ui/badge";
 import { Spinner } from "../../web/components/ui/spinner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../web/components/ui/select";
 
 export function AdminTransactionsPage() {
   const dispatch = useAdminDispatch();
   const transactions = useAdminSelector(selectAdminTransactions);
   const { isLoading, hasLoaded, error } = useAdminSelector((state) => state.adminTransactions);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     if (!isLoading && !hasLoaded) {
@@ -24,9 +26,13 @@ export function AdminTransactionsPage() {
 
   const filteredTransactions = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return transactions;
+    const statusMatched =
+      statusFilter === "all"
+        ? transactions
+        : transactions.filter((transaction) => (transaction.status ?? "").trim().toLowerCase() === statusFilter);
+    if (!query) return statusMatched;
 
-    return transactions.filter((transaction) =>
+    return statusMatched.filter((transaction) =>
       [
         transaction.id,
         transaction.type,
@@ -43,7 +49,17 @@ export function AdminTransactionsPage() {
         .toLowerCase()
         .includes(query),
     );
-  }, [transactions, searchQuery]);
+  }, [transactions, searchQuery, statusFilter]);
+  const statusOptions = useMemo(() => {
+    const values = Array.from(
+      new Set(
+        transactions
+          .map((transaction) => (transaction.status ?? "").trim().toLowerCase())
+          .filter((value) => value.length > 0),
+      ),
+    ).sort();
+    return values;
+  }, [transactions]);
   const showSearchControls = isLoading || transactions.length > 0 || searchQuery.trim().length > 0;
 
   const formatType = (value: string) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
@@ -59,7 +75,26 @@ export function AdminTransactionsPage() {
         onRefresh={() => void dispatch(loadAdminTransactions({ limit: 50 }))}
       />
       {showSearchControls ? (
-        <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by id, type, status, or participant..." />
+        <AdminSearch
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search by id, type, status, or participant..."
+          rightSlot={
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="h-10 !w-auto min-w-28 rounded-lg border border-border bg-card sm:min-w-36">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg border border-border bg-card">
+                <SelectItem value="all">All status</SelectItem>
+                {statusOptions.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {formatType(status)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          }
+        />
       ) : null}
       {error ? <AdminErrorAlert message={error} /> : null}
 
