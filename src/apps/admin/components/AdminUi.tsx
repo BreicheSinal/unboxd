@@ -26,6 +26,13 @@ export function AdminPageHeader({
   actions,
 }: AdminPageHeaderProps) {
   const actionControlClass = "h-8 min-w-[110px] justify-center";
+  const singularizeCountLabel = (label: string) => {
+    const [firstWord, ...rest] = label.trim().split(/\s+/);
+    const singularFirstWord = firstWord.replace(/s$/i, "");
+    return [singularFirstWord, ...rest].join(" ");
+  };
+  const normalizedCountLabel =
+    typeof count === "number" && count === 1 ? singularizeCountLabel(countLabel) : countLabel;
 
   return (
     <header className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
@@ -36,7 +43,7 @@ export function AdminPageHeader({
       <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
         {typeof count === "number" ? (
           <Badge variant="outline" className={cn("px-2.5 text-xs", actionControlClass)}>
-            {count} {countLabel}
+            {`${count} ${normalizedCountLabel}`}
           </Badge>
         ) : null}
         {actions}
@@ -83,6 +90,13 @@ export function AdminSearch({ value, onChange, placeholder, rightSlot }: AdminSe
   const inputRef = useRef<HTMLInputElement>(null);
   const [isExpanded, setIsExpanded] = useState(() => value.trim().length > 0);
   const hasValue = value.trim().length > 0;
+  const focusSearchInput = () => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.focus({ preventScroll: true });
+    const cursorPosition = input.value.length;
+    input.setSelectionRange(cursorPosition, cursorPosition);
+  };
 
   useEffect(() => {
     if (hasValue) {
@@ -90,9 +104,18 @@ export function AdminSearch({ value, onChange, placeholder, rightSlot }: AdminSe
     }
   }, [hasValue]);
 
+  useEffect(() => {
+    if (!isExpanded) return;
+    focusSearchInput();
+    const timer = window.setTimeout(focusSearchInput, 0);
+    return () => window.clearTimeout(timer);
+  }, [isExpanded]);
+
   const openSearch = () => {
     setIsExpanded(true);
-    requestAnimationFrame(() => inputRef.current?.focus());
+    focusSearchInput();
+    requestAnimationFrame(focusSearchInput);
+    window.setTimeout(focusSearchInput, 30);
   };
 
   return (
@@ -102,6 +125,11 @@ export function AdminSearch({ value, onChange, placeholder, rightSlot }: AdminSe
           "relative w-[min(18rem,70vw)] origin-right overflow-hidden transition-[width] duration-200 ease-out sm:max-w-[20rem]",
           isExpanded || hasValue ? "sm:w-80" : "sm:w-36",
         )}
+        onClick={(event) => {
+          if (!(event.target instanceof HTMLElement) || event.target.tagName !== "INPUT") {
+            openSearch();
+          }
+        }}
       >
         <Search className="pointer-events-none absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
@@ -131,6 +159,10 @@ export function AdminSearch({ value, onChange, placeholder, rightSlot }: AdminSe
             type="button"
             variant="outline"
             className="absolute inset-0 h-full w-full justify-start gap-2 px-3"
+            onPointerDown={(event) => {
+              event.preventDefault();
+              openSearch();
+            }}
             onClick={openSearch}
             aria-label={placeholder}
           >
@@ -149,9 +181,9 @@ interface AdminStatusBadgeProps {
 }
 
 const toneByKeyword: Array<{ test: RegExp; className: string }> = [
-  { test: /(completed|approved|paid|reconciled|enabled|active)/i, className: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300" },
-  { test: /(pending|queued|review|shipped|accepted)/i, className: "border-amber-500/40 bg-amber-500/10 text-amber-300" },
-  { test: /(rejected|failed|cancelled|canceled|disabled|refunded)/i, className: "border-rose-500/40 bg-rose-500/10 text-rose-300" },
+  { test: /(completed|approved|paid|reconciled|enabled|active)/i, className: "text-emerald-300" },
+  { test: /(pending|queued|review|shipped|accepted)/i, className: "text-amber-300" },
+  { test: /(rejected|failed|cancelled|canceled|disabled|refunded)/i, className: "text-rose-300" },
 ];
 
 export function AdminStatusBadge({ value }: AdminStatusBadgeProps) {
@@ -159,7 +191,7 @@ export function AdminStatusBadge({ value }: AdminStatusBadgeProps) {
   const tone = toneByKeyword.find(({ test }) => test.test(normalized));
 
   return (
-    <Badge variant="outline" className={cn("capitalize", tone?.className)}>
+    <Badge variant="outline" className={cn("border-0 bg-transparent capitalize text-muted-foreground", tone?.className)}>
       {normalized}
     </Badge>
   );
