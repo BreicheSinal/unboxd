@@ -11,6 +11,7 @@ describe("adminOrdersSlice", () => {
             {
               id: "order-1",
               buyerUid: "u1",
+              buyerName: "Test Buyer",
               provider: "cod",
               status: "placed",
               paymentState: "pending",
@@ -42,6 +43,7 @@ describe("adminOrdersSlice", () => {
             {
               id: "order-1",
               buyerUid: "u1",
+              buyerName: "Test Buyer",
               provider: "cod",
               status: "placed",
               paymentState: "pending",
