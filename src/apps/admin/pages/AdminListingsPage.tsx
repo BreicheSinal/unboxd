@@ -36,6 +36,7 @@ export function AdminListingsPage() {
         .includes(query),
     );
   }, [listings, searchQuery]);
+  const showSearchControls = isLoading || listings.length > 0 || searchQuery.trim().length > 0;
 
   const handleModeration = async (listingId: string, action: "approve" | "reject") => {
     const actionKey = `${listingId}:${action}`;
@@ -57,7 +58,9 @@ export function AdminListingsPage() {
         isRefreshing={isLoading}
         onRefresh={() => void dispatch(loadAdminListings({ limit: 50 }))}
       />
-      <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by listing id, owner, team..." total={filteredListings.length} totalLabel="Total" />
+      {showSearchControls ? (
+        <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by listing id, owner, team..." />
+      ) : null}
       {error ? <AdminErrorAlert message={error} /> : null}
 
       {!isLoading && filteredListings.length === 0 ? (
@@ -73,7 +76,10 @@ export function AdminListingsPage() {
         <div className="mt-5">
           <div className="space-y-3 md:hidden">
             {isLoading && listings.length === 0 ? (
-              <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">Loading listings...</div>
+              <div className="flex items-center justify-center rounded-xl border border-border bg-card p-6">
+                <Spinner className="h-5 w-5" />
+                <span className="sr-only">Loading listings</span>
+              </div>
             ) : null}
             {filteredListings.map((listing) => (
               <article key={listing.id} className="rounded-xl border border-border bg-card p-4">

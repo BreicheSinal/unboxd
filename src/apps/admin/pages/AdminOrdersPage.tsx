@@ -42,6 +42,7 @@ export function AdminOrdersPage() {
         .includes(query),
     );
   }, [orders, searchQuery]);
+  const showSearchControls = isLoading || orders.length > 0 || searchQuery.trim().length > 0;
 
   const handleOrderAction = async (
     actionKey: string,
@@ -72,7 +73,9 @@ export function AdminOrdersPage() {
         isRefreshing={isLoading}
         onRefresh={() => void dispatch(loadAdminOrders({ limit: 50 }))}
       />
-      <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by order id, buyer, status..." total={filteredOrders.length} totalLabel="Total" />
+      {showSearchControls ? (
+        <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by order id, buyer, status..." />
+      ) : null}
       {error ? <AdminErrorAlert message={error} /> : null}
 
       {!isLoading && filteredOrders.length === 0 ? (
@@ -88,7 +91,10 @@ export function AdminOrdersPage() {
         <div className="mt-5">
           <div className="space-y-3 md:hidden">
             {isLoading && orders.length === 0 ? (
-              <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">Loading orders...</div>
+              <div className="flex items-center justify-center rounded-xl border border-border bg-card p-6">
+                <Spinner className="h-5 w-5" />
+                <span className="sr-only">Loading orders</span>
+              </div>
             ) : null}
             {filteredOrders.map((order) => (
               <article key={order.id} className="rounded-xl border border-border bg-card p-4">

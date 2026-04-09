@@ -8,6 +8,7 @@ import {
 import { AdminTableLoadingRow } from "../components/AdminTableLoadingRow";
 import { AdminEmptyState, AdminErrorAlert, AdminPageHeader, AdminSearch, AdminStatusBadge, formatDateTime } from "../components/AdminUi";
 import { Badge } from "../../web/components/ui/badge";
+import { Spinner } from "../../web/components/ui/spinner";
 
 export function AdminTransactionsPage() {
   const dispatch = useAdminDispatch();
@@ -43,6 +44,7 @@ export function AdminTransactionsPage() {
         .includes(query),
     );
   }, [transactions, searchQuery]);
+  const showSearchControls = isLoading || transactions.length > 0 || searchQuery.trim().length > 0;
 
   const formatType = (value: string) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
 
@@ -56,7 +58,9 @@ export function AdminTransactionsPage() {
         isRefreshing={isLoading}
         onRefresh={() => void dispatch(loadAdminTransactions({ limit: 50 }))}
       />
-      <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by id, type, status, or participant..." total={filteredTransactions.length} totalLabel="Total" />
+      {showSearchControls ? (
+        <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by id, type, status, or participant..." />
+      ) : null}
       {error ? <AdminErrorAlert message={error} /> : null}
 
       {!isLoading && filteredTransactions.length === 0 ? (
@@ -72,7 +76,10 @@ export function AdminTransactionsPage() {
         <div className="mt-5">
           <div className="space-y-3 md:hidden">
             {isLoading && transactions.length === 0 ? (
-              <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">Loading transactions...</div>
+              <div className="flex items-center justify-center rounded-xl border border-border bg-card p-6">
+                <Spinner className="h-5 w-5" />
+                <span className="sr-only">Loading transactions</span>
+              </div>
             ) : null}
             {filteredTransactions.map((tx) => (
               <article key={tx.id} className="rounded-xl border border-border bg-card p-4">
