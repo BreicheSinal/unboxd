@@ -7,6 +7,7 @@ interface AdminTransactionsState {
   ids: string[];
   nextCursor: string | null;
   isLoading: boolean;
+  hasLoaded: boolean;
   error: string | null;
 }
 
@@ -15,6 +16,7 @@ const initialState: AdminTransactionsState = {
   ids: [],
   nextCursor: null,
   isLoading: false,
+  hasLoaded: false,
   error: null,
 };
 
@@ -37,6 +39,7 @@ const adminTransactionsSlice = createSlice({
       })
       .addCase(loadAdminTransactions.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.hasLoaded = true;
         state.nextCursor = action.payload.nextCursor;
         state.entities = {};
         state.ids = action.payload.items.map((item) => {
@@ -46,6 +49,7 @@ const adminTransactionsSlice = createSlice({
       })
       .addCase(loadAdminTransactions.rejected, (state, action) => {
         state.isLoading = false;
+        state.hasLoaded = true;
         state.error = action.error.message ?? "Failed to load transactions.";
       });
   },

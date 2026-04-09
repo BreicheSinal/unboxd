@@ -16,8 +16,6 @@
     "audit": "npm audit --omit=dev",
     "preview": "vite preview --host 127.0.0.1 --port 4173",
     "preview:admin": "vite preview --config vite.admin.config.ts --host 127.0.0.1 --port 4174",
-    "migrate:preferences:dry": "node --env-file=.env.local scripts/migrate-user-preferences.mjs --dry-run",
-    "migrate:preferences": "node --env-file=.env.local scripts/migrate-user-preferences.mjs",
     "admin:claim": "node --env-file=.env.local scripts/set-admin-claim.mjs"
   },
   "dependencies": {

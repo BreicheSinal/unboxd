@@ -55,7 +55,7 @@ You can override this using `VITE_API_PROXY_TARGET` in `.env`.
 - `npm run test` - Vitest unit tests
 - `npm run test:e2e` - Playwright smoke test
 - `npm run audit` - production dependency audit
-- `npm run admin:claim -- <uid> <true|false>` - grant/revoke Firebase `admin` custom claim
+- `npm run admin:claim -- <uid-or-email> <true|false>` - grant/revoke Firebase `admin` custom claim
 
 ## Admin Dashboard (Subdomain)
 

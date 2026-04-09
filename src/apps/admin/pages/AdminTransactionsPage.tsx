@@ -11,14 +11,14 @@ import { AdminEmptyState, AdminErrorAlert, AdminPageHeader, AdminSearch, AdminSt
 export function AdminTransactionsPage() {
   const dispatch = useAdminDispatch();
   const transactions = useAdminSelector(selectAdminTransactions);
-  const { isLoading, error } = useAdminSelector((state) => state.adminTransactions);
+  const { isLoading, hasLoaded, error } = useAdminSelector((state) => state.adminTransactions);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    if (!isLoading && transactions.length === 0) {
+    if (!isLoading && !hasLoaded) {
       void dispatch(loadAdminTransactions({ limit: 50 }));
     }
-  }, [dispatch, isLoading, transactions.length]);
+  }, [dispatch, hasLoaded, isLoading]);
 
   const filteredTransactions = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
