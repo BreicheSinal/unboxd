@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      outDir: path.resolve(__dirname, "dist-admin"),
+      outDir: path.resolve(__dirname, "apps", "admin", "dist"),
       emptyOutDir: true,
       chunkSizeWarningLimit: 2000,
     },
