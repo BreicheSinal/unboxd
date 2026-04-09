@@ -94,6 +94,9 @@ export function AdminUsersPage() {
     }
   };
 
+  const roleTextClass = (role: string) =>
+    role.toLowerCase() === "admin" ? "text-amber-300" : "text-sky-300";
+
   return (
     <section>
       <AdminPageHeader
@@ -148,9 +151,13 @@ export function AdminUsersPage() {
                 <p className="font-mono text-xs text-muted-foreground break-all">{user.uid}</p>
                 <p className="mt-2 text-sm break-all">{user.email}</p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <Badge variant="outline" className="capitalize">{user.role}</Badge>
+                  <Badge variant="outline" className={`border-0 bg-transparent capitalize ${roleTextClass(user.role)}`}>{user.role}</Badge>
                   <AdminStatusBadge value={user.disabled ? "disabled" : "enabled"} />
-                  <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs text-muted-foreground">
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ${
+                      user.isOnline ? "text-emerald-400" : "text-zinc-500"
+                    }`}
+                  >
                     <span className={`h-2 w-2 rounded-full ${user.isOnline ? "bg-emerald-400" : "bg-zinc-500"}`} />
                     {user.isOnline ? "Online" : "Offline"}
                   </span>
@@ -211,9 +218,9 @@ export function AdminUsersPage() {
                 <tr>
                   <th className="px-3 py-2">User</th>
                   <th className="px-3 py-2">Email</th>
-                  <th className="px-3 py-2">Role</th>
-                  <th className="px-3 py-2">Access</th>
-                  <th className="px-3 py-2">Activity</th>
+                  <th className="px-3 py-2 text-center">Role</th>
+                  <th className="px-3 py-2 text-center">Access</th>
+                  <th className="px-3 py-2 text-center">Activity</th>
                   <th className="hidden px-3 py-2 md:table-cell">Created</th>
                   <th className="hidden px-3 py-2 md:table-cell">Last seen</th>
                   <th className="px-3 py-2" aria-label="Actions" />
@@ -225,16 +232,20 @@ export function AdminUsersPage() {
                   <tr key={user.uid} className="border-t border-border">
                     <td className="max-w-[220px] px-3 py-2 font-mono text-xs break-all">{user.uid}</td>
                     <td className="max-w-[220px] px-3 py-2 break-all">{user.email}</td>
-                    <td className="px-3 py-2">
-                      <Badge variant="outline" className="capitalize">
+                    <td className="px-3 py-2 text-center">
+                      <Badge variant="outline" className={`border-0 bg-transparent capitalize ${roleTextClass(user.role)}`}>
                         {user.role}
                       </Badge>
                     </td>
-                    <td className="px-3 py-2">
+                    <td className="px-3 py-2 text-center">
                       <AdminStatusBadge value={user.disabled ? "disabled" : "enabled"} />
                     </td>
-                    <td className="px-3 py-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs text-muted-foreground">
+                    <td className="px-3 py-2 text-center">
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ${
+                          user.isOnline ? "text-emerald-400" : "text-zinc-500"
+                        }`}
+                      >
                         <span className={`h-2 w-2 rounded-full ${user.isOnline ? "bg-emerald-400" : "bg-zinc-500"}`} />
                         {user.isOnline ? "Online" : "Offline"}
                       </span>
@@ -290,11 +301,6 @@ export function AdminUsersPage() {
           </div>
         </div>
       )}
-      {isUpdating ? (
-        <Badge variant="outline" className="mt-3 px-2.5 py-1 text-xs text-muted-foreground">
-          Applying user action...
-        </Badge>
-      ) : null}
     </section>
   );
 }
