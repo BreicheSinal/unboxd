@@ -12,15 +12,15 @@ import { Spinner } from "../../web/components/ui/spinner";
 export function AdminOrdersPage() {
   const dispatch = useAdminDispatch();
   const orders = useAdminSelector(selectAdminOrders);
-  const { isLoading, isUpdating, error } = useAdminSelector((state) => state.adminOrders);
+  const { isLoading, hasLoaded, isUpdating, error } = useAdminSelector((state) => state.adminOrders);
   const [searchQuery, setSearchQuery] = useState("");
   const [pendingActionKey, setPendingActionKey] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isLoading && orders.length === 0) {
+    if (!isLoading && !hasLoaded) {
       void dispatch(loadAdminOrders({ limit: 50 }));
     }
-  }, [dispatch, isLoading, orders.length]);
+  }, [dispatch, hasLoaded, isLoading]);
 
   const filteredOrders = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();

@@ -7,6 +7,7 @@ interface AdminOrdersState {
   ids: string[];
   nextCursor: string | null;
   isLoading: boolean;
+  hasLoaded: boolean;
   isUpdating: boolean;
   error: string | null;
 }
@@ -16,6 +17,7 @@ const initialState: AdminOrdersState = {
   ids: [],
   nextCursor: null,
   isLoading: false,
+  hasLoaded: false,
   isUpdating: false,
   error: null,
 };
@@ -47,6 +49,7 @@ const adminOrdersSlice = createSlice({
       })
       .addCase(loadAdminOrders.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.hasLoaded = true;
         state.nextCursor = action.payload.nextCursor;
         state.entities = {};
         state.ids = action.payload.items.map((item) => {
@@ -56,6 +59,7 @@ const adminOrdersSlice = createSlice({
       })
       .addCase(loadAdminOrders.rejected, (state, action) => {
         state.isLoading = false;
+        state.hasLoaded = true;
         state.error = action.error.message ?? "Failed to load orders.";
       })
       .addCase(mutateAdminOrder.pending, (state) => {
