@@ -38,6 +38,20 @@ export function AdminUsersPage() {
         .includes(query),
     );
   }, [users, searchQuery]);
+  const sortedUsers = useMemo(() => {
+    const toTime = (value: string | null) => {
+      if (!value) return 0;
+      const ts = Date.parse(value);
+      return Number.isNaN(ts) ? 0 : ts;
+    };
+
+    return [...filteredUsers].sort((a, b) => {
+      const aIsAdmin = a.role.toLowerCase() === "admin";
+      const bIsAdmin = b.role.toLowerCase() === "admin";
+      if (aIsAdmin !== bIsAdmin) return aIsAdmin ? -1 : 1;
+      return toTime(b.updatedAt) - toTime(a.updatedAt);
+    });
+  }, [filteredUsers]);
   const showSearchControls = isLoading || users.length > 0 || searchQuery.trim().length > 0;
 
   const handleAccessChange = async (uid: string, disabled: boolean) => {
@@ -70,7 +84,7 @@ export function AdminUsersPage() {
       <AdminPageHeader
         title="Users Access"
         description="Manage sign-in state or permanently delete user accounts and related data."
-        count={filteredUsers.length}
+        count={sortedUsers.length}
         countLabel="users"
         isRefreshing={isLoading}
         onRefresh={() => void dispatch(loadAdminUsers({ limit: 50 }))}
@@ -80,7 +94,7 @@ export function AdminUsersPage() {
       ) : null}
       {error ? <AdminErrorAlert message={error} /> : null}
 
-      {!isLoading && filteredUsers.length === 0 ? (
+      {!isLoading && sortedUsers.length === 0 ? (
         <div className="mt-5 rounded-xl border border-border bg-card">
           <AdminEmptyState
             icon={Users}
@@ -98,7 +112,7 @@ export function AdminUsersPage() {
                 <span className="sr-only">Loading users</span>
               </div>
             ) : null}
-            {filteredUsers.map((user) => (
+            {sortedUsers.map((user) => (
               <article key={user.uid} className="rounded-xl border border-border bg-card p-4">
                 <p className="font-mono text-xs text-muted-foreground break-all">{user.uid}</p>
                 <p className="mt-2 text-sm break-all">{user.email}</p>
@@ -169,7 +183,7 @@ export function AdminUsersPage() {
               </thead>
               <tbody>
                 {isLoading && users.length === 0 && <AdminTableLoadingRow colSpan={6} label="Loading users..." />}
-                {filteredUsers.map((user) => (
+                {sortedUsers.map((user) => (
                   <tr key={user.uid} className="border-t border-border">
                     <td className="max-w-[220px] px-3 py-2 font-mono text-xs break-all">{user.uid}</td>
                     <td className="max-w-[220px] px-3 py-2 break-all">{user.email}</td>
