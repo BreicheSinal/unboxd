@@ -12,6 +12,7 @@ import { AdminEmptyState, AdminErrorAlert, AdminPageHeader, AdminSearch, AdminSt
 import { Button } from "../../web/components/ui/button";
 import { Badge } from "../../web/components/ui/badge";
 import { Spinner } from "../../web/components/ui/spinner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../web/components/ui/select";
 
 export function AdminUsersPage() {
   const dispatch = useAdminDispatch();
@@ -19,6 +20,7 @@ export function AdminUsersPage() {
   const currentAdminUid = useAdminSelector((state) => state.adminAuth.user?.uid);
   const { isLoading, isUpdating, error } = useAdminSelector((state) => state.adminUsers);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activityFilter, setActivityFilter] = useState<"all" | "online" | "offline">("all");
   const [pendingActionKey, setPendingActionKey] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,13 +33,23 @@ export function AdminUsersPage() {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return users;
 
-    return users.filter((user) =>
-      [user.uid, user.email, user.displayName, user.role, user.disabled ? "disabled" : "enabled"]
+    const queryMatched = users.filter((user) =>
+      [
+        user.uid,
+        user.email,
+        user.displayName,
+        user.role,
+        user.disabled ? "disabled" : "enabled",
+        user.isOnline ? "online" : "offline",
+      ]
         .join(" ")
         .toLowerCase()
         .includes(query),
     );
-  }, [users, searchQuery]);
+
+    if (activityFilter === "all") return queryMatched;
+    return queryMatched.filter((user) => (activityFilter === "online" ? Boolean(user.isOnline) : !user.isOnline));
+  }, [users, searchQuery, activityFilter]);
   const sortedUsers = useMemo(() => {
     const toTime = (value: string | null) => {
       if (!value) return 0;
@@ -49,6 +61,9 @@ export function AdminUsersPage() {
       const aIsAdmin = a.role.toLowerCase() === "admin";
       const bIsAdmin = b.role.toLowerCase() === "admin";
       if (aIsAdmin !== bIsAdmin) return aIsAdmin ? -1 : 1;
+      if (a.isOnline !== b.isOnline) return a.isOnline ? -1 : 1;
+      const seenDelta = toTime(b.lastSeenAt ?? null) - toTime(a.lastSeenAt ?? null);
+      if (seenDelta !== 0) return seenDelta;
       return toTime(b.updatedAt) - toTime(a.updatedAt);
     });
   }, [filteredUsers]);
@@ -90,7 +105,23 @@ export function AdminUsersPage() {
         onRefresh={() => void dispatch(loadAdminUsers({ limit: 50 }))}
       />
       {showSearchControls ? (
-        <AdminSearch value={searchQuery} onChange={setSearchQuery} placeholder="Search by uid, email, name, role..." />
+        <AdminSearch
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search by uid, email, name, role..."
+          rightSlot={
+            <Select value={activityFilter} onValueChange={(value) => setActivityFilter(value as "all" | "online" | "offline")}>
+              <SelectTrigger className="h-10 !w-auto min-w-28 rounded-lg border border-border bg-card sm:min-w-32">
+                <SelectValue placeholder="Activity" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg border border-border bg-card">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="online">Online</SelectItem>
+                <SelectItem value="offline">Offline</SelectItem>
+              </SelectContent>
+            </Select>
+          }
+        />
       ) : null}
       {error ? <AdminErrorAlert message={error} /> : null}
 
@@ -119,8 +150,13 @@ export function AdminUsersPage() {
                 <div className="mt-2 flex flex-wrap gap-2">
                   <Badge variant="outline" className="capitalize">{user.role}</Badge>
                   <AdminStatusBadge value={user.disabled ? "disabled" : "enabled"} />
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs text-muted-foreground">
+                    <span className={`h-2 w-2 rounded-full ${user.isOnline ? "bg-emerald-400" : "bg-zinc-500"}`} />
+                    {user.isOnline ? "Online" : "Offline"}
+                  </span>
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">Created: {formatDateTime(user.createdAt)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">Last seen: {formatDateTime(user.lastSeenAt ?? null)}</p>
                 <div className="mt-3">
                   {user.uid === currentAdminUid ? (
                     <Badge variant="outline" className="border-0 bg-red-500/10 text-xs text-red-400">
@@ -177,12 +213,14 @@ export function AdminUsersPage() {
                   <th className="px-3 py-2">Email</th>
                   <th className="px-3 py-2">Role</th>
                   <th className="px-3 py-2">Access</th>
+                  <th className="px-3 py-2">Activity</th>
                   <th className="hidden px-3 py-2 md:table-cell">Created</th>
+                  <th className="hidden px-3 py-2 md:table-cell">Last seen</th>
                   <th className="px-3 py-2" aria-label="Actions" />
                 </tr>
               </thead>
               <tbody>
-                {isLoading && users.length === 0 && <AdminTableLoadingRow colSpan={6} label="Loading users..." />}
+                {isLoading && users.length === 0 && <AdminTableLoadingRow colSpan={8} label="Loading users..." />}
                 {sortedUsers.map((user) => (
                   <tr key={user.uid} className="border-t border-border">
                     <td className="max-w-[220px] px-3 py-2 font-mono text-xs break-all">{user.uid}</td>
@@ -195,7 +233,16 @@ export function AdminUsersPage() {
                     <td className="px-3 py-2">
                       <AdminStatusBadge value={user.disabled ? "disabled" : "enabled"} />
                     </td>
+                    <td className="px-3 py-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs text-muted-foreground">
+                        <span className={`h-2 w-2 rounded-full ${user.isOnline ? "bg-emerald-400" : "bg-zinc-500"}`} />
+                        {user.isOnline ? "Online" : "Offline"}
+                      </span>
+                    </td>
                     <td className="hidden px-3 py-2 text-xs text-muted-foreground md:table-cell">{formatDateTime(user.createdAt)}</td>
+                    <td className="hidden px-3 py-2 text-xs text-muted-foreground md:table-cell">
+                      {formatDateTime(user.lastSeenAt ?? null)}
+                    </td>
                     <td className="px-3 py-2">
                       {user.uid === currentAdminUid ? (
                         <Badge variant="outline" className="border-0 bg-red-500/10 text-xs text-red-400">

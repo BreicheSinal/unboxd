@@ -76,9 +76,10 @@ interface AdminSearchProps {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
+  rightSlot?: ReactNode;
 }
 
-export function AdminSearch({ value, onChange, placeholder }: AdminSearchProps) {
+export function AdminSearch({ value, onChange, placeholder, rightSlot }: AdminSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isExpanded, setIsExpanded] = useState(() => value.trim().length > 0);
   const hasValue = value.trim().length > 0;
@@ -95,10 +96,10 @@ export function AdminSearch({ value, onChange, placeholder }: AdminSearchProps) 
   };
 
   return (
-    <div className="mt-4 flex w-full flex-wrap items-center justify-end gap-2 sm:ml-auto sm:w-auto">
+    <div className="mt-4 ml-auto flex max-w-full items-center justify-end gap-2">
       <div
         className={cn(
-          "relative w-full origin-right overflow-hidden transition-[width] duration-200 ease-out sm:max-w-[20rem]",
+          "relative w-[min(18rem,70vw)] origin-right overflow-hidden transition-[width] duration-200 ease-out sm:max-w-[20rem]",
           isExpanded || hasValue ? "sm:w-80" : "sm:w-36",
         )}
       >
@@ -138,6 +139,7 @@ export function AdminSearch({ value, onChange, placeholder }: AdminSearchProps) 
           </Button>
         ) : null}
       </div>
+      {rightSlot}
     </div>
   );
 }

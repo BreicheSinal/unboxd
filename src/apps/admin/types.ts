@@ -93,6 +93,8 @@ export interface AdminUser {
   displayName: string;
   role: string;
   disabled: boolean;
+  isOnline?: boolean;
+  lastSeenAt?: string | null;
   createdAt: string | null;
   updatedAt: string | null;
 }
