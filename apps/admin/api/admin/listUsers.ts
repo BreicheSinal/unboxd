@@ -34,6 +34,8 @@ export default async function handler(req: any, res: any) {
           displayName: String(data.displayName ?? ""),
           role: String(data.role ?? "user"),
           disabled: Boolean(data.disabled),
+          isOnline: Boolean(data.isOnline),
+          lastSeenAt: toIso(data.lastSeenAt),
           createdAt: toIso(data.createdAt),
           updatedAt: toIso(data.updatedAt),
         };
@@ -47,6 +49,8 @@ export default async function handler(req: any, res: any) {
       displayName: string;
       role: string;
       disabled: boolean;
+      isOnline: boolean;
+      lastSeenAt: string | null;
       createdAt: string | null;
       updatedAt: string | null;
     }> = [];
@@ -84,6 +88,8 @@ export default async function handler(req: any, res: any) {
           displayName: String(data.displayName ?? ""),
           role: String(data.role ?? "user"),
           disabled: Boolean(data.disabled),
+          isOnline: Boolean(data.isOnline),
+          lastSeenAt: toIso(data.lastSeenAt),
           createdAt: toIso(data.createdAt),
           updatedAt: toIso(data.updatedAt),
         });

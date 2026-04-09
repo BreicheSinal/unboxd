@@ -2,6 +2,7 @@ import { ReactNode, useEffect } from "react";
 import { User, getRedirectResult, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { hasAdminClaim, isAdminOnlyEmail } from "../services/adminOnlyAccess";
+import { startPresenceTracking, stopPresenceTracking } from "../services/presenceService";
 import { upsertUserProfile } from "../services/userService";
 import type { UserProfile } from "../types/domain";
 import { useAppDispatch } from "./hooks";
@@ -46,8 +47,9 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
+        stopPresenceTracking();
         // Wait for a potential redirect result before declaring the user
-        // signed out — avoids a flash to the sign-in page on redirect return.
+        // signed out. This avoids a flash to sign-in on redirect return.
         await redirectPromise;
         if (!auth.currentUser) {
           dispatch(clearAuthenticatedUser());
@@ -56,12 +58,17 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
       }
 
       const blockedByEmail = isAdminOnlyEmail(firebaseUser.email);
-      const blockedByClaim = blockedByEmail ? false : await hasAdminClaim(firebaseUser, true).catch(() => false);
+      const blockedByClaim = blockedByEmail
+        ? false
+        : await hasAdminClaim(firebaseUser, true).catch(() => false);
       if (blockedByEmail || blockedByClaim) {
+        stopPresenceTracking();
         await signOut(auth).catch(() => undefined);
         dispatch(clearAuthenticatedUser());
         return;
       }
+
+      startPresenceTracking(firebaseUser);
 
       // Immediately admit the user with Firebase Auth data so the app is
       // accessible without blocking on Firestore round-trips. Critical on iOS
@@ -78,7 +85,10 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      stopPresenceTracking();
+    };
   }, [dispatch]);
 
   return <>{children}</>;
