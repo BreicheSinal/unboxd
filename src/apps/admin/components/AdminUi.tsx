@@ -33,7 +33,7 @@ export function AdminPageHeader({
         <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
-      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+      <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
         {typeof count === "number" ? (
           <Badge variant="outline" className={cn("px-2.5 text-xs", actionControlClass)}>
             {count} {countLabel}
