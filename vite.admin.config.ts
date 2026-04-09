@@ -7,14 +7,17 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const apiProxyTarget = env.VITE_API_PROXY_TARGET || "http://localhost:3000";
 
+  // Resolve the admin app root so build output is `apps/admin/dist`
+  const appRoot = path.resolve(__dirname, "apps", "admin")
+
   return {
-    root: path.resolve(__dirname, "apps/admin"),
+    root: appRoot,
     publicDir: path.resolve(__dirname, "public"),
     envDir: path.resolve(__dirname),
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src"),
+        "@": path.resolve(appRoot, "./src"),
       },
     },
     server: {
@@ -30,7 +33,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      outDir: path.resolve(__dirname, "apps", "admin", "dist"),
+      outDir: path.resolve(appRoot, "dist"),
       emptyOutDir: true,
       chunkSizeWarningLimit: 2000,
     },

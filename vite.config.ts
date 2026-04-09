@@ -7,8 +7,11 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const apiProxyTarget = env.VITE_API_PROXY_TARGET || "http://localhost:3000";
 
+  // Use an explicit app root so outputs are always written to `apps/web/dist`
+  const appRoot = path.resolve(__dirname, "apps", "web")
+
   return {
-    root: path.resolve(__dirname, "apps/web"),
+    root: appRoot,
     publicDir: path.resolve(__dirname, "public"),
     envDir: path.resolve(__dirname),
     plugins: [
@@ -19,8 +22,8 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
-        // Alias @ to the src directory
-        "@": path.resolve(__dirname, "./src"),
+        // Alias @ to the app's src directory
+        "@": path.resolve(appRoot, "./src"),
       },
     },
     server: {
@@ -36,7 +39,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      outDir: path.resolve(__dirname, "apps", "web", "dist"),
+      outDir: path.resolve(appRoot, "dist"),
       emptyOutDir: true,
       chunkSizeWarningLimit: 2000,
     },
