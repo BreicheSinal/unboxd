@@ -29,5 +29,3 @@ npm run build:admin
 ls apps/web/dist
 ls apps/admin/dist
 ```
-
-If you want, I can open a PR that documents these settings and optionally set up Github repo secrets or CI steps to run builds before Vercel deploys.
