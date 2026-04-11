@@ -35,6 +35,20 @@ export function Layout() {
     location.pathname === "/signin" ||
     location.pathname === "/signup" ||
     location.pathname === "/forgot-password";
+  const signedInRoutePrefixes = [
+    "/dashboard",
+    "/order",
+    "/marketplace",
+    "/closet",
+    "/trade",
+    "/transactions",
+    "/badges",
+  ];
+  const isSignedInRoute = signedInRoutePrefixes.some(
+    (prefix) =>
+      location.pathname === prefix || location.pathname.startsWith(`${prefix}/`),
+  );
+  const isSignedInSurface = Boolean(user) && isSignedInRoute;
 
   useEffect(() => {
     setMounted(true);
@@ -126,7 +140,7 @@ export function Layout() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="web-app-shell min-h-screen flex flex-col bg-background">
       {/* Header */}
       {!isAuthPage && (
         <header className="sticky top-0 z-50 border-b border-[var(--brand-light-purple)]/15 bg-[var(--brand-dark-azure)]/95 text-[var(--brand-light-purple)] backdrop-blur-lg">
@@ -396,7 +410,7 @@ export function Layout() {
           isAuthPage
             ? "flex justify-center items-start pt-4 md:pt-6 xl:items-center xl:pt-0"
             : ""
-        }`}
+        } ${isSignedInSurface ? "signed-in-surface" : ""}`}
       >
         <Outlet />
       </main>
