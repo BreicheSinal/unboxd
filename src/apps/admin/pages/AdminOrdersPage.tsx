@@ -37,6 +37,7 @@ export function AdminOrdersPage() {
         order.id,
         order.buyerUid,
         order.buyerName,
+        order.orderType,
         order.status,
         order.paymentState,
         order.reconciliationStatus,
@@ -67,6 +68,14 @@ export function AdminOrdersPage() {
     if (!value) return "-";
     if (value.toLowerCase() === "cod") return "COD";
     return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  };
+
+  const formatOrderType = (orderType: string | null | undefined) => {
+    const value = (orderType ?? "").trim().toLowerCase();
+    if (value === "artwork") return "Artwork";
+    if (value === "jersey") return "Jersey";
+    if (!value) return "-";
+    return value.charAt(0).toUpperCase() + value.slice(1);
   };
 
   const providerOptions = useMemo(() => {
@@ -176,6 +185,7 @@ export function AdminOrdersPage() {
                     <p className="font-mono text-xs text-muted-foreground break-all">{order.buyerUid}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline">{formatOrderType(order.orderType)}</Badge>
                     <AdminStatusBadge value={order.status} />
                     <AdminStatusBadge value={order.paymentState} />
                     <AdminStatusBadge value={order.reconciliationStatus} />
@@ -219,6 +229,7 @@ export function AdminOrdersPage() {
                 <tr>
                   <th className="px-3 py-2">Order</th>
                   <th className="px-3 py-2">Buyer</th>
+                  <th className="hidden px-3 py-2 text-center lg:table-cell">Type</th>
                   <th className="hidden px-3 py-2 text-center md:table-cell">Provider</th>
                   <th className="px-3 py-2 text-center">Status</th>
                   <th className="px-3 py-2 text-center">Payment</th>
@@ -229,7 +240,7 @@ export function AdminOrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {isLoading && orders.length === 0 && <AdminTableLoadingRow colSpan={9} label="Loading orders..." />}
+                {isLoading && orders.length === 0 && <AdminTableLoadingRow colSpan={10} label="Loading orders..." />}
                 {filteredOrders.map((order) => {
                   const completionAction = getCompletionToggle(order);
                   const reconcileAction = getReconcileToggle(order);
@@ -239,6 +250,9 @@ export function AdminOrdersPage() {
                     <td className="px-3 py-2">
                       <p className="text-sm">{order.buyerName ?? "Unknown user"}</p>
                       <p className="font-mono text-xs text-muted-foreground break-all">{order.buyerUid}</p>
+                    </td>
+                    <td className="hidden px-3 py-2 text-center lg:table-cell">
+                      <Badge variant="outline">{formatOrderType(order.orderType)}</Badge>
                     </td>
                     <td className="hidden px-3 py-2 text-center md:table-cell">{formatProvider(order.provider)}</td>
                     <td className="px-3 py-2 text-center">

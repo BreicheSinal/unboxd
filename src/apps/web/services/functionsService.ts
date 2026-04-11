@@ -17,6 +17,7 @@ export interface TransitionTradeOfferInput {
 }
 
 export interface CreateCodOrderInput {
+  orderType: "jersey" | "artwork";
   size: string;
   exclusions: {
     clubs: string[];
@@ -39,6 +40,7 @@ export interface CreateCodOrderInput {
 
 export interface InitiateWishPaymentInput {
   provider: "wish";
+  orderType: "jersey" | "artwork";
   amount: number;
   billing: {
     fullName: string;

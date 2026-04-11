@@ -1,6 +1,7 @@
 import { createCodOrderCallable, initiateWishPaymentCallable } from "./functionsService";
 
 export type PaymentProvider = "cod" | "wish";
+export type OrderType = "jersey" | "artwork";
 
 export interface BillingDetails {
   fullName: string;
@@ -15,6 +16,7 @@ export interface BillingDetails {
 }
 
 export interface CheckoutRequest {
+  orderType: OrderType;
   size: string;
   exclusions: {
     clubs: string[];
@@ -39,6 +41,7 @@ export async function createOrder(request: CheckoutRequest) {
   if (provider === "wish") {
     return initiateWishPaymentCallable({
       provider: "wish",
+      orderType: request.orderType,
       amount: 34.98,
       billing: request.billing,
       idempotencyKey: createIdempotencyKey("wish"),
@@ -46,6 +49,7 @@ export async function createOrder(request: CheckoutRequest) {
   }
 
   return createCodOrderCallable({
+    orderType: request.orderType,
     size: request.size,
     exclusions: request.exclusions,
     billing: request.billing,

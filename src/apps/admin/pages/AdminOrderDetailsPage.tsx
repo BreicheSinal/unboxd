@@ -214,6 +214,7 @@ export function AdminOrderDetailsPage() {
               <h3>Order</h3>
               <div class="row"><div class="label">Buyer</div><div class="value">${escapeHtml(capitalizeValue(activeOrder.buyerName))}</div></div>
               <div class="row"><div class="label">Provider</div><div class="value">${escapeHtml(formatProviderLabel(activeOrder.provider))}</div></div>
+              <div class="row"><div class="label">Type</div><div class="value">${escapeHtml(capitalizeValue(activeOrder.orderType))}</div></div>
               <div class="row"><div class="label">Size</div><div class="value">${escapeHtml(capitalizeValue(activeOrder.size))}</div></div>
               <div class="row"><div class="label">Status</div><div class="value">${escapeHtml(capitalizeValue(activeOrder.status))}</div></div>
               <div class="row"><div class="label">Payment</div><div class="value">${escapeHtml(capitalizeValue(activeOrder.paymentState))}</div></div>
@@ -455,6 +456,10 @@ export function AdminOrderDetailsPage() {
                 <tr className="border-b border-border">
                   <th className="bg-accent/20 px-3 py-2 text-left text-muted-foreground">Provider</th>
                   <td className="px-3 py-2">{formatProviderLabel(order.provider)}</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <th className="bg-accent/20 px-3 py-2 text-left text-muted-foreground">Order Type</th>
+                  <td className="px-3 py-2">{capitalizeValue(order.orderType)}</td>
                 </tr>
                 <tr className="border-b border-border">
                   <th className="bg-accent/20 px-3 py-2 text-left text-muted-foreground">Size</th>

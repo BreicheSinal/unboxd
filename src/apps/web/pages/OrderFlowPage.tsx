@@ -270,6 +270,7 @@ export function OrderFlowPage() {
 
     try {
       const result = await createOrder({
+        orderType: orderCategory,
         size: selectedSize,
         exclusions,
         paymentProvider: normalizedProvider,

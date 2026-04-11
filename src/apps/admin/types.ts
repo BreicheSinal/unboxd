@@ -15,6 +15,7 @@ export interface AdminOrder {
   id: string;
   buyerUid: string;
   buyerName: string | null;
+  orderType: "jersey" | "artwork" | string;
   provider: string;
   status: string;
   paymentState: string;
