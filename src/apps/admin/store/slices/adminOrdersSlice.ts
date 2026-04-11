@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
 import { fetchAdminOrders, updateAdminOrder } from "../../services/adminApi";
 import type { AdminOrder } from "../../types";
 
@@ -85,7 +85,12 @@ const adminOrdersSlice = createSlice({
   },
 });
 
-export const selectAdminOrders = (state: { adminOrders: AdminOrdersState }) =>
-  state.adminOrders.ids.map((id) => state.adminOrders.entities[id]).filter(Boolean);
+const selectAdminOrderIds = (state: { adminOrders: AdminOrdersState }) => state.adminOrders.ids;
+const selectAdminOrderEntities = (state: { adminOrders: AdminOrdersState }) => state.adminOrders.entities;
+
+export const selectAdminOrders = createSelector(
+  [selectAdminOrderIds, selectAdminOrderEntities],
+  (ids, entities) => ids.map((id) => entities[id]).filter(Boolean),
+);
 
 export default adminOrdersSlice.reducer;

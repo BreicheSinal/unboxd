@@ -101,7 +101,7 @@ export function AdminListingsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="flex-1 border-green-500/40 text-green-300 hover:bg-green-500/10 hover:text-green-200"
+                        className="flex-1 border-[var(--brand-light-purple)]/35 text-[var(--brand-light-purple)] hover:bg-[var(--brand-light-purple)]/10"
                         disabled={isUpdating}
                         onClick={() => void handleModeration(listing.id, "approve")}
                       >
@@ -111,7 +111,7 @@ export function AdminListingsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="flex-1 border-red-500/40 text-red-300 hover:bg-red-500/10 hover:text-red-200"
+                        className="flex-1 border-[var(--brand-vivid-red)]/40 text-[var(--brand-vivid-red)] hover:bg-[var(--brand-vivid-red)]/10"
                         disabled={isUpdating}
                         onClick={() => void handleModeration(listing.id, "reject")}
                       >
@@ -129,7 +129,7 @@ export function AdminListingsPage() {
             ))}
           </div>
 
-          <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
+          <div className="hidden overflow-x-auto table-scrollbar rounded-xl border border-border bg-card md:block">
             <table className="w-full min-w-[860px] text-sm">
               <thead className="bg-accent/30 text-left text-muted-foreground">
                 <tr>
@@ -159,7 +159,7 @@ export function AdminListingsPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="border-green-500/40 text-green-300 hover:bg-green-500/10 hover:text-green-200"
+                              className="border-[var(--brand-light-purple)]/35 text-[var(--brand-light-purple)] hover:bg-[var(--brand-light-purple)]/10"
                               disabled={isUpdating}
                               onClick={() => void handleModeration(listing.id, "approve")}
                             >
@@ -169,7 +169,7 @@ export function AdminListingsPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="border-red-500/40 text-red-300 hover:bg-red-500/10 hover:text-red-200"
+                              className="border-[var(--brand-vivid-red)]/40 text-[var(--brand-vivid-red)] hover:bg-[var(--brand-vivid-red)]/10"
                               disabled={isUpdating}
                               onClick={() => void handleModeration(listing.id, "reject")}
                             >
@@ -199,3 +199,4 @@ export function AdminListingsPage() {
     </section>
   );
 }
+

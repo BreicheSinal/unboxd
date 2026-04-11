@@ -37,12 +37,18 @@ export function AdminPageHeader({
   return (
     <header className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+        <h2 className="text-2xl font-black uppercase tracking-[0.05em]">{title}</h2>
+        <p className="mt-1 text-sm text-[var(--brand-light-purple)]/72">{description}</p>
       </div>
       <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
         {typeof count === "number" ? (
-          <Badge variant="outline" className={cn("px-2.5 text-xs", actionControlClass)}>
+          <Badge
+            variant="outline"
+            className={cn(
+              "border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70 px-2.5 text-xs text-[var(--brand-light-purple)]",
+              actionControlClass,
+            )}
+          >
             {`${count} ${normalizedCountLabel}`}
           </Badge>
         ) : null}
@@ -71,7 +77,10 @@ interface AdminErrorAlertProps {
 
 export function AdminErrorAlert({ message }: AdminErrorAlertProps) {
   return (
-    <Alert variant="destructive" className="mt-4 border-destructive/30 bg-destructive/10">
+    <Alert
+      variant="destructive"
+      className="mt-4 border-[var(--brand-vivid-red)]/35 bg-[var(--brand-vivid-red)]/12 text-[var(--brand-light-purple)]"
+    >
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Request failed</AlertTitle>
       <AlertDescription>{message}</AlertDescription>
@@ -183,7 +192,7 @@ interface AdminStatusBadgeProps {
 const toneByKeyword: Array<{ test: RegExp; className: string }> = [
   { test: /(completed|approved|paid|reconciled|enabled|active)/i, className: "text-emerald-300" },
   { test: /(pending|queued|review|shipped|accepted)/i, className: "text-amber-300" },
-  { test: /(rejected|failed|cancelled|canceled|disabled|refunded)/i, className: "text-rose-300" },
+  { test: /(rejected|failed|cancelled|canceled|disabled|refunded)/i, className: "text-[var(--brand-vivid-red)]" },
 ];
 
 export function AdminStatusBadge({ value }: AdminStatusBadgeProps) {
@@ -191,7 +200,13 @@ export function AdminStatusBadge({ value }: AdminStatusBadgeProps) {
   const tone = toneByKeyword.find(({ test }) => test.test(normalized));
 
   return (
-    <Badge variant="outline" className={cn("border-0 bg-transparent capitalize text-muted-foreground", tone?.className)}>
+    <Badge
+      variant="outline"
+      className={cn(
+        "border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/65 capitalize text-[var(--brand-light-purple)]/72",
+        tone?.className,
+      )}
+    >
       {normalized}
     </Badge>
   );
@@ -214,11 +229,11 @@ interface AdminEmptyStateProps {
 export function AdminEmptyState({ icon: Icon, title, subtitle, className }: AdminEmptyStateProps) {
   return (
     <div className={cn("flex flex-col items-center justify-center gap-2 py-8 text-center", className)}>
-      <div className="rounded-full border border-border/80 bg-accent/20 p-2.5">
-        <Icon className="h-5 w-5 text-muted-foreground" />
+      <div className="rounded-full border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/65 p-2.5">
+        <Icon className="h-5 w-5 text-[var(--brand-light-purple)]/70" />
       </div>
       <p className="text-sm font-semibold">{title}</p>
-      <p className="max-w-md text-xs text-muted-foreground">{subtitle}</p>
+      <p className="max-w-md text-xs text-[var(--brand-light-purple)]/70">{subtitle}</p>
     </div>
   );
 }

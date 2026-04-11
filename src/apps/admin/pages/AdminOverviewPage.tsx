@@ -30,7 +30,7 @@ function MetricCard({ label, value, hint, tone = "neutral" }: MetricCardProps) {
       ? "border-emerald-500/30 bg-emerald-500/5"
       : tone === "warning"
         ? "border-amber-500/30 bg-amber-500/5"
-        : "border-border/80 bg-card";
+        : "border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/65";
 
   return (
     <Card className={toneClass}>
@@ -116,15 +116,15 @@ export function AdminOverviewPage() {
                     <p className="text-xs text-muted-foreground">Completed Transactions</p>
                     <p className="text-xs font-medium">{completionRate}%</p>
                   </div>
-                  <p className="mt-1 text-xl font-semibold">
-                    {completedTransactions} / {totalTransactions}
-                  </p>
-                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-background">
+                    <p className="mt-1 text-xl font-semibold">
+                      {completedTransactions} / {totalTransactions}
+                    </p>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-background">
                     <div className="h-full rounded-full bg-emerald-500/80" style={{ width: `${completionRate}%` }} />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
             <Card className="border-emerald-500/25 bg-emerald-500/5">
               <CardContent className="space-y-4 p-5">

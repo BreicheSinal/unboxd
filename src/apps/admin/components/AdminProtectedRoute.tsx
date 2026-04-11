@@ -17,10 +17,10 @@ export function AdminProtectedRoute({ children }: { children: ReactNode }) {
 
   if (!user.isAdmin) {
     return (
-      <div className="flex min-h-screen items-center justify-center px-4">
-        <div className="max-w-md rounded-xl border border-red-500/30 bg-red-500/10 p-6 text-center">
-          <h1 className="text-xl font-semibold text-red-400">Access denied</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
+      <div className="admin-surface flex min-h-screen items-center justify-center px-4">
+        <div className="max-w-md border border-[var(--brand-vivid-red)]/35 bg-[var(--brand-vivid-red)]/12 p-6 text-center">
+          <h1 className="text-xl font-semibold uppercase tracking-[0.06em] text-[var(--brand-vivid-red)]">Access denied</h1>
+          <p className="mt-2 text-sm text-[var(--brand-light-purple)]/75">
             Your account is authenticated but does not have the required admin claim.
           </p>
         </div>

@@ -95,7 +95,9 @@ export function AdminUsersPage() {
   };
 
   const roleTextClass = (role: string) =>
-    role.toLowerCase() === "admin" ? "text-amber-300" : "text-sky-300";
+    role.toLowerCase() === "admin"
+      ? "text-[var(--brand-vivid-red)]"
+      : "text-emerald-300";
 
   return (
     <section>
@@ -155,10 +157,18 @@ export function AdminUsersPage() {
                   <AdminStatusBadge value={user.disabled ? "disabled" : "enabled"} />
                   <span
                     className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ${
-                      user.isOnline ? "text-emerald-400" : "text-zinc-500"
+                      user.isOnline
+                        ? "text-emerald-300"
+                        : "text-amber-300"
                     }`}
                   >
-                    <span className={`h-2 w-2 rounded-full ${user.isOnline ? "bg-emerald-400" : "bg-zinc-500"}`} />
+                    <span
+                      className={`h-2 w-2 rounded-full ${
+                        user.isOnline
+                          ? "bg-emerald-300"
+                          : "bg-amber-300"
+                      }`}
+                    />
                     {user.isOnline ? "Online" : "Offline"}
                   </span>
                 </div>
@@ -166,7 +176,7 @@ export function AdminUsersPage() {
                 <p className="mt-1 text-xs text-muted-foreground">Last seen: {formatDateTime(user.lastSeenAt ?? null)}</p>
                 <div className="mt-3">
                   {user.uid === currentAdminUid ? (
-                    <Badge variant="outline" className="border-0 bg-red-500/10 text-xs text-red-400">
+                    <Badge variant="outline" className="border-0 bg-destructive/15 text-xs text-destructive">
                       Current account
                     </Badge>
                   ) : (
@@ -212,7 +222,7 @@ export function AdminUsersPage() {
             ))}
           </div>
 
-          <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
+          <div className="hidden overflow-x-auto table-scrollbar rounded-xl border border-border bg-card md:block">
             <table className="w-full min-w-[860px] text-sm">
               <thead className="bg-accent/30 text-left text-muted-foreground">
                 <tr>
@@ -243,10 +253,18 @@ export function AdminUsersPage() {
                     <td className="px-3 py-2 text-center">
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ${
-                          user.isOnline ? "text-emerald-400" : "text-zinc-500"
+                          user.isOnline
+                            ? "text-emerald-300"
+                            : "text-amber-300"
                         }`}
                       >
-                        <span className={`h-2 w-2 rounded-full ${user.isOnline ? "bg-emerald-400" : "bg-zinc-500"}`} />
+                        <span
+                          className={`h-2 w-2 rounded-full ${
+                            user.isOnline
+                              ? "bg-emerald-300"
+                              : "bg-amber-300"
+                          }`}
+                        />
                         {user.isOnline ? "Online" : "Offline"}
                       </span>
                     </td>
@@ -256,7 +274,7 @@ export function AdminUsersPage() {
                     </td>
                     <td className="px-3 py-2">
                       {user.uid === currentAdminUid ? (
-                        <Badge variant="outline" className="border-0 bg-red-500/10 text-xs text-red-400">
+                        <Badge variant="outline" className="border-0 bg-destructive/15 text-xs text-destructive">
                           Current account
                         </Badge>
                       ) : (
@@ -304,3 +322,4 @@ export function AdminUsersPage() {
     </section>
   );
 }
+

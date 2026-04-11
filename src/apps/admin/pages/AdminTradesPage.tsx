@@ -131,7 +131,7 @@ export function AdminTradesPage() {
             })}
           </div>
 
-          <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
+          <div className="hidden overflow-x-auto table-scrollbar rounded-xl border border-border bg-card md:block">
             <table className="w-full min-w-[920px] text-sm">
               <thead className="bg-accent/30 text-left text-muted-foreground">
                 <tr>
@@ -197,3 +197,4 @@ export function AdminTradesPage() {
     </section>
   );
 }
+
