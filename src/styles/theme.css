@@ -388,3 +388,44 @@ html.dark {
   position: relative;
   z-index: 1;
 }
+
+/* Shared horizontal table scrollbar: thin and brand-aligned across admin/web data tables. */
+.table-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(245 244 248 / 0.78) rgb(245 244 248 / 0.2);
+}
+
+.table-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.table-scrollbar::-webkit-scrollbar-track {
+  background: rgb(245 244 248 / 0.18);
+}
+
+.table-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(
+      90deg,
+      rgb(245 244 248 / 0.9) 0%,
+      rgb(245 244 248 / 0.72) 100%
+    );
+  background-clip: padding-box;
+}
+
+.table-scrollbar:hover::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(
+      90deg,
+      rgb(245 244 248 / 1) 0%,
+      rgb(245 244 248 / 0.82) 100%
+    );
+  background-clip: padding-box;
+}
+
+.table-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}

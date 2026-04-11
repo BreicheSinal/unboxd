@@ -434,7 +434,7 @@ export function AdminOrderDetailsPage() {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-border bg-card">
+          <div className="overflow-x-auto table-scrollbar rounded-xl border border-border bg-card">
             <table className="w-full min-w-[640px] text-sm">
               <tbody>
                 <tr className="border-b border-border">
@@ -535,7 +535,7 @@ export function AdminOrderDetailsPage() {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-border bg-card">
+          <div className="overflow-x-auto table-scrollbar rounded-xl border border-border bg-card">
             <div className="border-b border-border px-4 py-3">
               <h3 className="text-sm font-medium">Related Transactions</h3>
             </div>
@@ -580,3 +580,4 @@ export function AdminOrderDetailsPage() {
     </section>
   );
 }
+
