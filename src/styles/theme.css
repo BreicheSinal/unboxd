@@ -45,6 +45,34 @@
   --sidebar-ring: var(--brand-vivid-red);
 }
 
+/* Force all red/rose utility shades to the exact brand vivid red in all themes. */
+:root,
+html.dark {
+  --color-red-50: var(--brand-vivid-red);
+  --color-red-100: var(--brand-vivid-red);
+  --color-red-200: var(--brand-vivid-red);
+  --color-red-300: var(--brand-vivid-red);
+  --color-red-400: var(--brand-vivid-red);
+  --color-red-500: var(--brand-vivid-red);
+  --color-red-600: var(--brand-vivid-red);
+  --color-red-700: var(--brand-vivid-red);
+  --color-red-800: var(--brand-vivid-red);
+  --color-red-900: var(--brand-vivid-red);
+  --color-red-950: var(--brand-vivid-red);
+
+  --color-rose-50: var(--brand-vivid-red);
+  --color-rose-100: var(--brand-vivid-red);
+  --color-rose-200: var(--brand-vivid-red);
+  --color-rose-300: var(--brand-vivid-red);
+  --color-rose-400: var(--brand-vivid-red);
+  --color-rose-500: var(--brand-vivid-red);
+  --color-rose-600: var(--brand-vivid-red);
+  --color-rose-700: var(--brand-vivid-red);
+  --color-rose-800: var(--brand-vivid-red);
+  --color-rose-900: var(--brand-vivid-red);
+  --color-rose-950: var(--brand-vivid-red);
+}
+
 .dark {
   --background: var(--brand-dark-azure);
   --foreground: var(--brand-light-purple);
