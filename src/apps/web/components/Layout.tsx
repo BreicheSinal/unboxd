@@ -558,19 +558,23 @@ export function Layout() {
               </div>
             </div>
             <div className="mt-10 border-t border-[var(--brand-light-purple)]/15 pt-6 text-sm text-[var(--brand-light-purple)]/65">
-              &copy; 2026 Unboxd. All rights reserved.
-              <span className="mx-2" aria-hidden="true">
-                &bull;
-              </span>
-              Developed by{" "}
-              <a
-                href="https://invixlab.com"
-                target="_blank"
-                rel="noreferrer"
-                className="text-[var(--brand-vivid-red)] transition-colors hover:text-red-300"
-              >
-                InvixLab
-              </a>
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span>&copy; 2026 Unboxd. All rights reserved.</span>
+                <span className="hidden sm:inline" aria-hidden="true">
+                  &bull;
+                </span>
+                <span>
+                  Developed by{" "}
+                  <a
+                    href="https://invixlab.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[var(--brand-vivid-red)] transition-colors hover:text-red-300"
+                  >
+                    InvixLab
+                  </a>
+                </span>
+              </p>
             </div>
           </div>
         </footer>

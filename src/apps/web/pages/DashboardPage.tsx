@@ -16,6 +16,7 @@ interface RecentOrder {
 
 export function DashboardPage() {
   const user = useAppSelector((state) => state.auth.user);
+  const userUid = user?.uid;
   const [summary, setSummary] = useState({
     totalOrders: 0,
     shirtsOwned: 0,
@@ -27,7 +28,7 @@ export function DashboardPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useAsyncEffect(async ({ isActive }) => {
-    if (!user) {
+    if (!userUid) {
       setSummary({
         totalOrders: 0,
         shirtsOwned: 0,
@@ -44,8 +45,8 @@ export function DashboardPage() {
 
     try {
       const [result, transactions] = await Promise.all([
-        getDashboardSummary(user.uid),
-        getTransactionsForUser(user.uid),
+        getDashboardSummary(userUid),
+        getTransactionsForUser(userUid),
       ]);
       if (!isActive()) return;
 
@@ -84,7 +85,7 @@ export function DashboardPage() {
       setRecentOrders([]);
       setIsLoading(false);
     }
-  }, [user]);
+  }, [userUid]);
 
   const stats = useMemo(
     () => [
