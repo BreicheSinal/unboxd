@@ -35,8 +35,8 @@ export function PreviewSection({ tone = "light" }: PreviewSectionProps) {
   return (
     <HomeSectionLayout
       id="you-might-get"
-      title="You Might Get..."
-      subtitle="A few possible reveals from the next box we pack for you."
+      title="Possible Next Drops"
+      subtitle="A few reveal styles that might land in your next mystery box."
       tone={tone}
     >
       <div className="relative mx-auto w-full max-w-6xl">
@@ -44,15 +44,15 @@ export function PreviewSection({ tone = "light" }: PreviewSectionProps) {
         <div className="pointer-events-none absolute -right-12 bottom-8 h-40 w-40 rounded-full bg-[var(--brand-dark-azure)]/20 blur-3xl" />
 
         <div className="mb-5 flex items-center justify-between gap-4 px-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brand-vivid-red)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brand-vivid-red)]">
             Curated Preview
           </p>
-          <p className="text-sm text-[var(--brand-dark-azure)]/70">
-            Hover to sharpen the reveal
+          <p className="text-xs uppercase tracking-[0.14em] text-[var(--brand-dark-azure)]/70">
+            Hover to sharpen
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:grid-rows-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {previewDrops.map((drop, index) => (
             <motion.div
               key={`${drop.title}-${index}`}
@@ -60,37 +60,30 @@ export function PreviewSection({ tone = "light" }: PreviewSectionProps) {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: index * 0.12 }}
               viewport={{ once: true }}
-              className={`group relative isolate overflow-hidden ${homeSectionTheme.panelClass} ${
-                index === 0
-                  ? "min-h-[420px] md:col-span-7 md:row-span-2 md:min-h-[560px]"
-                  : "min-h-[260px] md:col-span-5"
-              }`}
+              className={`group relative isolate overflow-hidden ${homeSectionTheme.panelClass}`}
             >
-              <img
-                src={drop.image}
-                alt={`Mystery shirt preview: ${drop.title}`}
-                className="h-full w-full object-cover blur-[2px] transition-all duration-500 group-hover:scale-105 group-hover:blur-0"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/5" />
-              <div className="absolute inset-0 p-6 md:p-8">
-                <div className="flex h-full flex-col justify-between">
-                  <div className="inline-flex w-fit items-center rounded-full border border-white/20 bg-black/30 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white/90">
-                    {drop.era}
-                  </div>
+              <div className="relative h-[220px] overflow-hidden border-b border-white/15">
+                <img
+                  src={drop.image}
+                  alt={`Mystery shirt preview: ${drop.title}`}
+                  className="h-full w-full object-cover saturate-110 transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute left-4 top-4 inline-flex w-fit items-center border border-white/25 bg-black/35 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white/90">
+                  {drop.era}
+                </div>
+              </div>
 
-                  <div>
-                    <h3 className="max-w-lg text-2xl font-bold leading-tight text-white md:text-3xl">
-                      {drop.title}
-                    </h3>
-                    <p className="mt-2 max-w-lg text-sm leading-relaxed text-white/85 md:text-base">
-                      {drop.note}
-                    </p>
-
-                    <div className="mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/90">
-                      <span className="h-2 w-2 rounded-full bg-[var(--brand-vivid-red)]" />
-                      Reveal on unboxing
-                    </div>
-                  </div>
+              <div className="p-5 md:p-6">
+                <h3 className="text-2xl font-black uppercase leading-[0.95] text-[var(--brand-light-purple)]">
+                  {drop.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--brand-light-purple)]/80 md:text-base">
+                  {drop.note}
+                </p>
+                <div className="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-light-purple)]/90">
+                  <span className="h-2 w-2 bg-[var(--brand-vivid-red)]" />
+                  Reveal on unboxing
                 </div>
               </div>
             </motion.div>

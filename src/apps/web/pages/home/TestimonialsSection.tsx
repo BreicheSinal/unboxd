@@ -32,47 +32,49 @@ type TestimonialsSectionProps = {
 };
 
 export function TestimonialsSection({ tone = "dark" }: TestimonialsSectionProps) {
-  const cardClass =
+  const sectionClass =
     tone === "dark"
-      ? "h-full min-h-[240px] rounded-2xl border border-[var(--brand-light-purple)]/15 bg-[rgb(0_31_36)] p-6 text-[var(--brand-light-purple)]"
-      : "h-full min-h-[240px] rounded-2xl border border-[var(--brand-dark-azure)]/15 bg-[var(--brand-dark-azure)] p-6 text-[var(--brand-light-purple)]";
+      ? "border border-[var(--brand-light-purple)]/20 bg-[rgb(0_31_36)] text-[var(--brand-light-purple)]"
+      : "border border-[var(--brand-dark-azure)]/20 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)]";
 
   return (
     <HomeSectionLayout
       id="what-customers-say"
-      title="What Our Customers Say"
-      subtitle="Join thousands of satisfied mystery shirt collectors"
+      title="Collector Feedback"
+      subtitle="What repeat buyers say after opening their drops."
       tone={tone}
     >
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
+      <div className={`mx-auto w-full max-w-6xl ${sectionClass}`}>
         {testimonials.map((testimonial, index) => (
           <motion.div
             key={testimonial.name}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 22 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.2 }}
+            transition={{ delay: index * 0.12 }}
             viewport={{ once: true }}
-            className={cardClass}
+            className="grid grid-cols-[1fr_auto] gap-6 border-b border-[var(--brand-light-purple)]/15 p-6 last:border-b-0 md:grid-cols-[220px_1fr_auto] md:items-center md:p-8"
           >
-            <div className="mb-4 flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <img
                 src={testimonial.image}
                 alt={testimonial.name}
-                className="h-12 w-12 rounded-full object-cover"
+                className="h-14 w-14 border border-[var(--brand-light-purple)]/25 object-cover"
               />
-              <div>
-                <h4 className="font-bold">{testimonial.name}</h4>
-                <div className="flex gap-1">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star
-                      key={`${testimonial.name}-rating-${i}`}
-                      className="h-4 w-4 fill-yellow-500 text-yellow-500"
-                    />
-                  ))}
-                </div>
-              </div>
+              <h4 className="text-base font-bold uppercase tracking-[0.08em]">
+                {testimonial.name}
+              </h4>
             </div>
-            <p className="opacity-80">{testimonial.text}</p>
+            <p className="col-span-2 text-base leading-relaxed opacity-85 md:col-span-1 md:text-lg">
+              {testimonial.text}
+            </p>
+            <div className="col-span-2 flex gap-1 md:col-span-1 md:justify-end">
+              {Array.from({ length: testimonial.rating }).map((_, i) => (
+                <Star
+                  key={`${testimonial.name}-rating-${i}`}
+                  className="h-4 w-4 fill-yellow-500 text-yellow-500"
+                />
+              ))}
+            </div>
           </motion.div>
         ))}
       </div>

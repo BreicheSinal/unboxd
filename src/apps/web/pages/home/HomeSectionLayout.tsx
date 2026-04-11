@@ -27,10 +27,10 @@ export function HomeSectionLayout({
   const backgroundClass =
     tone === "dark" ? "bg-[var(--brand-dark-azure)]" : "bg-[var(--brand-light-purple)]";
   const titleClass = isInverted
-    ? "text-3xl font-bold text-[var(--brand-light-purple)] md:text-5xl"
+    ? "max-w-4xl text-4xl font-black uppercase leading-[0.95] text-[var(--brand-light-purple)] md:text-6xl"
     : homeSectionTheme.titleClass;
   const subtitleClass = isInverted
-    ? "mt-3 text-lg text-[var(--brand-light-purple)] opacity-75"
+    ? "mt-4 max-w-2xl text-base text-[var(--brand-light-purple)]/75 md:text-lg"
     : homeSectionTheme.subtitleClass;
 
   return (
@@ -42,6 +42,7 @@ export function HomeSectionLayout({
       transition={{ duration: 0.6 }}
       viewport={{ once: true, amount: 0.15 }}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[var(--brand-light-purple)]/20" />
       <div className={homeSectionTheme.containerClass}>
         <div className={homeSectionTheme.innerClass}>
           {(title || subtitle) && (

@@ -402,28 +402,36 @@ export function Layout() {
       </main>
 
       {!isAuthPage && !user && (
-        <section className="bg-[var(--brand-dark-azure)] py-16">
-          <div className="container mx-auto px-4">
+        <section className="relative bg-[var(--brand-dark-azure)] py-20 md:py-24">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[var(--brand-light-purple)]/20" />
+          <div className="container mx-auto px-5 md:px-6">
             <div className="mx-auto w-full max-w-6xl">
-              <div className="mx-auto mb-10 w-full max-w-3xl text-center">
-                <h2 className="text-3xl font-bold text-[var(--brand-light-purple)] md:text-5xl">
+              <div className="mb-10 w-full max-w-4xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--brand-vivid-red)]">
+                  Need Answers First
+                </p>
+                <h2 className="mt-5 text-4xl font-black uppercase leading-[0.95] text-[var(--brand-light-purple)] md:text-6xl">
                   Frequently Asked Questions
                 </h2>
-                <p className="mt-3 text-lg text-[var(--brand-light-purple)] opacity-75">
+                <p className="mt-4 max-w-2xl text-base text-[var(--brand-light-purple)]/75 md:text-lg">
                   Quick answers before you place your next mystery order.
                 </p>
               </div>
-              <div className="space-y-3">
-                {faqItems.map((item) => (
+              <div className="border border-[var(--brand-light-purple)]/20 bg-[rgb(0_31_36)] text-[var(--brand-light-purple)]">
+                {faqItems.map((item, index) => (
                   <details
                     key={item.question}
-                    className="group rounded-2xl border border-[var(--brand-light-purple)]/15 bg-[rgb(0_31_36)] px-4 py-3 text-[var(--brand-light-purple)] transition-opacity hover:opacity-95"
+                    className={`group px-5 py-4 transition-opacity hover:opacity-95 md:px-6 md:py-5 ${
+                      index === faqItems.length - 1
+                        ? ""
+                        : "border-b border-[var(--brand-light-purple)]/20"
+                    }`}
                   >
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-medium marker:content-['']">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold uppercase tracking-[0.08em] marker:content-[''] md:text-base">
                       <span>{item.question}</span>
                       <ChevronDown className="h-4 w-4 shrink-0 opacity-80 transition-transform duration-200 group-open:rotate-180" />
                     </summary>
-                    <p className="mt-3 text-sm opacity-80">
+                    <p className="mt-3 max-w-3xl text-sm leading-relaxed opacity-80 md:text-base">
                       {item.answer}
                     </p>
                   </details>
@@ -436,27 +444,29 @@ export function Layout() {
 
       {/* Footer */}
       {!isAuthPage && (
-        <footer className="border-t border-border">
-          <div className="container mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <footer className="border-t border-[var(--brand-light-purple)]/15 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)]">
+          <div className="container mx-auto px-5 py-12 md:px-6 md:py-14">
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
               <div>
-                <img src={logoSrc} alt="Unboxd" className="h-6 w-auto mb-4" />
-                <p className="text-sm text-muted-foreground">
+                <img src={logoSrc} alt="Unboxd" className="mb-5 h-6 w-auto" />
+                <p className="max-w-xs text-sm leading-relaxed text-[var(--brand-light-purple)]/70">
                   Discover the thrill of mystery sports shirts. Every order is a
                   surprise!
                 </p>
               </div>
               <div>
-                <h4 className="font-bold mb-4">Shop</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+                <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand-vivid-red)]">
+                  Shop
+                </h4>
+                <ul className="space-y-2 text-sm text-[var(--brand-light-purple)]/75">
                   <li>
-                    <Link to="/order" className="hover:text-foreground">
+                    <Link to="/order" className="transition-colors hover:text-white">
                       Order Now
                     </Link>
                   </li>
                   {user && (
                     <li>
-                      <Link to="/marketplace" className="hover:text-foreground">
+                      <Link to="/marketplace" className="transition-colors hover:text-white">
                         Marketplace
                       </Link>
                     </li>
@@ -464,29 +474,31 @@ export function Layout() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold mb-4">Account</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+                <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand-vivid-red)]">
+                  Account
+                </h4>
+                <ul className="space-y-2 text-sm text-[var(--brand-light-purple)]/75">
                   {user ? (
                     <>
                       <li>
-                        <Link to="/dashboard" className="hover:text-foreground">
+                        <Link to="/dashboard" className="transition-colors hover:text-white">
                           Dashboard
                         </Link>
                       </li>
                       <li>
-                        <Link to="/closet" className="hover:text-foreground">
+                        <Link to="/closet" className="transition-colors hover:text-white">
                           My Closet
                         </Link>
                       </li>
                       <li>
-                        <Link to="/badges" className="hover:text-foreground">
+                        <Link to="/badges" className="transition-colors hover:text-white">
                           Badges
                         </Link>
                       </li>
                       <li>
                         <Link
                           to="/transactions"
-                          className="hover:text-foreground"
+                          className="transition-colors hover:text-white"
                         >
                           History
                         </Link>
@@ -495,12 +507,12 @@ export function Layout() {
                   ) : (
                     <>
                       <li>
-                        <Link to="/signin" className="hover:text-foreground">
+                        <Link to="/signin" className="transition-colors hover:text-white">
                           Sign In
                         </Link>
                       </li>
                       <li>
-                        <Link to="/signup" className="hover:text-foreground">
+                        <Link to="/signup" className="transition-colors hover:text-white">
                           Sign Up
                         </Link>
                       </li>
@@ -509,27 +521,29 @@ export function Layout() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold mb-4">Support</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+                <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand-vivid-red)]">
+                  Support
+                </h4>
+                <ul className="space-y-2 text-sm text-[var(--brand-light-purple)]/75">
                   <li>
-                    <Link to="/help-center" className="hover:text-foreground">
+                    <Link to="/help-center" className="transition-colors hover:text-white">
                       Help Center
                     </Link>
                   </li>
                   <li>
-                    <Link to="/contact-us" className="hover:text-foreground">
+                    <Link to="/contact-us" className="transition-colors hover:text-white">
                       Contact Us
                     </Link>
                   </li>
                   <li>
-                    <Link to="/returns" className="hover:text-foreground">
+                    <Link to="/returns" className="transition-colors hover:text-white">
                       Returns
                     </Link>
                   </li>
                 </ul>
               </div>
             </div>
-            <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
+            <div className="mt-10 border-t border-[var(--brand-light-purple)]/15 pt-6 text-sm text-[var(--brand-light-purple)]/65">
               &copy; 2026 Unboxd. All rights reserved.
               <span className="mx-2" aria-hidden="true">
                 &bull;
@@ -539,7 +553,7 @@ export function Layout() {
                 href="https://invixlab.com"
                 target="_blank"
                 rel="noreferrer"
-                className="text-red-500 hover:text-red-400"
+                className="text-[var(--brand-vivid-red)] transition-colors hover:text-red-300"
               >
                 InvixLab
               </a>

@@ -1,10 +1,11 @@
 export const homeSectionTheme = {
-  sectionClass: "py-20",
-  containerClass: "container mx-auto px-4",
+  sectionClass: "relative py-24 md:py-28",
+  containerClass: "container mx-auto px-5 md:px-6",
   innerClass: "mx-auto w-full max-w-6xl",
-  headerClass: "mx-auto mb-14 w-full max-w-3xl text-center",
-  titleClass: "text-3xl font-bold text-[var(--brand-dark-azure)] md:text-5xl",
-  subtitleClass: "mt-3 text-lg text-[var(--brand-dark-azure)] opacity-70",
+  headerClass: "mb-12 w-full",
+  titleClass:
+    "max-w-4xl text-4xl font-black uppercase leading-[0.95] text-[var(--brand-dark-azure)] md:text-6xl",
+  subtitleClass: "mt-4 max-w-2xl text-base text-[var(--brand-dark-azure)]/75 md:text-lg",
   panelClass:
-    "rounded-2xl border border-[var(--brand-dark-azure)] bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)]",
+    "border border-[var(--brand-dark-azure)] bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)]",
 };

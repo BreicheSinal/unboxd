@@ -59,36 +59,34 @@ export function HowItWorksSection({ tone = "light" }: HowItWorksSectionProps) {
     <HomeSectionLayout
       id="how-it-works"
       title="How It Works"
-      subtitle="Build your football shirt collection in five clear steps"
+      subtitle="Build your football shirt collection in five clear moves."
       className="scroll-mt-20"
       tone={tone}
     >
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[1.05fr_1.2fr_1fr]">
-        <div
-          className={`${homeSectionTheme.panelClass} flex flex-col justify-between p-7 md:p-8`}
-        >
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className={`${homeSectionTheme.panelClass} flex flex-col justify-between p-8 md:p-10`}>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand-vivid-red)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--brand-vivid-red)]">
               Mystery Football
             </p>
-            <h3 className="mt-4 text-3xl font-bold leading-tight md:text-5xl">
-              The smartest way to grow your shirt collection.
+            <h3 className="mt-5 text-3xl font-black uppercase leading-[0.95] md:text-5xl">
+              Five Steps. Zero Noise.
             </h3>
-            <p className="mt-5 text-base leading-relaxed opacity-85 md:text-lg">
-              Each order is guided by your size and exclusions, then curated by
-              our team to keep every unboxing fresh.
+            <p className="mt-6 max-w-lg text-base leading-relaxed opacity-85 md:text-lg">
+              You set the fit and exclusions. We handle the curation. Every drop
+              stays surprising without becoming random.
             </p>
           </div>
 
           <Link
             to="/order/size"
-            className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-[var(--brand-vivid-red)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#c30f37] md:w-fit"
+            className="mt-10 inline-flex w-full items-center justify-center border border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] px-6 py-4 text-sm font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-[#c30f37] md:w-fit"
           >
             Start Your Box
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:auto-rows-fr">
+        <div className="border border-[var(--brand-dark-azure)] bg-[var(--brand-light-purple)]/60">
           {steps.map((step, index) => {
             const Icon = step.icon;
 
@@ -99,55 +97,44 @@ export function HowItWorksSection({ tone = "light" }: HowItWorksSectionProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.12 }}
                 viewport={{ once: true }}
-                className={`relative overflow-hidden rounded-2xl border border-[var(--brand-dark-azure)] bg-[var(--brand-dark-azure)] p-5 text-[var(--brand-light-purple)] ${
-                  index === 0 ? "sm:col-span-2" : ""
-                }`}
+                className="grid grid-cols-[auto_1fr] gap-4 border-b border-[var(--brand-dark-azure)]/25 p-5 text-[var(--brand-dark-azure)] last:border-b-0 md:grid-cols-[72px_1fr] md:gap-6 md:p-6"
               >
-                <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[var(--brand-vivid-red)]/30 blur-2xl" />
-                <div className="relative flex h-full flex-col">
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="text-3xl font-extrabold leading-none text-white/85">
-                      {index + 1}
-                    </span>
-                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[var(--brand-light-purple)]/15 text-[var(--brand-light-purple)]">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                  </div>
-                  <h4 className="text-lg font-bold leading-snug">{step.title}</h4>
-                  <p className="mt-2 text-sm leading-relaxed opacity-85">
+                <div className="flex items-start gap-3 md:flex-col md:gap-4">
+                  <span className="text-2xl font-black leading-none text-[var(--brand-vivid-red)] md:text-3xl">
+                    {index + 1}
+                  </span>
+                  <span className="inline-flex h-10 w-10 items-center justify-center border border-[var(--brand-dark-azure)]/30 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)] md:h-11 md:w-11">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold uppercase leading-snug md:text-xl">
+                    {step.title}
+                  </h4>
+                  <p className="mt-2 text-sm leading-relaxed opacity-85 md:text-base">
                     {step.description}
                   </p>
-                  <p className="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--brand-vivid-red)]">
+                  <p className="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-vivid-red)]">
                     {step.detail}
                   </p>
                 </div>
               </motion.div>
             );
           })}
-        </div>
 
-        <div className="rounded-2xl border border-[var(--brand-dark-azure)]/20 bg-[var(--brand-light-purple)] p-7 text-[var(--brand-dark-azure)] md:p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--brand-vivid-red)]">
-            Why This Flow Works
-          </p>
-          <p className="mt-5 text-base leading-relaxed opacity-85 md:text-lg">
-            You keep control over fit and exclusions while we handle the
-            discovery. That means better surprises with less guesswork.
-          </p>
-
-          <div className="mt-7 space-y-3">
+          <div className="grid grid-cols-1 border-t border-[var(--brand-dark-azure)]/25 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)] sm:grid-cols-2">
             {[
-              "Clear sizing and preferences before checkout",
-              "No duplicates from teams you choose to avoid",
-              "Curated shirts from clubs and leagues worldwide",
-              "Tracked shipping and support after every order",
+              "Sizing and preferences locked before checkout",
+              "No duplicates from teams you exclude",
+              "Clubs and leagues sourced globally",
+              "Tracked shipping plus responsive support",
             ].map((point) => (
               <div
                 key={point}
-                className="flex items-start gap-3 rounded-xl border border-[var(--brand-dark-azure)]/20 bg-white/60 px-3 py-3"
+                className="flex items-start gap-3 border-b border-[var(--brand-light-purple)]/20 px-5 py-4 text-sm leading-relaxed last:border-b-0 sm:border-r sm:last:border-r-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
               >
                 <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--brand-vivid-red)]" />
-                <p className="text-sm leading-relaxed">{point}</p>
+                <p>{point}</p>
               </div>
             ))}
           </div>
