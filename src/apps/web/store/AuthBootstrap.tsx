@@ -24,7 +24,7 @@ function profileFromFirebaseUser(firebaseUser: User): UserProfile {
     role: "user",
     favoriteLeagues: [],
     sizePreferences: [],
-    theme: "system",
+    theme: "dark",
   };
 }
 

@@ -160,7 +160,7 @@ async function bootstrapUserProfileViaApi(firebaseUser: User): Promise<UserProfi
     role: (data.role as UserProfile["role"]) ?? "user",
     favoriteLeagues: Array.isArray(data.favoriteLeagues) ? (data.favoriteLeagues as string[]) : [],
     sizePreferences: Array.isArray(data.sizePreferences) ? (data.sizePreferences as string[]) : [],
-    theme: (data.theme as UserProfile["theme"]) ?? "system",
+    theme: (data.theme as UserProfile["theme"]) ?? "dark",
   };
 }
 
@@ -182,7 +182,7 @@ export async function upsertUserProfile(firebaseUser: User): Promise<UserProfile
         photoURL: firebaseUser.photoURL ?? "",
         provider: mapProvider(firebaseUser.providerData[0]?.providerId),
         role: "user",
-        theme: existingData?.theme ?? "system",
+        theme: existingData?.theme ?? "dark",
         updatedAt: serverTimestamp(),
         createdAt: existingData?.createdAt ?? serverTimestamp(),
       },
@@ -230,7 +230,7 @@ export async function upsertUserProfile(firebaseUser: User): Promise<UserProfile
       role: data?.role ?? "user",
       favoriteLeagues: finalFavoriteLeagues,
       sizePreferences: finalSizePreferences,
-      theme: data?.theme ?? "system",
+      theme: data?.theme ?? "dark",
       createdAt: parseDate(data?.createdAt),
       updatedAt: parseDate(data?.updatedAt),
     };
