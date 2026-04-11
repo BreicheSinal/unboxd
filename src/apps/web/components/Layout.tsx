@@ -417,11 +417,11 @@ export function Layout() {
                   Quick answers before you place your next mystery order.
                 </p>
               </div>
-              <div className="border border-[var(--brand-light-purple)]/20 bg-[rgb(0_31_36)] text-[var(--brand-light-purple)]">
+              <div className="border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)]">
                 {faqItems.map((item, index) => (
                   <details
                     key={item.question}
-                    className={`group px-5 py-4 transition-opacity hover:opacity-95 md:px-6 md:py-5 ${
+                    className={`group bg-[var(--brand-dark-azure)] px-5 py-4 md:px-6 md:py-5 ${
                       index === faqItems.length - 1
                         ? ""
                         : "border-b border-[var(--brand-light-purple)]/20"

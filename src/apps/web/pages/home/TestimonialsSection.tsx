@@ -34,8 +34,16 @@ type TestimonialsSectionProps = {
 export function TestimonialsSection({ tone = "dark" }: TestimonialsSectionProps) {
   const sectionClass =
     tone === "dark"
-      ? "border border-[var(--brand-light-purple)]/20 bg-[rgb(0_31_36)] text-[var(--brand-light-purple)]"
-      : "border border-[var(--brand-dark-azure)]/20 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)]";
+      ? "border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)]"
+      : "border border-[var(--brand-dark-azure)]/20 bg-[var(--brand-light-purple)] text-[var(--brand-dark-azure)]";
+  const rowBorderClass =
+    tone === "dark"
+      ? "border-[var(--brand-light-purple)]/15"
+      : "border-[var(--brand-dark-azure)]/20";
+  const avatarBorderClass =
+    tone === "dark"
+      ? "border-[var(--brand-light-purple)]/25"
+      : "border-[var(--brand-dark-azure)]/25";
 
   return (
     <HomeSectionLayout
@@ -52,13 +60,13 @@ export function TestimonialsSection({ tone = "dark" }: TestimonialsSectionProps)
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.12 }}
             viewport={{ once: true }}
-            className="grid grid-cols-[1fr_auto] gap-6 border-b border-[var(--brand-light-purple)]/15 p-6 last:border-b-0 md:grid-cols-[220px_1fr_auto] md:items-center md:p-8"
+            className={`grid grid-cols-[1fr_auto] gap-6 border-b p-6 last:border-b-0 md:grid-cols-[220px_1fr_auto] md:items-center md:p-8 ${rowBorderClass}`}
           >
             <div className="flex items-center gap-4">
               <img
                 src={testimonial.image}
                 alt={testimonial.name}
-                className="h-14 w-14 border border-[var(--brand-light-purple)]/25 object-cover"
+                className={`h-14 w-14 border object-cover ${avatarBorderClass}`}
               />
               <h4 className="text-base font-bold uppercase tracking-[0.08em]">
                 {testimonial.name}

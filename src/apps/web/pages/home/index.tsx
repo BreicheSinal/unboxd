@@ -13,6 +13,8 @@ export function HomePageSections() {
     PreviewSection,
     TestimonialsSection,
   ];
+  const ctaTone: HomeSectionTone =
+    contentSections.length % 2 === 0 ? "light" : "dark";
 
   return (
     <div className="overflow-hidden">
@@ -22,7 +24,7 @@ export function HomePageSections() {
 
         return <Section key={Section.name} tone={tone} />;
       })}
-      <CtaSection />
+      <CtaSection tone={ctaTone} />
     </div>
   );
 }
