@@ -2,12 +2,15 @@ import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import { homeSectionTheme } from "./homeSectionTheme";
 
+export type HomeSectionTone = "light" | "dark";
+
 type HomeSectionLayoutProps = {
   children: ReactNode;
   id?: string;
   title?: string;
   subtitle?: string;
   className?: string;
+  tone?: HomeSectionTone;
   inverted?: boolean;
 };
 
@@ -17,19 +20,23 @@ export function HomeSectionLayout({
   title,
   subtitle,
   className = "",
-  inverted = false,
+  tone = "light",
+  inverted,
 }: HomeSectionLayoutProps) {
-  const titleClass = inverted
+  const isInverted = inverted ?? tone === "dark";
+  const backgroundClass =
+    tone === "dark" ? "bg-[var(--brand-dark-azure)]" : "bg-[var(--brand-light-purple)]";
+  const titleClass = isInverted
     ? "text-3xl font-bold text-[var(--brand-light-purple)] md:text-5xl"
     : homeSectionTheme.titleClass;
-  const subtitleClass = inverted
+  const subtitleClass = isInverted
     ? "mt-3 text-lg text-[var(--brand-light-purple)] opacity-75"
     : homeSectionTheme.subtitleClass;
 
   return (
     <motion.section
       id={id}
-      className={`${homeSectionTheme.sectionClass} ${className}`}
+      className={`${homeSectionTheme.sectionClass} ${backgroundClass} ${className}`}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}

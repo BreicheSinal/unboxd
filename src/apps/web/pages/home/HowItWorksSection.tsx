@@ -1,6 +1,7 @@
 import { ShoppingCart, Package, Gift } from "lucide-react";
 import { motion } from "motion/react";
 import { HomeSectionLayout } from "./HomeSectionLayout";
+import type { HomeSectionTone } from "./HomeSectionLayout";
 import { homeSectionTheme } from "./homeSectionTheme";
 
 const steps = [
@@ -21,13 +22,18 @@ const steps = [
   },
 ];
 
-export function HowItWorksSection() {
+type HowItWorksSectionProps = {
+  tone?: HomeSectionTone;
+};
+
+export function HowItWorksSection({ tone = "light" }: HowItWorksSectionProps) {
   return (
     <HomeSectionLayout
       id="how-it-works"
       title="How It Works"
       subtitle="Get your mystery shirt in three simple steps"
-      className="scroll-mt-20 bg-[var(--brand-light-purple)]"
+      className="scroll-mt-20"
+      tone={tone}
     >
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
         {steps.map((step, index) => {

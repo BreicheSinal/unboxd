@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
 import { motion } from "motion/react";
 import { HomeSectionLayout } from "./HomeSectionLayout";
-import { homeSectionTheme } from "./homeSectionTheme";
+import type { HomeSectionTone } from "./HomeSectionLayout";
 
 const testimonials = [
   {
@@ -27,13 +27,22 @@ const testimonials = [
   },
 ];
 
-export function TestimonialsSection() {
+type TestimonialsSectionProps = {
+  tone?: HomeSectionTone;
+};
+
+export function TestimonialsSection({ tone = "dark" }: TestimonialsSectionProps) {
+  const cardClass =
+    tone === "dark"
+      ? "h-full min-h-[240px] rounded-2xl border border-[var(--brand-light-purple)]/15 bg-[rgb(0_31_36)] p-6 text-[var(--brand-light-purple)]"
+      : "h-full min-h-[240px] rounded-2xl border border-[var(--brand-dark-azure)]/15 bg-[var(--brand-dark-azure)] p-6 text-[var(--brand-light-purple)]";
+
   return (
     <HomeSectionLayout
       id="what-customers-say"
       title="What Our Customers Say"
       subtitle="Join thousands of satisfied mystery shirt collectors"
-      className="bg-[var(--brand-light-purple)]"
+      tone={tone}
     >
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
         {testimonials.map((testimonial, index) => (
@@ -43,7 +52,7 @@ export function TestimonialsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.2 }}
             viewport={{ once: true }}
-            className={`${homeSectionTheme.panelClass} h-full min-h-[240px] p-6`}
+            className={cardClass}
           >
             <div className="mb-4 flex items-center gap-4">
               <img

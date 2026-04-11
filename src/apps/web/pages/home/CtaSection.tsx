@@ -3,7 +3,7 @@ import { HomeSectionLayout } from "./HomeSectionLayout";
 
 export function CtaSection() {
   return (
-    <HomeSectionLayout className="bg-[var(--brand-dark-azure)]" inverted>
+    <HomeSectionLayout tone="light">
       <div className="mx-auto max-w-4xl rounded-2xl bg-gradient-to-br from-red-600 to-red-800 p-12 text-center text-white">
         <h2 className="mb-4 text-3xl font-bold md:text-5xl">
           Ready for Your Mystery?
