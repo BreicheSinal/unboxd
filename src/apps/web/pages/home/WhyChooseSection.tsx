@@ -51,12 +51,7 @@ export function WhyChooseSection({ tone = "dark" }: WhyChooseSectionProps) {
           </div>
 
           <div className="relative isolate min-h-[320px] overflow-hidden bg-[var(--brand-dark-azure)] md:min-h-[560px]">
-            <img
-              src="https://images.unsplash.com/photo-1724609105918-d08de6736784?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb290YmFsbCUyMGplcnNleSUyMHN0b3JlJTIwc3BvcnRzJTIwY29sbGVjdGlvbnxlbnwxfHx8fDE3NzQ1MDI0ODh8MA&ixlib=rb-4.1.0&q=80&w=1200"
-              alt="Curated football shirt collection"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand-dark-azure)] via-[var(--brand-dark-azure)]/65 to-[var(--brand-dark-azure)]/30" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-dark-azure)] via-[#0b2328] to-[var(--brand-dark-azure)]" />
             <div className="pointer-events-none absolute -right-16 top-8 h-56 w-56 rounded-full bg-[var(--brand-vivid-red)]/30 blur-3xl" />
 
             <div className="relative z-10 flex h-full flex-col justify-end p-8 text-[var(--brand-light-purple)] md:p-12">
