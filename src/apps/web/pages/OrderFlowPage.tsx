@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
+import countries from "i18n-iso-countries";
+import enLocale from "i18n-iso-countries/langs/en.json";
 import {
   ChevronRight,
   ChevronLeft,
   Check,
+  ChevronsUpDown,
   ShieldOff,
   Package2,
   Palette,
@@ -11,6 +14,15 @@ import {
 import { useNavigate, useParams } from "react-router";
 import { useAppSelector } from "../store/hooks";
 import { Spinner } from "../components/ui/spinner";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
 import {
   createOrder,
   type BillingDetails,
@@ -28,6 +40,8 @@ interface Exclusions {
 
 const ORDER_STEP_PATHS = ["size", "avoidants", "summary", "checkout"] as const;
 type OrderStepPath = (typeof ORDER_STEP_PATHS)[number];
+
+countries.registerLocale(enLocale);
 
 const isOrderStepPath = (value: string): value is OrderStepPath =>
   ORDER_STEP_PATHS.includes(value as OrderStepPath);
@@ -84,6 +98,7 @@ export function OrderFlowPage() {
   const [checkoutError, setCheckoutError] = useState("");
   const [checkoutSuccess, setCheckoutSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [countryOpen, setCountryOpen] = useState(false);
   const [paymentProvider, setPaymentProvider] =
     useState<PaymentProvider>(defaultProvider);
   const [billing, setBilling] = useState<BillingDetails>({
@@ -95,7 +110,7 @@ export function OrderFlowPage() {
     city: "",
     state: "",
     postalCode: "",
-    country: "",
+    country: "Lebanon",
   });
   const [exclusions, setExclusions] = useState<Exclusions>({
     clubs: [],
@@ -109,6 +124,12 @@ export function OrderFlowPage() {
   }, [params.step]);
 
   const currentStep = ORDER_STEP_PATHS.indexOf(currentStepPath) + 1;
+  const countryOptions = useMemo(() => {
+    const names = countries.getNames("en", { select: "official" });
+    return Object.entries(names)
+      .map(([code, name]) => ({ code, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, []);
 
   const resetOrderSelections = () => {
     setSelectedSize(null);
@@ -185,6 +206,7 @@ export function OrderFlowPage() {
       "phone",
       "addressLine1",
       "city",
+      "state",
       "country",
     ];
     return required.filter((field) => !billing[field]?.trim());
@@ -671,7 +693,7 @@ export function OrderFlowPage() {
                         updateBillingField("fullName", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="John Doe"
+                      placeholder="Saint Iker"
                     />
                   </label>
                   <label className="text-sm">
@@ -699,22 +721,56 @@ export function OrderFlowPage() {
                         updateBillingField("phone", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="+1 555 000 0000"
+                      placeholder="+961 000 000"
                     />
                   </label>
                   <label className="text-sm">
                     <span className="mb-1 block text-muted-foreground">
                       Country *
                     </span>
-                    <input
-                      type="text"
-                      value={billing.country}
-                      onChange={(event) =>
-                        updateBillingField("country", event.target.value)
-                      }
-                      className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="United States"
-                    />
+                    <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          role="combobox"
+                          aria-expanded={countryOpen}
+                          className="flex h-11 w-full items-center justify-between rounded-lg border border-border bg-accent px-3 pr-4 text-left text-base font-normal outline-none transition-all focus:border-red-500 focus-visible:border-red-500 focus-visible:ring-0"
+                        >
+                          <span className={billing.country ? "" : "text-muted-foreground"}>
+                            {billing.country || "Select country"}
+                          </span>
+                          <ChevronsUpDown className="ml-2 inline h-4 w-4 shrink-0 text-[var(--brand-light-purple)]/90 opacity-80" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        align="start"
+                        className="w-[var(--radix-popover-trigger-width)] border-border bg-[var(--brand-dark-azure)] p-0 text-[var(--brand-light-purple)]"
+                      >
+                        <Command className="bg-transparent text-inherit">
+                          <CommandInput placeholder="Search country..." />
+                          <CommandList className="thin-white-scrollbar max-h-64">
+                            <CommandEmpty>No country found.</CommandEmpty>
+                            <CommandGroup>
+                              {countryOptions.map((country) => (
+                                <CommandItem
+                                  key={country.code}
+                                  value={`${country.name} ${country.code}`}
+                                  onSelect={() => {
+                                    updateBillingField("country", country.name);
+                                    setCountryOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={`h-4 w-4 ${billing.country === country.name ? "opacity-100" : "opacity-0"}`}
+                                  />
+                                  <span>{country.name}</span>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </label>
                   <label className="text-sm md:col-span-2">
                     <span className="mb-1 block text-muted-foreground">
@@ -755,12 +811,12 @@ export function OrderFlowPage() {
                         updateBillingField("city", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="New York"
+                      placeholder="Beirut"
                     />
                   </label>
                   <label className="text-sm">
                     <span className="mb-1 block text-muted-foreground">
-                      State / Province
+                      Governorate *
                     </span>
                     <input
                       type="text"
@@ -769,7 +825,7 @@ export function OrderFlowPage() {
                         updateBillingField("state", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="NY"
+                      placeholder="Mount Lebanon"
                     />
                   </label>
                   <label className="text-sm">
@@ -783,7 +839,7 @@ export function OrderFlowPage() {
                         updateBillingField("postalCode", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="10001"
+                      placeholder="1107 2800"
                     />
                   </label>
                 </div>
