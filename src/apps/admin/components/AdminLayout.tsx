@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
+import { createPortal } from "react-dom";
 import {
   Shield,
   ShoppingCart,
@@ -51,9 +52,14 @@ export function AdminLayout() {
   const dispatch = useAdminDispatch();
   const user = useAdminSelector((state) => state.adminAuth.user);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [accountMenuPosition, setAccountMenuPosition] = useState<{ top: number; right: number }>({
+    top: 56,
+    right: 16,
+  });
   const [navScrollProgress, setNavScrollProgress] = useState(0);
   const [hasNavOverflow, setHasNavOverflow] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
+  const accountButtonRef = useRef<HTMLButtonElement | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
   const email = user?.email ?? "admin@unboxd.com";
   const displayName = user?.displayName?.trim() || "Admin";
@@ -73,10 +79,23 @@ export function AdminLayout() {
   useEffect(() => {
     if (!isAccountMenuOpen) return;
 
+    const updateMenuPosition = () => {
+      const button = accountButtonRef.current;
+      if (!button) return;
+      const rect = button.getBoundingClientRect();
+      setAccountMenuPosition({
+        top: rect.bottom + 8,
+        right: Math.max(12, window.innerWidth - rect.right),
+      });
+    };
+
+    updateMenuPosition();
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (!accountMenuRef.current?.contains(event.target as Node)) {
-        setIsAccountMenuOpen(false);
-      }
+      const target = event.target as Node;
+      if (accountMenuRef.current?.contains(target)) return;
+      if (accountButtonRef.current?.contains(target)) return;
+      setIsAccountMenuOpen(false);
     };
 
     const handleEscape = (event: KeyboardEvent) => {
@@ -87,9 +106,13 @@ export function AdminLayout() {
 
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscape);
+    window.addEventListener("resize", updateMenuPosition);
+    window.addEventListener("scroll", updateMenuPosition, true);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("resize", updateMenuPosition);
+      window.removeEventListener("scroll", updateMenuPosition, true);
     };
   }, [isAccountMenuOpen]);
 
@@ -122,7 +145,7 @@ export function AdminLayout() {
 
   return (
     <div className="admin-surface min-h-screen text-[var(--brand-light-purple)]">
-      <header className="sticky top-0 z-40 border-b border-[var(--brand-light-purple)]/15 bg-[var(--brand-dark-azure)]/90 backdrop-blur">
+      <header className="sticky top-0 z-[120] border-b border-[var(--brand-light-purple)]/15 bg-[var(--brand-dark-azure)]/90 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center justify-between px-4 sm:h-20 lg:px-6">
           <div className="flex items-center gap-3">
             <img
@@ -138,8 +161,9 @@ export function AdminLayout() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div ref={accountMenuRef} className="relative">
+            <div className="relative">
               <Button
+                ref={accountButtonRef}
                 type="button"
                 variant="ghost"
                 size="icon"
@@ -154,49 +178,56 @@ export function AdminLayout() {
                   </AvatarFallback>
                 </Avatar>
               </Button>
-              {isAccountMenuOpen ? (
-                <div className="absolute right-0 top-12 z-[80] w-[min(84vw,320px)] border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] p-2 shadow-md">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70 p-3">
-                      <Avatar className="h-10 w-10 border-0">
-                        <AvatarFallback className="text-xs font-semibold">
-                          {avatarFallback}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold">
-                          {displayName}
-                        </p>
-                        <p className="text-xs text-[var(--brand-light-purple)]/65">
-                          Administrator account
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex min-w-0 h-12 items-center gap-2 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70 px-3">
-                      <Mail className="h-4 w-4 shrink-0 text-[var(--brand-light-purple)]/65" />
-                      <p className="min-w-0 truncate text-sm font-medium">
-                        {email}
-                      </p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      className="h-12 w-full px-4 text-sm"
-                      onClick={() => {
-                        setIsAccountMenuOpen(false);
-                        void dispatch(adminSignOut());
-                      }}
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Sign out
-                    </Button>
-                  </div>
-                </div>
-              ) : null}
             </div>
           </div>
         </div>
       </header>
+      {isAccountMenuOpen
+        ? createPortal(
+            <div
+              ref={accountMenuRef}
+              className="fixed z-[2000] w-[min(84vw,320px)] border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] p-2 shadow-md"
+              style={{ top: accountMenuPosition.top, right: accountMenuPosition.right }}
+            >
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70 p-3">
+                  <Avatar className="h-10 w-10 border-0">
+                    <AvatarFallback className="text-xs font-semibold">
+                      {avatarFallback}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold">
+                      {displayName}
+                    </p>
+                    <p className="text-xs text-[var(--brand-light-purple)]/65">
+                      Administrator account
+                    </p>
+                  </div>
+                </div>
+                <div className="flex min-w-0 h-12 items-center gap-2 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70 px-3">
+                  <Mail className="h-4 w-4 shrink-0 text-[var(--brand-light-purple)]/65" />
+                  <p className="min-w-0 truncate text-sm font-medium">
+                    {email}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="h-12 w-full px-4 text-sm"
+                  onClick={() => {
+                    setIsAccountMenuOpen(false);
+                    void dispatch(adminSignOut());
+                  }}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign out
+                </Button>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
 
       <div className="mx-auto grid w-full max-w-[1600px] items-start gap-2 overflow-x-clip px-4 py-4 sm:gap-4 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-6 lg:px-6 lg:py-6">
         <aside className="-mx-4 h-fit w-auto min-w-0 self-start border-0 bg-transparent px-4 py-0 lg:mx-0 lg:w-64 lg:min-w-64 lg:max-w-64 lg:border lg:border-[var(--brand-light-purple)]/20 lg:bg-[var(--brand-dark-azure)]/70 lg:p-3">

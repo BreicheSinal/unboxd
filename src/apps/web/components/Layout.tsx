@@ -206,7 +206,7 @@ export function Layout() {
                       </button>
 
                       {userMenuOpen && (
-                        <div className="absolute right-0 mt-2 w-56 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] py-2 shadow-xl">
+                        <div className="absolute right-0 z-[120] mt-2 w-56 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] py-2 shadow-xl">
                           <div className="border-b border-[var(--brand-light-purple)]/20 px-4 py-3">
                             <div className="font-bold">{user.displayName}</div>
                             <div className="mt-1 flex min-w-0 items-center gap-2">
