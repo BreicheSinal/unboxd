@@ -497,7 +497,7 @@ export function OrderFlowPage() {
               <div className="grid gap-8 md:grid-cols-2">
                 <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-red-500 bg-gradient-to-br from-red-600/20 to-zinc-400/12 p-8">
                   <img
-                    src="https://images.unsplash.com/photo-1646181868801-17e68a0e8cfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnaWZ0JTIwYm94JTIwbXlzdGVyeSUyMHBhY2thZ2V8ZW58MXx8fHwxNzc0NDcyMDI2fDA&ixlib=rb-4.1.0&q=80&w=400"
+                    src="/assets/images/jersey.jpg"
                     alt="Mystery box"
                     className="mb-4 h-40 w-40 rounded-lg object-cover"
                   />
