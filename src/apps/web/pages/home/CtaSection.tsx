@@ -12,7 +12,7 @@ export function CtaSection() {
           Start your collection today and join the excitement
         </p>
         <Link
-          to="/order"
+          to="/order/size"
           className="inline-block rounded-lg bg-white px-8 py-4 font-bold text-red-600 transition-all duration-300 hover:scale-105 hover:shadow-xl"
         >
           Order Your Mystery Shirt
