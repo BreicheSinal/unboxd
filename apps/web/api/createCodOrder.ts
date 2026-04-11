@@ -35,6 +35,14 @@ function asStringArray(value: unknown) {
     : [];
 }
 
+function requireOrderType(payload: Record<string, unknown>) {
+  const value = requireString(payload.orderType, "orderType").toLowerCase();
+  if (value !== "jersey" && value !== "artwork") {
+    throw new ApiError("invalid-argument", "Invalid orderType.", 400);
+  }
+  return value as "jersey" | "artwork";
+}
+
 export default async function handler(req: any, res: any) {
   try {
     requirePost(req);
@@ -42,6 +50,7 @@ export default async function handler(req: any, res: any) {
     const payload = (req.body ?? {}) as Record<string, unknown>;
 
     const size = requireString(payload.size, "size");
+    const orderType = requireOrderType(payload);
     const idempotencyKey = requireString(payload.idempotencyKey, "idempotencyKey");
     const billing = requireBilling(payload);
     const exclusionsInput = (payload.exclusions ?? {}) as Record<string, unknown>;
@@ -75,6 +84,7 @@ export default async function handler(req: any, res: any) {
       tx.create(orderRef, {
         buyerUid: uid,
         provider: "cod",
+        orderType,
         status: orderStatus,
         amount: 34.98,
         currency: "USD",

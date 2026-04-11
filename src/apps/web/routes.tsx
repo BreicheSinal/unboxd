@@ -1,5 +1,6 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter } from "react-router";
 import { HomePage } from "./pages/HomePage";
+import { OrderCategoryPage } from "./pages/OrderCategoryPage";
 import { OrderFlowPage } from "./pages/OrderFlowPage";
 import { OrderSuccessPage } from "./pages/OrderSuccessPage";
 import { DashboardPage } from "./pages/DashboardPage";
@@ -37,7 +38,7 @@ export const router = createBrowserRouter([
         path: "order",
         element: (
           <ProtectedRoute>
-            <Navigate to="/order/size" replace />
+            <OrderCategoryPage />
           </ProtectedRoute>
         ),
       },

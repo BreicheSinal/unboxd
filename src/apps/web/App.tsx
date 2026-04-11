@@ -10,8 +10,9 @@ export default function App() {
     <Provider store={store}>
       <ThemeProvider
         attribute="class"
-        defaultTheme="system"
-        enableSystem
+        defaultTheme="dark"
+        forcedTheme="dark"
+        enableSystem={false}
         disableTransitionOnChange
       >
         <AuthBootstrap>

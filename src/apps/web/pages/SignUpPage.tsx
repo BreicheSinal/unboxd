@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { Mail, Lock, User as UserIcon, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
-import { useTheme } from "next-themes";
 import { GoogleIcon } from "../components/GoogleIcon";
 import { Spinner } from "../components/ui/spinner";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -10,8 +9,6 @@ import { signInWithGoogle, signUpWithEmail } from "../store/authSlice";
 import { mapFirebaseError } from "../services/errorService";
 
 export function SignUpPage() {
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,14 +43,7 @@ export function SignUpPage() {
     }
   }, [isBootstrapping, navigate, user]);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const authIconSrc =
-    mounted && resolvedTheme === "dark"
-      ? "/assets/icons/ICON_WHITE.svg"
-      : "/assets/icons/ICON_BLACK.svg";
+  const authIconSrc = "/assets/icons/ICON_WHITE.svg";
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();

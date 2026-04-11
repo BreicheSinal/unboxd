@@ -80,6 +80,7 @@ export default async function handler(req: any, res: any) {
       status: String(orderData.status ?? ""),
       paymentState: String(orderData.paymentState ?? ""),
       reconciliationStatus: String(orderData.reconciliationStatus ?? ""),
+      orderType: String(orderData.orderType ?? "jersey"),
       amount: Number(orderData.amount ?? 0),
       currency: String(orderData.currency ?? "USD"),
       size: String(orderData.size ?? ""),

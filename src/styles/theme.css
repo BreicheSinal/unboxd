@@ -429,3 +429,44 @@ html.dark {
 .table-scrollbar::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+/* Dropdown/list scrollbar: thin white thumb on dark surfaces. */
+.thin-white-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.88) rgb(255 255 255 / 0.16);
+}
+
+.thin-white-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.thin-white-scrollbar::-webkit-scrollbar-track {
+  background: rgb(255 255 255 / 0.14);
+}
+
+.thin-white-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.96) 0%,
+      rgb(255 255 255 / 0.78) 100%
+    );
+  background-clip: padding-box;
+}
+
+.thin-white-scrollbar:hover::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(
+      90deg,
+      rgb(255 255 255 / 1) 0%,
+      rgb(255 255 255 / 0.9) 100%
+    );
+  background-clip: padding-box;
+}
+
+.thin-white-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}

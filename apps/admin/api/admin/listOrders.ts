@@ -39,6 +39,7 @@ export default async function handler(req: any, res: any) {
         status: String(data.status ?? ""),
         paymentState: String(data.paymentState ?? ""),
         reconciliationStatus: String(data.reconciliationStatus ?? ""),
+        orderType: String(data.orderType ?? "jersey"),
         amount: Number(data.amount ?? 0),
         currency: String(data.currency ?? "USD"),
         size: String(data.size ?? ""),

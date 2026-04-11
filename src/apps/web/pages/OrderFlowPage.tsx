@@ -1,16 +1,28 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
+import countries from "i18n-iso-countries";
+import enLocale from "i18n-iso-countries/langs/en.json";
 import {
   ChevronRight,
   ChevronLeft,
   Check,
+  ChevronsUpDown,
   ShieldOff,
   Package2,
   Palette,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { useAppSelector } from "../store/hooks";
 import { Spinner } from "../components/ui/spinner";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
 import {
   createOrder,
   type BillingDetails,
@@ -26,8 +38,12 @@ interface Exclusions {
   colors: string[];
 }
 
+type OrderCategory = "jersey" | "artwork";
+
 const ORDER_STEP_PATHS = ["size", "avoidants", "summary", "checkout"] as const;
 type OrderStepPath = (typeof ORDER_STEP_PATHS)[number];
+
+countries.registerLocale(enLocale);
 
 const isOrderStepPath = (value: string): value is OrderStepPath =>
   ORDER_STEP_PATHS.includes(value as OrderStepPath);
@@ -35,6 +51,9 @@ const isOrderStepPath = (value: string): value is OrderStepPath =>
 export function OrderFlowPage() {
   const navigate = useNavigate();
   const params = useParams<{ step: string }>();
+  const [searchParams] = useSearchParams();
+  const orderCategory: OrderCategory =
+    searchParams.get("category") === "artwork" ? "artwork" : "jersey";
   const user = useAppSelector((state) => state.auth.user);
   const wishEnabled = import.meta.env.VITE_WISH_ENABLED === "true";
   const envDefaultProvider = (import.meta.env.VITE_PAYMENT_PROVIDER_DEFAULT ||
@@ -84,6 +103,7 @@ export function OrderFlowPage() {
   const [checkoutError, setCheckoutError] = useState("");
   const [checkoutSuccess, setCheckoutSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [countryOpen, setCountryOpen] = useState(false);
   const [paymentProvider, setPaymentProvider] =
     useState<PaymentProvider>(defaultProvider);
   const [billing, setBilling] = useState<BillingDetails>({
@@ -95,7 +115,7 @@ export function OrderFlowPage() {
     city: "",
     state: "",
     postalCode: "",
-    country: "",
+    country: "Lebanon",
   });
   const [exclusions, setExclusions] = useState<Exclusions>({
     clubs: [],
@@ -109,6 +129,12 @@ export function OrderFlowPage() {
   }, [params.step]);
 
   const currentStep = ORDER_STEP_PATHS.indexOf(currentStepPath) + 1;
+  const countryOptions = useMemo(() => {
+    const names = countries.getNames("en", { select: "official" });
+    return Object.entries(names)
+      .map(([code, name]) => ({ code, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, []);
 
   const resetOrderSelections = () => {
     setSelectedSize(null);
@@ -125,21 +151,21 @@ export function OrderFlowPage() {
       resetOrderSelections();
     }
     setCheckoutError("");
-    navigate(`/order/${nextStep}`);
+    navigate(`/order/${nextStep}?category=${orderCategory}`);
   };
 
   useEffect(() => {
     const candidate = (params.step ?? "").toLowerCase();
     if (!isOrderStepPath(candidate)) {
-      navigate("/order/size", { replace: true });
+      navigate(`/order/size?category=${orderCategory}`, { replace: true });
     }
-  }, [navigate, params.step]);
+  }, [navigate, orderCategory, params.step]);
 
   useEffect(() => {
     if (!selectedSize && currentStepPath !== "size") {
-      navigate("/order/size", { replace: true });
+      navigate(`/order/size?category=${orderCategory}`, { replace: true });
     }
-  }, [currentStepPath, navigate, selectedSize]);
+  }, [currentStepPath, navigate, orderCategory, selectedSize]);
 
   useEffect(() => {
     if (!billing.email && user?.email) {
@@ -185,6 +211,7 @@ export function OrderFlowPage() {
       "phone",
       "addressLine1",
       "city",
+      "state",
       "country",
     ];
     return required.filter((field) => !billing[field]?.trim());
@@ -243,6 +270,7 @@ export function OrderFlowPage() {
 
     try {
       const result = await createOrder({
+        orderType: orderCategory,
         size: selectedSize,
         exclusions,
         paymentProvider: normalizedProvider,
@@ -491,19 +519,21 @@ export function OrderFlowPage() {
             <div className="rounded-xl border border-border bg-card p-8">
               <h2 className="mb-2 text-3xl font-bold">Order Summary</h2>
               <p className="mb-8 text-muted-foreground">
-                Review what you are ordering before payment
+                Review your {orderCategory === "artwork" ? "artwork" : "jersey"} order before payment
               </p>
 
               <div className="grid gap-8 md:grid-cols-2">
                 <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-red-500 bg-gradient-to-br from-red-600/20 to-zinc-400/12 p-8">
                   <img
-                    src="https://images.unsplash.com/photo-1646181868801-17e68a0e8cfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnaWZ0JTIwYm94JTIwbXlzdGVyeSUyMHBhY2thZ2V8ZW58MXx8fHwxNzc0NDcyMDI2fDA&ixlib=rb-4.1.0&q=80&w=400"
-                    alt="Mystery box"
+                    src="/assets/images/jersey.jpg"
+                    alt={orderCategory === "artwork" ? "Football artwork mystery box" : "Mystery jersey box"}
                     className="mb-4 h-40 w-40 rounded-lg object-cover"
                   />
-                  <h3 className="mb-2 text-xl font-bold">Mystery Shirt Box</h3>
+                  <h3 className="mb-2 text-xl font-bold">
+                    {orderCategory === "artwork" ? "Mystery Artwork Box" : "Mystery Shirt Box"}
+                  </h3>
                   <p className="text-center text-sm text-muted-foreground">
-                    Your surprise awaits inside
+                    Your football-themed surprise awaits inside
                   </p>
                 </div>
 
@@ -567,7 +597,7 @@ export function OrderFlowPage() {
                     )}
                     <div className="flex items-center justify-between border-b border-border pb-3">
                       <span className="text-muted-foreground">
-                        Mystery Shirt
+                        {orderCategory === "artwork" ? "Mystery Artwork" : "Mystery Shirt"}
                       </span>
                       <span className="font-bold">$29.99</span>
                     </div>
@@ -632,7 +662,7 @@ export function OrderFlowPage() {
                   >
                     <p className="font-semibold">Cash on Delivery (COD)</p>
                     <p className="text-xs text-muted-foreground">
-                      Pay in cash when your mystery shirt arrives.
+                      Pay in cash when your mystery {orderCategory === "artwork" ? "artwork" : "jersey"} arrives.
                     </p>
                   </button>
                   <button
@@ -671,7 +701,7 @@ export function OrderFlowPage() {
                         updateBillingField("fullName", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="John Doe"
+                      placeholder="Saint Iker"
                     />
                   </label>
                   <label className="text-sm">
@@ -699,22 +729,56 @@ export function OrderFlowPage() {
                         updateBillingField("phone", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="+1 555 000 0000"
+                      placeholder="+961 000 000"
                     />
                   </label>
                   <label className="text-sm">
                     <span className="mb-1 block text-muted-foreground">
                       Country *
                     </span>
-                    <input
-                      type="text"
-                      value={billing.country}
-                      onChange={(event) =>
-                        updateBillingField("country", event.target.value)
-                      }
-                      className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="United States"
-                    />
+                    <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          role="combobox"
+                          aria-expanded={countryOpen}
+                          className="flex h-11 w-full items-center justify-between rounded-lg border border-border bg-accent px-3 pr-4 text-left text-base font-normal outline-none transition-all focus:border-red-500 focus-visible:border-red-500 focus-visible:ring-0"
+                        >
+                          <span className={billing.country ? "" : "text-muted-foreground"}>
+                            {billing.country || "Select country"}
+                          </span>
+                          <ChevronsUpDown className="ml-2 inline h-4 w-4 shrink-0 text-[var(--brand-light-purple)]/90 opacity-80" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        align="start"
+                        className="w-[var(--radix-popover-trigger-width)] border-border bg-[var(--brand-dark-azure)] p-0 text-[var(--brand-light-purple)]"
+                      >
+                        <Command className="bg-transparent text-inherit">
+                          <CommandInput placeholder="Search country..." />
+                          <CommandList className="thin-white-scrollbar max-h-64">
+                            <CommandEmpty>No country found.</CommandEmpty>
+                            <CommandGroup>
+                              {countryOptions.map((country) => (
+                                <CommandItem
+                                  key={country.code}
+                                  value={`${country.name} ${country.code}`}
+                                  onSelect={() => {
+                                    updateBillingField("country", country.name);
+                                    setCountryOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={`h-4 w-4 ${billing.country === country.name ? "opacity-100" : "opacity-0"}`}
+                                  />
+                                  <span>{country.name}</span>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </label>
                   <label className="text-sm md:col-span-2">
                     <span className="mb-1 block text-muted-foreground">
@@ -755,12 +819,12 @@ export function OrderFlowPage() {
                         updateBillingField("city", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="New York"
+                      placeholder="Beirut"
                     />
                   </label>
                   <label className="text-sm">
                     <span className="mb-1 block text-muted-foreground">
-                      State / Province
+                      Governorate *
                     </span>
                     <input
                       type="text"
@@ -769,7 +833,7 @@ export function OrderFlowPage() {
                         updateBillingField("state", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="NY"
+                      placeholder="Mount Lebanon"
                     />
                   </label>
                   <label className="text-sm">
@@ -783,7 +847,7 @@ export function OrderFlowPage() {
                         updateBillingField("postalCode", event.target.value)
                       }
                       className="h-11 w-full rounded-lg border border-border bg-accent px-3 outline-none transition-all focus:border-red-500"
-                      placeholder="10001"
+                      placeholder="1107 2800"
                     />
                   </label>
                 </div>

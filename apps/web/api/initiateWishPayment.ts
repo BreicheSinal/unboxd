@@ -18,6 +18,14 @@ function requireBilling(payload: Record<string, unknown>) {
   };
 }
 
+function requireOrderType(payload: Record<string, unknown>) {
+  const value = requireString(payload.orderType, "orderType").toLowerCase();
+  if (value !== "jersey" && value !== "artwork") {
+    throw new ApiError("invalid-argument", "Invalid orderType.", 400);
+  }
+  return value as "jersey" | "artwork";
+}
+
 export default async function handler(req: any, res: any) {
   try {
     requirePost(req);
@@ -30,6 +38,7 @@ export default async function handler(req: any, res: any) {
     }
 
     const idempotencyKey = requireString(payload.idempotencyKey, "idempotencyKey");
+    const orderType = requireOrderType(payload);
     const billing = requireBilling(payload);
     const wishApiKey = process.env.WISH_API_KEY;
     if (!wishApiKey) {
@@ -49,7 +58,7 @@ export default async function handler(req: any, res: any) {
     await adminDb.collection("auditLogs").add({
       action: "initiateWishPayment",
       actorUid: uid,
-      metadata: { sessionId, amount, idempotencyKey, billing },
+      metadata: { sessionId, amount, idempotencyKey, orderType, billing },
       createdAt: FieldValue.serverTimestamp(),
     });
 

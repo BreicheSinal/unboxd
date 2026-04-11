@@ -10,10 +10,7 @@ import {
   LogOut,
   ChevronDown,
   Award,
-  Moon,
-  Sun,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
 import { GoogleIcon } from "./GoogleIcon";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -21,8 +18,6 @@ import { signOutUser } from "../store/authSlice";
 import { useScrollToTopOnChange } from "../hooks/useScrollToTopOnChange";
 
 export function Layout() {
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [hasAvatarLoadError, setHasAvatarLoadError] = useState(false);
@@ -49,10 +44,6 @@ export function Layout() {
       location.pathname === prefix || location.pathname.startsWith(`${prefix}/`),
   );
   const isSignedInSurface = Boolean(user) && isSignedInRoute;
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     setHasAvatarLoadError(false);
@@ -109,12 +100,7 @@ export function Layout() {
       location.pathname === href || location.pathname.startsWith(`${href}/`)
     );
   };
-  const logoSrc =
-    mounted && resolvedTheme === "dark"
-      ? "/assets/logos/WHITE_LOGO.svg"
-      : "/assets/logos/BLACK_LOGO.svg";
-  const isDarkTheme = mounted ? resolvedTheme === "dark" : true;
-  const nextThemeLabel = isDarkTheme ? "light" : "dark";
+  const logoSrc = "/assets/logos/WHITE_LOGO.svg";
   const userInitial = (user?.displayName?.[0] ?? "U").toUpperCase();
   const faqItems = [
     {
@@ -236,21 +222,6 @@ export function Layout() {
                           </Link>
                           <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
                           <button
-                            type="button"
-                            onClick={() => setTheme(nextThemeLabel)}
-                            className="flex w-full items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-[var(--brand-light-purple)]/10"
-                            aria-label={`Switch to ${nextThemeLabel} mode`}
-                            title={`Switch to ${nextThemeLabel} mode`}
-                          >
-                            {isDarkTheme ? (
-                              <Sun className="h-4 w-4" />
-                            ) : (
-                              <Moon className="h-4 w-4" />
-                            )}
-                            <span>{`Switch to ${nextThemeLabel} mode`}</span>
-                          </button>
-                          <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
-                          <button
                             onClick={handleSignOut}
                             className="w-full flex items-center gap-3 px-4 py-2 text-[var(--brand-vivid-red)] transition-colors hover:bg-[var(--brand-light-purple)]/10"
                           >
@@ -350,21 +321,6 @@ export function Layout() {
                       <History className="h-5 w-5" />
                       <span>History</span>
                     </Link>
-                    <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
-                    <button
-                      type="button"
-                      onClick={() => setTheme(nextThemeLabel)}
-                      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--brand-light-purple)]/10"
-                      aria-label={`Switch to ${nextThemeLabel} mode`}
-                      title={`Switch to ${nextThemeLabel} mode`}
-                    >
-                      {isDarkTheme ? (
-                        <Sun className="h-5 w-5" />
-                      ) : (
-                        <Moon className="h-5 w-5" />
-                      )}
-                      <span>{`Switch to ${nextThemeLabel} mode`}</span>
-                    </button>
                     <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
                     <button
                       onClick={handleSignOut}
