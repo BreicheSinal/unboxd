@@ -11,7 +11,7 @@ import {
   Package2,
   Palette,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { useAppSelector } from "../store/hooks";
 import { Spinner } from "../components/ui/spinner";
 import {
@@ -38,6 +38,8 @@ interface Exclusions {
   colors: string[];
 }
 
+type OrderCategory = "jersey" | "artwork";
+
 const ORDER_STEP_PATHS = ["size", "avoidants", "summary", "checkout"] as const;
 type OrderStepPath = (typeof ORDER_STEP_PATHS)[number];
 
@@ -49,6 +51,9 @@ const isOrderStepPath = (value: string): value is OrderStepPath =>
 export function OrderFlowPage() {
   const navigate = useNavigate();
   const params = useParams<{ step: string }>();
+  const [searchParams] = useSearchParams();
+  const orderCategory: OrderCategory =
+    searchParams.get("category") === "artwork" ? "artwork" : "jersey";
   const user = useAppSelector((state) => state.auth.user);
   const wishEnabled = import.meta.env.VITE_WISH_ENABLED === "true";
   const envDefaultProvider = (import.meta.env.VITE_PAYMENT_PROVIDER_DEFAULT ||
@@ -146,21 +151,21 @@ export function OrderFlowPage() {
       resetOrderSelections();
     }
     setCheckoutError("");
-    navigate(`/order/${nextStep}`);
+    navigate(`/order/${nextStep}?category=${orderCategory}`);
   };
 
   useEffect(() => {
     const candidate = (params.step ?? "").toLowerCase();
     if (!isOrderStepPath(candidate)) {
-      navigate("/order/size", { replace: true });
+      navigate(`/order/size?category=${orderCategory}`, { replace: true });
     }
-  }, [navigate, params.step]);
+  }, [navigate, orderCategory, params.step]);
 
   useEffect(() => {
     if (!selectedSize && currentStepPath !== "size") {
-      navigate("/order/size", { replace: true });
+      navigate(`/order/size?category=${orderCategory}`, { replace: true });
     }
-  }, [currentStepPath, navigate, selectedSize]);
+  }, [currentStepPath, navigate, orderCategory, selectedSize]);
 
   useEffect(() => {
     if (!billing.email && user?.email) {
@@ -513,19 +518,21 @@ export function OrderFlowPage() {
             <div className="rounded-xl border border-border bg-card p-8">
               <h2 className="mb-2 text-3xl font-bold">Order Summary</h2>
               <p className="mb-8 text-muted-foreground">
-                Review what you are ordering before payment
+                Review your {orderCategory === "artwork" ? "artwork" : "jersey"} order before payment
               </p>
 
               <div className="grid gap-8 md:grid-cols-2">
                 <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-red-500 bg-gradient-to-br from-red-600/20 to-zinc-400/12 p-8">
                   <img
                     src="/assets/images/jersey.jpg"
-                    alt="Mystery box"
+                    alt={orderCategory === "artwork" ? "Football artwork mystery box" : "Mystery jersey box"}
                     className="mb-4 h-40 w-40 rounded-lg object-cover"
                   />
-                  <h3 className="mb-2 text-xl font-bold">Mystery Shirt Box</h3>
+                  <h3 className="mb-2 text-xl font-bold">
+                    {orderCategory === "artwork" ? "Mystery Artwork Box" : "Mystery Shirt Box"}
+                  </h3>
                   <p className="text-center text-sm text-muted-foreground">
-                    Your surprise awaits inside
+                    Your football-themed surprise awaits inside
                   </p>
                 </div>
 
@@ -589,7 +596,7 @@ export function OrderFlowPage() {
                     )}
                     <div className="flex items-center justify-between border-b border-border pb-3">
                       <span className="text-muted-foreground">
-                        Mystery Shirt
+                        {orderCategory === "artwork" ? "Mystery Artwork" : "Mystery Shirt"}
                       </span>
                       <span className="font-bold">$29.99</span>
                     </div>
@@ -654,7 +661,7 @@ export function OrderFlowPage() {
                   >
                     <p className="font-semibold">Cash on Delivery (COD)</p>
                     <p className="text-xs text-muted-foreground">
-                      Pay in cash when your mystery shirt arrives.
+                      Pay in cash when your mystery {orderCategory === "artwork" ? "artwork" : "jersey"} arrives.
                     </p>
                   </button>
                   <button
