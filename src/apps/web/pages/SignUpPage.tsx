@@ -121,7 +121,7 @@ export function SignUpPage() {
                 <button
                   onClick={handleGoogleSignIn}
                   disabled={isLoading}
-                  className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border-2 border-border bg-white px-4 py-3 font-medium transition-colors hover:bg-accent disabled:opacity-50 dark:bg-gray-900"
+                  className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border-2 border-border px-4 py-3 font-medium transition-colors hover:bg-accent/30 disabled:opacity-50"
                 >
                   <GoogleIcon className="h-5 w-5" />
                   Continue with Google

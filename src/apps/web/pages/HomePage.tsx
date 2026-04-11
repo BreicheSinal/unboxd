@@ -55,7 +55,7 @@ export function HomePage() {
     <div className="overflow-hidden">
       {/* Hero Section */}
       <motion.section
-        className="relative min-h-[90vh] flex items-center"
+        className="relative min-h-[90vh] flex items-center bg-[var(--brand-dark-azure)]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -105,7 +105,7 @@ export function HomePage() {
       {/* How It Works */}
       <motion.section
         id="how-it-works"
-        className="py-20 bg-accent/30 scroll-mt-20"
+        className="py-20 bg-[var(--brand-light-purple)] scroll-mt-20"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -113,10 +113,10 @@ export function HomePage() {
       >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 text-[var(--brand-dark-azure)]">
               How It Works
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-[var(--brand-dark-azure)] opacity-70 text-lg max-w-2xl mx-auto">
               Get your mystery shirt in three simple steps
             </p>
           </div>
@@ -133,15 +133,19 @@ export function HomePage() {
                   viewport={{ once: true }}
                   className="relative"
                 >
-                  <div className="bg-card border border-border rounded-xl p-8 text-center hover:shadow-lg transition-shadow">
+                  <div className="bg-[var(--brand-dark-azure)] border border-[var(--brand-dark-azure)] rounded-xl p-8 text-center hover:shadow-lg transition-shadow">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-rose-500 to-red-700 text-white mb-4">
                       <Icon className="h-8 w-8" />
                     </div>
                     <div className="absolute -top-4 -left-4 w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
                       {index + 1}
                     </div>
-                    <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                    <p className="text-muted-foreground">{step.description}</p>
+                    <h3 className="text-xl font-bold mb-2 text-[var(--brand-light-purple)]">
+                      {step.title}
+                    </h3>
+                    <p className="text-[var(--brand-light-purple)] opacity-80">
+                      {step.description}
+                    </p>
                   </div>
                 </motion.div>
               );
@@ -153,7 +157,7 @@ export function HomePage() {
       {/* Preview Section */}
       <motion.section
         id="you-might-get"
-        className="py-20"
+        className="py-20 bg-[var(--brand-dark-azure)]"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -201,7 +205,7 @@ export function HomePage() {
       {/* Testimonials */}
       <motion.section
         id="what-customers-say"
-        className="py-20 bg-accent/30"
+        className="py-20 bg-[var(--brand-light-purple)]"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -209,10 +213,10 @@ export function HomePage() {
       >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 text-[var(--brand-dark-azure)]">
               What Our Customers Say
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-[var(--brand-dark-azure)] opacity-70 text-lg">
               Join thousands of satisfied mystery shirt collectors
             </p>
           </div>
@@ -225,7 +229,7 @@ export function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className="bg-card border border-border rounded-xl p-6"
+                className="bg-[var(--brand-dark-azure)] border border-[var(--brand-dark-azure)] rounded-xl p-6"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <img
@@ -234,7 +238,9 @@ export function HomePage() {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
-                    <h4 className="font-bold">{testimonial.name}</h4>
+                    <h4 className="font-bold text-[var(--brand-light-purple)]">
+                      {testimonial.name}
+                    </h4>
                     <div className="flex gap-1">
                       {Array.from({ length: testimonial.rating }).map(
                         (_, i) => (
@@ -247,7 +253,9 @@ export function HomePage() {
                     </div>
                   </div>
                 </div>
-                <p className="text-muted-foreground">{testimonial.text}</p>
+                <p className="text-[var(--brand-light-purple)] opacity-80">
+                  {testimonial.text}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -256,7 +264,7 @@ export function HomePage() {
 
       {/* CTA Section */}
       <motion.section
-        className="py-20"
+        className="py-20 bg-[var(--brand-dark-azure)]"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

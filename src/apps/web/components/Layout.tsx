@@ -102,6 +102,28 @@ export function Layout() {
   const isDarkTheme = mounted ? resolvedTheme === "dark" : true;
   const nextThemeLabel = isDarkTheme ? "light" : "dark";
   const userInitial = (user?.displayName?.[0] ?? "U").toUpperCase();
+  const faqItems = [
+    {
+      question: "How does Unboxd work?",
+      answer:
+        "Pick your shirt size, place your order, and we ship a mystery sports shirt to your door.",
+    },
+    {
+      question: "Can I return an item?",
+      answer:
+        "Yes. If your order is eligible, you can start the process from the Returns page.",
+    },
+    {
+      question: "How long does shipping take?",
+      answer:
+        "Delivery times vary by location, but most orders arrive within a few business days.",
+    },
+    {
+      question: "Do I need an account to order?",
+      answer:
+        "You can browse without an account, but signing in lets you track orders and manage your closet.",
+    },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -227,21 +249,6 @@ export function Layout() {
                   </>
                 ) : (
                   <div className="hidden md:flex items-center gap-1 rounded-full border border-border/80 bg-card/70 p-1 backdrop-blur">
-                    <button
-                      type="button"
-                      onClick={() => setTheme(nextThemeLabel)}
-                      className="flex min-h-10 items-center gap-2 rounded-full px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-                      aria-label={`Switch to ${nextThemeLabel} mode`}
-                      title={`Switch to ${nextThemeLabel} mode`}
-                    >
-                      {isDarkTheme ? (
-                        <Sun className="h-4 w-4" />
-                      ) : (
-                        <Moon className="h-4 w-4" />
-                      )}
-                      <span>{nextThemeLabel === "light" ? "Light" : "Dark"}</span>
-                    </button>
-                    <div className="h-6 w-px bg-border" aria-hidden="true" />
                     <Link
                       to="/signin"
                       className="rounded-full px-4 py-2 text-sm hover:bg-accent transition-colors"
@@ -356,21 +363,6 @@ export function Layout() {
                 ) : (
                   <>
                     <div className="rounded-2xl border border-border bg-card/70 p-2">
-                      <button
-                        type="button"
-                        onClick={() => setTheme(nextThemeLabel)}
-                        className="mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 hover:bg-accent transition-colors"
-                        aria-label={`Switch to ${nextThemeLabel} mode`}
-                        title={`Switch to ${nextThemeLabel} mode`}
-                      >
-                        {isDarkTheme ? (
-                          <Sun className="h-5 w-5" />
-                        ) : (
-                          <Moon className="h-5 w-5" />
-                        )}
-                        <span>{`Switch to ${nextThemeLabel} mode`}</span>
-                      </button>
-                      <div className="mb-2 h-px w-full bg-border" aria-hidden="true" />
                       <div className="flex items-center gap-2">
                         <Link
                           to="/signin"
@@ -409,9 +401,42 @@ export function Layout() {
         <Outlet />
       </main>
 
+      {!isAuthPage && !user && (
+        <section className="mt-16 bg-[var(--brand-light-purple)] py-16">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto w-full max-w-4xl">
+              <div className="mb-10 text-center">
+                <h2 className="text-3xl font-bold md:text-5xl text-[var(--brand-dark-azure)]">
+                  Frequently Asked Questions
+                </h2>
+                <p className="mt-3 text-[var(--brand-dark-azure)] opacity-70">
+                  Quick answers before you place your next mystery order.
+                </p>
+              </div>
+              <div className="space-y-3">
+                {faqItems.map((item) => (
+                  <details
+                    key={item.question}
+                    className="group rounded-lg border border-[var(--brand-dark-azure)] bg-[var(--brand-dark-azure)] px-4 py-3 transition-opacity hover:opacity-95"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-medium text-[var(--brand-light-purple)] marker:content-['']">
+                      <span>{item.question}</span>
+                      <ChevronDown className="h-4 w-4 shrink-0 text-[var(--brand-light-purple)] opacity-80 transition-transform duration-200 group-open:rotate-180" />
+                    </summary>
+                    <p className="mt-3 text-sm text-[var(--brand-light-purple)] opacity-80">
+                      {item.answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Footer */}
       {!isAuthPage && (
-        <footer className="border-t border-border mt-20">
+        <footer className="border-t border-border">
           <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div>
