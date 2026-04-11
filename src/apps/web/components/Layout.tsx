@@ -402,14 +402,14 @@ export function Layout() {
       </main>
 
       {!isAuthPage && !user && (
-        <section className="mt-16 bg-[var(--brand-light-purple)] py-16">
+        <section className="bg-[var(--brand-light-purple)] py-16">
           <div className="container mx-auto px-4">
-            <div className="mx-auto w-full max-w-4xl">
-              <div className="mb-10 text-center">
-                <h2 className="text-3xl font-bold md:text-5xl text-[var(--brand-dark-azure)]">
+            <div className="mx-auto w-full max-w-6xl">
+              <div className="mx-auto mb-10 w-full max-w-3xl text-center">
+                <h2 className="text-3xl font-bold text-[var(--brand-dark-azure)] md:text-5xl">
                   Frequently Asked Questions
                 </h2>
-                <p className="mt-3 text-[var(--brand-dark-azure)] opacity-70">
+                <p className="mt-3 text-lg text-[var(--brand-dark-azure)] opacity-70">
                   Quick answers before you place your next mystery order.
                 </p>
               </div>
@@ -417,13 +417,13 @@ export function Layout() {
                 {faqItems.map((item) => (
                   <details
                     key={item.question}
-                    className="group rounded-lg border border-[var(--brand-dark-azure)] bg-[var(--brand-dark-azure)] px-4 py-3 transition-opacity hover:opacity-95"
+                    className="group rounded-2xl border border-[var(--brand-dark-azure)] bg-[var(--brand-dark-azure)] px-4 py-3 text-[var(--brand-light-purple)] transition-opacity hover:opacity-95"
                   >
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-medium text-[var(--brand-light-purple)] marker:content-['']">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-medium marker:content-['']">
                       <span>{item.question}</span>
-                      <ChevronDown className="h-4 w-4 shrink-0 text-[var(--brand-light-purple)] opacity-80 transition-transform duration-200 group-open:rotate-180" />
+                      <ChevronDown className="h-4 w-4 shrink-0 opacity-80 transition-transform duration-200 group-open:rotate-180" />
                     </summary>
-                    <p className="mt-3 text-sm text-[var(--brand-light-purple)] opacity-80">
+                    <p className="mt-3 text-sm opacity-80">
                       {item.answer}
                     </p>
                   </details>
