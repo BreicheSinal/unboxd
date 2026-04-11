@@ -50,18 +50,18 @@ export function AdminSignInPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#001114] px-4 py-10">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="admin-surface flex min-h-screen flex-col items-center justify-center px-4 py-10">
+      <Card className="w-full max-w-md border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)] shadow-lg">
         <CardHeader className="space-y-0">
           <div className="flex items-center gap-3">
-            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-accent/40">
+            <div className="inline-flex h-10 w-10 items-center justify-center border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70">
               <img
                 src="/assets/icons/ICON_WHITE.svg"
                 alt="Unboxd Admin"
                 className="h-5 w-5"
               />
             </div>
-            <CardTitle className="text-2xl">Unboxd Admin</CardTitle>
+            <CardTitle className="text-2xl uppercase tracking-[0.06em]">Unboxd Admin</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -70,7 +70,7 @@ export function AdminSignInPage() {
           <Button
             type="button"
             variant="outline"
-            className="mt-0 h-11 w-full gap-1"
+            className="mt-0 h-11 w-full gap-1 border-[var(--brand-light-purple)]/25 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)] hover:border-[var(--brand-light-purple)]/40 hover:bg-[var(--brand-dark-azure)]"
             disabled={isLoading}
             onClick={() => void dispatch(adminSignInWithGoogle())}
           >
@@ -80,7 +80,7 @@ export function AdminSignInPage() {
 
           <div className="mt-4 flex items-center gap-3">
             <span className="h-px flex-1 bg-border" />
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
+            <span className="text-xs uppercase tracking-wide text-[var(--brand-light-purple)]/65">
               Or
             </span>
             <span className="h-px flex-1 bg-border" />
@@ -100,7 +100,7 @@ export function AdminSignInPage() {
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Admin email"
               autoComplete="email"
-              className="h-11"
+              className="h-11 border-[var(--brand-light-purple)]/25 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)] placeholder:text-[var(--brand-light-purple)]/45"
             />
             <Input
               type="password"
@@ -109,12 +109,12 @@ export function AdminSignInPage() {
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Password"
               autoComplete="current-password"
-              className="h-11"
+              className="h-11 border-[var(--brand-light-purple)]/25 bg-[var(--brand-dark-azure)] text-[var(--brand-light-purple)] placeholder:text-[var(--brand-light-purple)]/45"
             />
             <Button
               disabled={isLoading}
               type="submit"
-              className="h-11 w-full bg-gradient-to-r from-rose-500 to-red-700 text-white hover:from-rose-600 hover:to-red-800"
+              className="h-11 w-full border border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] text-white hover:bg-[#c30f37]"
             >
               {isLoading ? <Spinner className="h-4 w-4" tone="black" /> : null}
               Sign in
@@ -126,9 +126,9 @@ export function AdminSignInPage() {
         href="https://invixlab.com"
         target="_blank"
         rel="noreferrer"
-        className="mt-4 inline-flex text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+        className="mt-4 inline-flex text-xs font-semibold text-[var(--brand-light-purple)]/65 transition-colors hover:text-[var(--brand-light-purple)]"
       >
-        Developed by <span className="ml-1 text-red-500">InvixLab</span>
+        Developed by <span className="ml-1 text-[var(--brand-vivid-red)]">InvixLab</span>
       </a>
     </div>
   );

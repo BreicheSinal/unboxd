@@ -95,7 +95,9 @@ export function AdminUsersPage() {
   };
 
   const roleTextClass = (role: string) =>
-    role.toLowerCase() === "admin" ? "text-amber-300" : "text-sky-300";
+    role.toLowerCase() === "admin"
+      ? "text-[var(--brand-vivid-red)]"
+      : "text-emerald-300";
 
   return (
     <section>
@@ -155,10 +157,18 @@ export function AdminUsersPage() {
                   <AdminStatusBadge value={user.disabled ? "disabled" : "enabled"} />
                   <span
                     className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ${
-                      user.isOnline ? "text-emerald-400" : "text-zinc-500"
+                      user.isOnline
+                        ? "text-emerald-300"
+                        : "text-amber-300"
                     }`}
                   >
-                    <span className={`h-2 w-2 rounded-full ${user.isOnline ? "bg-emerald-400" : "bg-zinc-500"}`} />
+                    <span
+                      className={`h-2 w-2 rounded-full ${
+                        user.isOnline
+                          ? "bg-emerald-300"
+                          : "bg-amber-300"
+                      }`}
+                    />
                     {user.isOnline ? "Online" : "Offline"}
                   </span>
                 </div>
@@ -243,10 +253,18 @@ export function AdminUsersPage() {
                     <td className="px-3 py-2 text-center">
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ${
-                          user.isOnline ? "text-emerald-400" : "text-zinc-500"
+                          user.isOnline
+                            ? "text-emerald-300"
+                            : "text-amber-300"
                         }`}
                       >
-                        <span className={`h-2 w-2 rounded-full ${user.isOnline ? "bg-emerald-400" : "bg-zinc-500"}`} />
+                        <span
+                          className={`h-2 w-2 rounded-full ${
+                            user.isOnline
+                              ? "bg-emerald-300"
+                              : "bg-amber-300"
+                          }`}
+                        />
                         {user.isOnline ? "Online" : "Offline"}
                       </span>
                     </td>

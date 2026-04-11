@@ -121,8 +121,8 @@ export function AdminLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+    <div className="admin-surface min-h-screen text-[var(--brand-light-purple)]">
+      <header className="sticky top-0 z-40 border-b border-[var(--brand-light-purple)]/15 bg-[var(--brand-dark-azure)]/90 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center justify-between px-4 sm:h-20 lg:px-6">
           <div className="flex items-center gap-3">
             <img
@@ -131,8 +131,8 @@ export function AdminLayout() {
               className="h-7 w-7"
             />
             <div>
-              <p className="text-sm text-muted-foreground">Unboxd</p>
-              <h1 className="text-sm font-semibold sm:text-base">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-vivid-red)]">Unboxd</p>
+              <h1 className="text-sm font-semibold uppercase tracking-[0.08em] sm:text-base">
                 Admin Dashboard
               </h1>
             </div>
@@ -145,7 +145,7 @@ export function AdminLayout() {
                 size="icon"
                 aria-expanded={isAccountMenuOpen}
                 aria-haspopup="menu"
-                className="h-10 w-10 rounded-full border-0 bg-transparent p-0 hover:bg-accent/30"
+                className="h-10 w-10 rounded-full border-0 bg-transparent p-0 hover:bg-[var(--brand-light-purple)]/10"
                 onClick={() => setIsAccountMenuOpen((previous) => !previous)}
               >
                 <Avatar className="h-10 w-10 border-0">
@@ -155,9 +155,9 @@ export function AdminLayout() {
                 </Avatar>
               </Button>
               {isAccountMenuOpen ? (
-                <div className="absolute right-0 top-12 z-50 w-[min(84vw,320px)] rounded-2xl border border-border/80 bg-background p-2 shadow-md">
+                <div className="absolute right-0 top-12 z-[80] w-[min(84vw,320px)] border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] p-2 shadow-md">
                   <div className="space-y-2">
-                    <div className="flex items-center gap-3 rounded-xl border border-border/80 bg-card/70 p-3">
+                    <div className="flex items-center gap-3 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70 p-3">
                       <Avatar className="h-10 w-10 border-0">
                         <AvatarFallback className="text-xs font-semibold">
                           {avatarFallback}
@@ -167,13 +167,13 @@ export function AdminLayout() {
                         <p className="truncate text-sm font-semibold">
                           {displayName}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-[var(--brand-light-purple)]/65">
                           Administrator account
                         </p>
                       </div>
                     </div>
-                    <div className="flex min-w-0 h-12 items-center gap-2 rounded-xl border border-border/80 bg-card/70 px-3">
-                      <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <div className="flex min-w-0 h-12 items-center gap-2 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70 px-3">
+                      <Mail className="h-4 w-4 shrink-0 text-[var(--brand-light-purple)]/65" />
                       <p className="min-w-0 truncate text-sm font-medium">
                         {email}
                       </p>
@@ -181,7 +181,7 @@ export function AdminLayout() {
                     <Button
                       type="button"
                       variant="destructive"
-                      className="h-12 w-full rounded-xl px-4 text-sm"
+                      className="h-12 w-full px-4 text-sm"
                       onClick={() => {
                         setIsAccountMenuOpen(false);
                         void dispatch(adminSignOut());
@@ -199,14 +199,14 @@ export function AdminLayout() {
       </header>
 
       <div className="mx-auto grid w-full max-w-[1600px] items-start gap-2 overflow-x-clip px-4 py-4 sm:gap-4 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-6 lg:px-6 lg:py-6">
-        <aside className="-mx-4 h-fit w-auto min-w-0 self-start border-0 bg-transparent px-4 py-0 lg:mx-0 lg:w-64 lg:min-w-64 lg:max-w-64 lg:rounded-xl lg:border lg:border-border lg:bg-card lg:p-3">
+        <aside className="-mx-4 h-fit w-auto min-w-0 self-start border-0 bg-transparent px-4 py-0 lg:mx-0 lg:w-64 lg:min-w-64 lg:max-w-64 lg:border lg:border-[var(--brand-light-purple)]/20 lg:bg-[var(--brand-dark-azure)]/70 lg:p-3">
           <div className="mb-3 hidden items-center gap-2 px-2 lg:flex">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--brand-light-purple)]/65">
               Navigation
             </p>
           </div>
           <div className="mb-3 hidden px-2 lg:block">
-            <div className="h-px w-full bg-border" />
+            <div className="h-px w-full bg-[var(--brand-light-purple)]/15" />
           </div>
           <nav
             ref={navRef}
@@ -222,10 +222,10 @@ export function AdminLayout() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`flex min-w-0 items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm max-[750px]:min-w-max max-[750px]:shrink-0 max-[750px]:snap-start ${
+                  className={`flex min-w-0 items-center gap-2 whitespace-nowrap border px-3 py-2 text-sm max-[750px]:min-w-max max-[750px]:shrink-0 max-[750px]:snap-start ${
                     isActive
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:bg-accent/50"
+                      ? "border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] text-white"
+                      : "border-[var(--brand-light-purple)]/20 text-[var(--brand-light-purple)]/72 hover:border-[var(--brand-light-purple)]/35 hover:text-[var(--brand-light-purple)]"
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -244,49 +244,49 @@ export function AdminLayout() {
           </nav>
           {hasNavOverflow ? (
             <div
-              className="mt-1 h-1 rounded-full bg-border/60 lg:hidden"
+              className="mt-1 h-1 bg-[var(--brand-light-purple)]/15 lg:hidden"
               aria-hidden="true"
             >
               <div
-                className="h-full rounded-full bg-foreground/80 transition-[width] duration-150"
+                className="h-full bg-[var(--brand-vivid-red)] transition-[width] duration-150"
                 style={{ width: `${Math.max(18, navScrollProgress)}%` }}
               />
             </div>
           ) : null}
           <div className="hidden pt-3 lg:block">
-            <div className="mb-3 h-px w-full bg-border" />
+            <div className="mb-3 h-px w-full bg-[var(--brand-light-purple)]/15" />
             <a
               href="https://invixlab.com"
               target="_blank"
               rel="noreferrer"
-              className="hidden text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground lg:inline-flex"
+              className="hidden text-xs font-semibold text-[var(--brand-light-purple)]/65 transition-colors hover:text-[var(--brand-light-purple)] lg:inline-flex"
             >
-              Developed by <span className="ml-1 text-red-500">InvixLab</span>
+              Developed by <span className="ml-1 text-[var(--brand-vivid-red)]">InvixLab</span>
             </a>
           </div>
         </aside>
         <main className="min-w-0 space-y-4">
-          <div className="-mx-4 flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 text-sm lg:mx-0 lg:rounded-lg lg:border lg:px-3">
-            <Home className="h-4 w-4 text-muted-foreground" />
-            <span className="text-muted-foreground">Admin</span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          <div className="-mx-4 flex flex-wrap items-center gap-2 border-b border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/65 px-4 py-2 text-sm lg:mx-0 lg:border lg:px-3">
+            <Home className="h-4 w-4 text-[var(--brand-light-purple)]/65" />
+            <span className="text-[var(--brand-light-purple)]/65">Admin</span>
+            <ChevronRight className="h-4 w-4 text-[var(--brand-light-purple)]/65" />
             <span className="font-medium">
               {activeItem?.label ?? "Overview"}
             </span>
-            <span className="text-muted-foreground">
+            <span className="text-[var(--brand-light-purple)]/65">
               - {activeItem?.subtitle ?? "Workspace"}
             </span>
           </div>
           <Outlet />
           <div className="pt-2 lg:hidden">
-            <div className="mb-3 h-px w-full bg-border" />
+            <div className="mb-3 h-px w-full bg-[var(--brand-light-purple)]/15" />
             <a
               href="https://invixlab.com"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex text-xs font-semibold text-[var(--brand-light-purple)]/65 transition-colors hover:text-[var(--brand-light-purple)]"
             >
-              Developed by <span className="ml-1 text-red-500">InvixLab</span>
+              Developed by <span className="ml-1 text-[var(--brand-vivid-red)]">InvixLab</span>
             </a>
           </div>
         </main>

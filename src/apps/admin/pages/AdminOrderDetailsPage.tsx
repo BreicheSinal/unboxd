@@ -165,27 +165,27 @@ export function AdminOrderDetailsPage() {
           <meta charset="utf-8" />
           <title>${escapeHtml(invoiceNumber)}</title>
           <style>
-            body { font-family: Arial, sans-serif; color: #111827; margin: 32px; }
+            body { font-family: Inter, Arial, sans-serif; color: #001114; margin: 32px; }
             h1, h2, h3 { margin: 0; }
             .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
             .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
             .brand-logo { height: 30px; width: auto; }
-            .brand-icon-wrap { height: 34px; width: 34px; border-radius: 10px; background: #111827; display: inline-flex; align-items: center; justify-content: center; }
+            .brand-icon-wrap { height: 34px; width: 34px; border-radius: 10px; background: #001114; display: inline-flex; align-items: center; justify-content: center; }
             .brand-icon { height: 20px; width: 20px; }
-            .muted { color: #6b7280; font-size: 12px; }
-            .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+            .muted { color: #556064; font-size: 12px; }
+            .card { border: 1px solid rgba(0, 17, 20, 0.18); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
             .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
             .row { margin: 6px 0; }
-            .label { color: #6b7280; font-size: 12px; }
+            .label { color: #556064; font-size: 12px; }
             .value { font-size: 14px; }
             table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-            th, td { border: 1px solid #e5e7eb; text-align: left; padding: 8px; font-size: 12px; }
-            th { background: #f9fafb; }
-            .footer { margin-top: 20px; color: #6b7280; font-size: 11px; text-align: right; }
+            th, td { border: 1px solid rgba(0, 17, 20, 0.18); text-align: left; padding: 8px; font-size: 12px; }
+            th { background: #f3f3f5; }
+            .footer { margin-top: 20px; color: #556064; font-size: 11px; text-align: right; }
             .exclusions-grid { display: grid; gap: 10px; margin-top: 10px; }
             .exclusion-row { display: grid; grid-template-columns: 90px 1fr; gap: 10px; align-items: start; }
-            .exclusion-label { font-size: 12px; font-weight: 600; color: #374151; padding-top: 2px; }
-            .exclusion-values { font-size: 13px; color: #111827; line-height: 1.45; }
+            .exclusion-label { font-size: 12px; font-weight: 600; color: #001114; padding-top: 2px; }
+            .exclusion-values { font-size: 13px; color: #001114; line-height: 1.45; }
           </style>
         </head>
         <body>
