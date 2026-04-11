@@ -27,29 +27,37 @@ export function ForgotPasswordPage() {
   };
 
   return (
-    <div className="relative w-full px-4 [@media(max-width:450px)]:px-0">
+    <div className="relative w-full px-4 py-8 [@media(max-width:450px)]:px-0">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-12 top-10 h-56 w-56 rounded-full bg-red-500/15 blur-3xl" />
+        <div className="absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-rose-400/10 blur-3xl" />
+      </div>
+
       <div className="mx-auto w-full max-w-xl">
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-xl md:p-6 [@media(max-width:450px)]:rounded-none [@media(max-width:450px)]:border-0 [@media(max-width:450px)]:p-0 [@media(max-width:450px)]:shadow-none">
+        <div className="border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] p-4 text-[var(--brand-light-purple)] shadow-xl md:p-6 [@media(max-width:450px)]:border-x-0 [@media(max-width:450px)]:p-0 [@media(max-width:450px)]:shadow-none">
           <Link
             to="/signin"
-            className="mb-4 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="mb-4 inline-flex min-h-11 items-center gap-2 border border-[var(--brand-light-purple)]/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--brand-light-purple)]/75 transition-colors hover:text-[var(--brand-light-purple)]"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Sign In
           </Link>
 
-          <h1 className="mb-2 text-3xl font-bold">Reset Password</h1>
-          <p className="mb-6 text-muted-foreground">
-            Enter your email and we will send you a password reset link.
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brand-vivid-red)]">
+            Account Recovery
+          </p>
+          <h1 className="mb-3 text-4xl font-black uppercase leading-[0.95]">Reset Password</h1>
+          <p className="mb-6 text-[var(--brand-light-purple)]/70">
+            Enter your email and we will send you a reset link.
           </p>
 
           {error && (
-            <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-500">
+            <div className="mb-4 border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-300">
               {error}
             </div>
           )}
           {success && (
-            <div className="mb-4 rounded-lg border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-400">
+            <div className="mb-4 border border-emerald-500/35 bg-emerald-500/10 p-4 text-sm text-emerald-300">
               {success}
             </div>
           )}
@@ -60,7 +68,7 @@ export function ForgotPasswordPage() {
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--brand-light-purple)]/60" />
                 <input
                   id="email"
                   type="email"
@@ -68,7 +76,7 @@ export function ForgotPasswordPage() {
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="your@email.com"
                   required
-                  className="w-full rounded-lg border border-border bg-accent py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full border border-[var(--brand-light-purple)]/25 bg-[var(--brand-dark-azure)] py-3 pl-10 pr-4 text-[var(--brand-light-purple)] placeholder:text-[var(--brand-light-purple)]/40 focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
             </div>
@@ -76,7 +84,7 @@ export function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-rose-500 to-red-700 py-3 font-medium text-white transition-all hover:shadow-lg disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 border border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#c30f37] disabled:opacity-50"
             >
               {isLoading ? (
                 <>
@@ -84,14 +92,14 @@ export function ForgotPasswordPage() {
                   <span className="loading-shimmer-text-light">Sending</span>
                 </>
               ) : (
-                "Send reset link"
+                "Send Reset Link"
               )}
             </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-muted-foreground">
+          <p className="mt-5 text-center text-sm text-[var(--brand-light-purple)]/65">
             Remembered it?{" "}
-            <Link to="/signin" className="font-medium text-red-500 hover:underline">
+            <Link to="/signin" className="font-medium text-[var(--brand-vivid-red)] hover:underline">
               Sign in
             </Link>
           </p>

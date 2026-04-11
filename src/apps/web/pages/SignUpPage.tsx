@@ -88,7 +88,12 @@ export function SignUpPage() {
   };
 
   return (
-    <div className="relative w-full px-4 [@media(max-width:450px)]:px-0">
+    <div className="relative w-full px-4 py-6 md:py-8 [@media(max-width:450px)]:px-0">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-12 top-10 h-56 w-56 rounded-full bg-red-500/15 blur-3xl" />
+        <div className="absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-rose-400/10 blur-3xl" />
+      </div>
+
       <div className="mx-auto w-full max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -97,23 +102,28 @@ export function SignUpPage() {
         >
           <Link
             to="/"
-            className="mb-2 inline-flex min-h-11 items-center gap-2 px-1 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground [@media(max-width:450px)]:mb-3 [@media(max-width:450px)]:w-full [@media(max-width:450px)]:justify-start [@media(max-width:450px)]:px-4"
+            className="mb-3 inline-flex min-h-11 items-center gap-2 border border-[var(--brand-light-purple)]/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--brand-light-purple)]/75 transition-colors hover:text-[var(--brand-light-purple)] [@media(max-width:450px)]:mb-3 [@media(max-width:450px)]:w-full [@media(max-width:450px)]:justify-start [@media(max-width:450px)]:px-4"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
 
-          <div className="rounded-2xl border border-border bg-card p-4 shadow-xl md:p-6 [@media(max-width:450px)]:rounded-none [@media(max-width:450px)]:border-0 [@media(max-width:450px)]:p-0 [@media(max-width:450px)]:shadow-none">
+          <div className="border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] p-4 text-[var(--brand-light-purple)] shadow-xl md:p-6 [@media(max-width:450px)]:rounded-none [@media(max-width:450px)]:border-x-0 [@media(max-width:450px)]:p-0 [@media(max-width:450px)]:shadow-none">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-              <div className="rounded-xl border border-border bg-accent/20 p-6">
+              <div className="border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/60 p-6">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brand-vivid-red)]">
+                  Start Collecting
+                </p>
                 <img src={authIconSrc} alt="Unboxd" className="mb-4 h-8 w-auto" />
-                <h1 className="mb-2 text-3xl font-bold">Create Account</h1>
-                <p className="text-muted-foreground">Join Unboxd and start collecting</p>
+                <h1 className="mb-3 text-4xl font-black uppercase leading-[0.95]">Create Account</h1>
+                <p className="text-[var(--brand-light-purple)]/70">
+                  Join Unboxd and build your mystery shirt collection.
+                </p>
               </div>
 
               <div>
                 {error && (
-                  <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-500">
+                  <div className="mb-4 border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-300">
                     {error}
                   </div>
                 )}
@@ -121,7 +131,7 @@ export function SignUpPage() {
                 <button
                   onClick={handleGoogleSignIn}
                   disabled={isLoading}
-                  className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border-2 border-border px-4 py-3 font-medium transition-colors hover:bg-accent/30 disabled:opacity-50"
+                  className="mb-4 flex w-full items-center justify-center gap-3 border border-[var(--brand-light-purple)]/25 px-4 py-3 text-sm font-semibold uppercase tracking-[0.08em] transition-colors hover:border-[var(--brand-light-purple)]/40 disabled:opacity-50"
                 >
                   <GoogleIcon className="h-5 w-5" />
                   Continue with Google
@@ -129,10 +139,12 @@ export function SignUpPage() {
 
                 <div className="relative mb-4">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border"></div>
+                    <div className="w-full border-t border-[var(--brand-light-purple)]/20"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="bg-card px-4 text-muted-foreground">or sign up with email</span>
+                    <span className="bg-[var(--brand-dark-azure)] px-4 text-[var(--brand-light-purple)]/60">
+                      or sign up with email
+                    </span>
                   </div>
                 </div>
 
@@ -143,7 +155,7 @@ export function SignUpPage() {
                         Full Name
                       </label>
                       <div className="relative">
-                        <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--brand-light-purple)]/60" />
                         <input
                           id="name"
                           type="text"
@@ -151,7 +163,7 @@ export function SignUpPage() {
                           onChange={(e) => setName(e.target.value)}
                           placeholder="John Doe"
                           required
-                          className="w-full rounded-lg border border-border bg-accent py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          className="w-full border border-[var(--brand-light-purple)]/25 bg-[var(--brand-dark-azure)] py-3 pl-10 pr-4 text-[var(--brand-light-purple)] placeholder:text-[var(--brand-light-purple)]/40 focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                       </div>
                     </div>
@@ -161,7 +173,7 @@ export function SignUpPage() {
                         Email
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--brand-light-purple)]/60" />
                         <input
                           id="email"
                           type="email"
@@ -169,7 +181,7 @@ export function SignUpPage() {
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="your@email.com"
                           required
-                          className="w-full rounded-lg border border-border bg-accent py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          className="w-full border border-[var(--brand-light-purple)]/25 bg-[var(--brand-dark-azure)] py-3 pl-10 pr-4 text-[var(--brand-light-purple)] placeholder:text-[var(--brand-light-purple)]/40 focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                       </div>
                     </div>
@@ -181,7 +193,7 @@ export function SignUpPage() {
                         Password
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--brand-light-purple)]/60" />
                         <input
                           id="password"
                           type={showPassword ? "text" : "password"}
@@ -189,12 +201,12 @@ export function SignUpPage() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="********"
                           required
-                          className="w-full rounded-lg border border-border bg-accent py-3 pl-10 pr-12 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          className="w-full border border-[var(--brand-light-purple)]/25 bg-[var(--brand-dark-azure)] py-3 pl-10 pr-12 text-[var(--brand-light-purple)] placeholder:text-[var(--brand-light-purple)]/40 focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--brand-light-purple)]/60 hover:text-[var(--brand-light-purple)]"
                         >
                           {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
@@ -206,7 +218,7 @@ export function SignUpPage() {
                         Confirm Password
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--brand-light-purple)]/60" />
                         <input
                           id="confirmPassword"
                           type={showPassword ? "text" : "password"}
@@ -214,19 +226,19 @@ export function SignUpPage() {
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="********"
                           required
-                          className="w-full rounded-lg border border-border bg-accent py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          className="w-full border border-[var(--brand-light-purple)]/25 bg-[var(--brand-dark-azure)] py-3 pl-10 pr-4 text-[var(--brand-light-purple)] placeholder:text-[var(--brand-light-purple)]/40 focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-[var(--brand-light-purple)]/65">
                     By signing up, you agree to our{" "}
-                    <Link to="/terms" className="text-red-500 hover:underline">
+                    <Link to="/terms" className="text-[var(--brand-vivid-red)] hover:underline">
                       Terms of Service
                     </Link>{" "}
                     and{" "}
-                    <Link to="/privacy" className="text-red-500 hover:underline">
+                    <Link to="/privacy" className="text-[var(--brand-vivid-red)] hover:underline">
                       Privacy Policy
                     </Link>
                   </div>
@@ -234,12 +246,12 @@ export function SignUpPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-rose-500 to-red-700 py-3 font-medium text-white transition-all hover:shadow-lg disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 border border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#c30f37] disabled:opacity-50"
                   >
                     {isLoading ? (
                       <>
                         <Spinner className="h-4 w-4" tone="black" />
-                        <span className="loading-shimmer-text-light">Creating account</span>
+                        <span className="loading-shimmer-text-light">Creating Account</span>
                       </>
                     ) : (
                       "Sign Up"
@@ -249,9 +261,9 @@ export function SignUpPage() {
               </div>
             </div>
 
-            <p className="mt-5 text-center text-sm text-muted-foreground">
+            <p className="mt-5 text-center text-sm text-[var(--brand-light-purple)]/65">
               Already have an account?{" "}
-              <Link to="/signin" className="font-medium text-red-500 hover:underline">
+              <Link to="/signin" className="font-medium text-[var(--brand-vivid-red)] hover:underline">
                 Sign in
               </Link>
             </p>

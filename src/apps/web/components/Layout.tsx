@@ -129,8 +129,8 @@ export function Layout() {
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
       {!isAuthPage && (
-        <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
-          <div className="w-full px-4 md:px-6">
+        <header className="sticky top-0 z-50 border-b border-[var(--brand-light-purple)]/15 bg-[var(--brand-dark-azure)]/95 text-[var(--brand-light-purple)] backdrop-blur-lg">
+          <div className="w-full px-5 md:px-6">
             <div className="flex h-16 items-center justify-between">
               {/* Logo */}
               <Link to="/" className="flex shrink-0 items-center gap-2 md:mr-5 lg:mr-8">
@@ -142,7 +142,7 @@ export function Layout() {
               </Link>
 
               {/* Desktop Navigation */}
-              <nav className="hidden md:mx-4 md:flex md:flex-1 md:items-center md:justify-center md:gap-3 lg:mx-8 lg:gap-6">
+              <nav className="hidden md:mx-4 md:flex md:flex-1 md:items-center md:justify-center md:gap-2 lg:mx-8 lg:gap-3">
                 {navigation.map((item) => {
                   // Only show protected routes if user is logged in
                   if (item.protected && !user) return null;
@@ -153,10 +153,10 @@ export function Layout() {
                     <Link
                       key={item.name}
                       to={item.href}
-                      className={`flex items-center gap-2 rounded-lg px-2 py-2 text-sm transition-colors lg:px-3 lg:text-base ${
+                      className={`flex items-center gap-2 border px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] transition-colors lg:px-4 ${
                         isActive
-                          ? "bg-accent text-accent-foreground"
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                          ? "border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] text-white"
+                          : "border-[var(--brand-light-purple)]/20 text-[var(--brand-light-purple)]/75 hover:border-[var(--brand-light-purple)]/35 hover:text-[var(--brand-light-purple)]"
                       }`}
                     >
                       <Icon className="h-4 w-4" />
@@ -174,7 +174,7 @@ export function Layout() {
                     <div ref={userMenuRef} className="relative hidden md:block">
                       <button
                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                        className="flex min-h-11 items-center gap-2 rounded-lg p-2 hover:bg-accent transition-colors"
+                        className="flex min-h-11 items-center gap-2 border border-[var(--brand-light-purple)]/20 p-2 transition-colors hover:border-[var(--brand-light-purple)]/35"
                       >
                         {user.photoURL && !hasAvatarLoadError ? (
                           <img
@@ -192,11 +192,11 @@ export function Layout() {
                       </button>
 
                       {userMenuOpen && (
-                        <div className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-lg shadow-xl py-2">
-                          <div className="px-4 py-3 border-b border-border">
+                        <div className="absolute right-0 mt-2 w-56 border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)] py-2 shadow-xl">
+                          <div className="border-b border-[var(--brand-light-purple)]/20 px-4 py-3">
                             <div className="font-bold">{user.displayName}</div>
                             <div className="mt-1 flex min-w-0 items-center gap-2">
-                              <div className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
+                              <div className="min-w-0 flex-1 truncate text-sm text-[var(--brand-light-purple)]/70">
                                 {user.email}
                               </div>
                               {user.provider === "google" && (
@@ -207,7 +207,7 @@ export function Layout() {
                           <Link
                             to="/badges"
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2 hover:bg-accent transition-colors"
+                            className="flex items-center gap-3 px-4 py-2 transition-colors hover:bg-[var(--brand-light-purple)]/10"
                           >
                             <Award className="h-4 w-4" />
                             <span>Badges</span>
@@ -215,16 +215,16 @@ export function Layout() {
                           <Link
                             to="/transactions"
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2 hover:bg-accent transition-colors"
+                            className="flex items-center gap-3 px-4 py-2 transition-colors hover:bg-[var(--brand-light-purple)]/10"
                           >
                             <History className="h-4 w-4" />
                             <span>History</span>
                           </Link>
-                          <div className="my-2 border-t border-border"></div>
+                          <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
                           <button
                             type="button"
                             onClick={() => setTheme(nextThemeLabel)}
-                            className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-accent transition-colors"
+                            className="flex w-full items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-[var(--brand-light-purple)]/10"
                             aria-label={`Switch to ${nextThemeLabel} mode`}
                             title={`Switch to ${nextThemeLabel} mode`}
                           >
@@ -235,10 +235,10 @@ export function Layout() {
                             )}
                             <span>{`Switch to ${nextThemeLabel} mode`}</span>
                           </button>
-                          <div className="my-2 border-t border-border"></div>
+                          <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
                           <button
                             onClick={handleSignOut}
-                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-accent transition-colors text-red-500"
+                            className="w-full flex items-center gap-3 px-4 py-2 text-[var(--brand-vivid-red)] transition-colors hover:bg-[var(--brand-light-purple)]/10"
                           >
                             <LogOut className="h-4 w-4" />
                             <span>Sign Out</span>
@@ -248,16 +248,16 @@ export function Layout() {
                     </div>
                   </>
                 ) : (
-                  <div className="hidden md:flex items-center gap-1 rounded-full border border-border/80 bg-card/70 p-1 backdrop-blur">
+                  <div className="hidden md:flex items-center gap-2">
                     <Link
                       to="/signin"
-                      className="rounded-full px-4 py-2 text-sm hover:bg-accent transition-colors"
+                      className="border border-[var(--brand-light-purple)]/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--brand-light-purple)] transition-colors hover:border-[var(--brand-light-purple)]/40"
                     >
                       Sign In
                     </Link>
                     <Link
                       to="/signup"
-                      className="rounded-full bg-gradient-to-r from-rose-500 to-red-700 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all"
+                      className="border border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-[#c30f37]"
                     >
                       Sign Up
                     </Link>
@@ -267,7 +267,7 @@ export function Layout() {
                 {/* Mobile menu button */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="md:hidden flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 hover:bg-accent transition-colors"
+                  className="md:hidden flex min-h-11 min-w-11 items-center justify-center border border-[var(--brand-light-purple)]/20 p-2 transition-colors hover:border-[var(--brand-light-purple)]/35"
                 >
                   {mobileMenuOpen ? (
                     <X className="h-5 w-5" />
@@ -281,8 +281,8 @@ export function Layout() {
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-border">
-              <nav className="w-full px-4 md:px-6 py-4 flex flex-col gap-2">
+            <div className="md:hidden border-t border-[var(--brand-light-purple)]/20">
+              <nav className="flex w-full flex-col gap-2 px-5 py-4 md:px-6">
                 {navigation.map((item) => {
                   // Only show protected routes if user is logged in
                   if (item.protected && !user) return null;
@@ -294,10 +294,10 @@ export function Layout() {
                       key={item.name}
                       to={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                      className={`flex items-center gap-3 border px-4 py-3 text-xs font-semibold uppercase tracking-[0.1em] transition-colors ${
                         isActive
-                          ? "bg-accent text-accent-foreground"
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                          ? "border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] text-white"
+                          : "border-[var(--brand-light-purple)]/20 text-[var(--brand-light-purple)]/75 hover:border-[var(--brand-light-purple)]/35 hover:text-[var(--brand-light-purple)]"
                       }`}
                     >
                       <Icon className="h-5 w-5" />
@@ -308,11 +308,11 @@ export function Layout() {
 
                 {user ? (
                   <>
-                    <div className="border-t border-border my-2"></div>
+                    <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
                     <div className="px-4 py-2">
                       <div className="font-bold">{user.displayName}</div>
                       <div className="mt-1 flex min-w-0 items-center gap-2">
-                        <div className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
+                        <div className="min-w-0 flex-1 truncate text-sm text-[var(--brand-light-purple)]/70">
                           {user.email}
                         </div>
                         {user.provider === "google" && (
@@ -323,7 +323,7 @@ export function Layout() {
                     <Link
                       to="/badges"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--brand-light-purple)]/10"
                     >
                       <Award className="h-5 w-5" />
                       <span>Badges</span>
@@ -331,16 +331,16 @@ export function Layout() {
                     <Link
                       to="/transactions"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--brand-light-purple)]/10"
                     >
                       <History className="h-5 w-5" />
                       <span>History</span>
                     </Link>
-                    <div className="border-t border-border my-2"></div>
+                    <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
                     <button
                       type="button"
                       onClick={() => setTheme(nextThemeLabel)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--brand-light-purple)]/10"
                       aria-label={`Switch to ${nextThemeLabel} mode`}
                       title={`Switch to ${nextThemeLabel} mode`}
                     >
@@ -351,10 +351,10 @@ export function Layout() {
                       )}
                       <span>{`Switch to ${nextThemeLabel} mode`}</span>
                     </button>
-                    <div className="border-t border-border my-2"></div>
+                    <div className="my-2 border-t border-[var(--brand-light-purple)]/20"></div>
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors text-red-500"
+                      className="flex items-center gap-3 px-4 py-3 text-[var(--brand-vivid-red)] transition-colors hover:bg-[var(--brand-light-purple)]/10"
                     >
                       <LogOut className="h-5 w-5" />
                       <span>Sign Out</span>
@@ -362,19 +362,19 @@ export function Layout() {
                   </>
                 ) : (
                   <>
-                    <div className="rounded-2xl border border-border bg-card/70 p-2">
+                    <div className="border border-[var(--brand-light-purple)]/20 bg-[var(--brand-dark-azure)]/70 p-2">
                       <div className="flex items-center gap-2">
                         <Link
                           to="/signin"
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex-1 rounded-xl border border-border px-4 py-3 text-center hover:bg-accent transition-colors"
+                          className="flex-1 border border-[var(--brand-light-purple)]/25 px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.1em] transition-colors hover:border-[var(--brand-light-purple)]/40"
                         >
                           Sign In
                         </Link>
                         <Link
                           to="/signup"
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex-1 rounded-xl bg-gradient-to-r from-rose-500 to-red-700 px-4 py-3 text-center font-semibold text-white shadow-sm transition-all hover:shadow-md"
+                          className="flex-1 border border-[var(--brand-vivid-red)] bg-[var(--brand-vivid-red)] px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-[#c30f37]"
                         >
                           Sign Up
                         </Link>
