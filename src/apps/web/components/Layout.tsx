@@ -1,4 +1,4 @@
-﻿import { Outlet, Link, useLocation } from "react-router";
+import { Outlet, Link, useLocation } from "react-router";
 import {
   Menu,
   X,
@@ -10,6 +10,8 @@ import {
   LogOut,
   ChevronDown,
   Award,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
@@ -19,10 +21,11 @@ import { signOutUser } from "../store/authSlice";
 import { useScrollToTopOnChange } from "../hooks/useScrollToTopOnChange";
 
 export function Layout() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [hasAvatarLoadError, setHasAvatarLoadError] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLElement | null>(null);
   const location = useLocation();
@@ -36,6 +39,10 @@ export function Layout() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    setHasAvatarLoadError(false);
+  }, [user?.photoURL, user?.uid]);
 
   useScrollToTopOnChange(
     [location.pathname, location.search, location.hash, location.key],
@@ -92,11 +99,12 @@ export function Layout() {
     mounted && resolvedTheme === "dark"
       ? "/assets/logos/WHITE_LOGO.svg"
       : "/assets/logos/BLACK_LOGO.svg";
+  const isDarkTheme = mounted ? resolvedTheme === "dark" : true;
+  const nextThemeLabel = isDarkTheme ? "light" : "dark";
+  const userInitial = (user?.displayName?.[0] ?? "U").toUpperCase();
 
   return (
-    <div
-      className={`${isAuthPage ? "min-h-screen" : "min-h-screen"} bg-background flex flex-col`}
-    >
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
       {!isAuthPage && (
         <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
@@ -146,15 +154,16 @@ export function Layout() {
                         onClick={() => setUserMenuOpen(!userMenuOpen)}
                         className="flex min-h-11 items-center gap-2 rounded-lg p-2 hover:bg-accent transition-colors"
                       >
-                        {user.photoURL ? (
+                        {user.photoURL && !hasAvatarLoadError ? (
                           <img
                             src={user.photoURL}
                             alt={user.displayName}
                             className="h-8 w-8 rounded-full object-cover"
+                            onError={() => setHasAvatarLoadError(true)}
                           />
                         ) : (
                           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-rose-500 to-red-700 flex items-center justify-center text-white font-bold">
-                            {(user.displayName?.[0] ?? "U").toUpperCase()}
+                            {userInitial}
                           </div>
                         )}
                         <ChevronDown className="h-4 w-4" />
@@ -191,6 +200,21 @@ export function Layout() {
                           </Link>
                           <div className="my-2 border-t border-border"></div>
                           <button
+                            type="button"
+                            onClick={() => setTheme(nextThemeLabel)}
+                            className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-accent transition-colors"
+                            aria-label={`Switch to ${nextThemeLabel} mode`}
+                            title={`Switch to ${nextThemeLabel} mode`}
+                          >
+                            {isDarkTheme ? (
+                              <Sun className="h-4 w-4" />
+                            ) : (
+                              <Moon className="h-4 w-4" />
+                            )}
+                            <span>{`Switch to ${nextThemeLabel} mode`}</span>
+                          </button>
+                          <div className="my-2 border-t border-border"></div>
+                          <button
                             onClick={handleSignOut}
                             className="w-full flex items-center gap-3 px-4 py-2 hover:bg-accent transition-colors text-red-500"
                           >
@@ -202,16 +226,31 @@ export function Layout() {
                     </div>
                   </>
                 ) : (
-                  <div className="hidden md:flex items-center gap-2">
+                  <div className="hidden md:flex items-center gap-1 rounded-full border border-border/80 bg-card/70 p-1 backdrop-blur">
+                    <button
+                      type="button"
+                      onClick={() => setTheme(nextThemeLabel)}
+                      className="flex min-h-10 items-center gap-2 rounded-full px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                      aria-label={`Switch to ${nextThemeLabel} mode`}
+                      title={`Switch to ${nextThemeLabel} mode`}
+                    >
+                      {isDarkTheme ? (
+                        <Sun className="h-4 w-4" />
+                      ) : (
+                        <Moon className="h-4 w-4" />
+                      )}
+                      <span>{nextThemeLabel === "light" ? "Light" : "Dark"}</span>
+                    </button>
+                    <div className="h-6 w-px bg-border" aria-hidden="true" />
                     <Link
                       to="/signin"
-                      className="px-4 py-2 rounded-lg hover:bg-accent transition-colors"
+                      className="rounded-full px-4 py-2 text-sm hover:bg-accent transition-colors"
                     >
                       Sign In
                     </Link>
                     <Link
                       to="/signup"
-                      className="px-4 py-2 bg-gradient-to-r from-rose-500 to-red-700 text-white rounded-lg hover:shadow-lg transition-all"
+                      className="rounded-full bg-gradient-to-r from-rose-500 to-red-700 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all"
                     >
                       Sign Up
                     </Link>
@@ -292,6 +331,21 @@ export function Layout() {
                     </Link>
                     <div className="border-t border-border my-2"></div>
                     <button
+                      type="button"
+                      onClick={() => setTheme(nextThemeLabel)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+                      aria-label={`Switch to ${nextThemeLabel} mode`}
+                      title={`Switch to ${nextThemeLabel} mode`}
+                    >
+                      {isDarkTheme ? (
+                        <Sun className="h-5 w-5" />
+                      ) : (
+                        <Moon className="h-5 w-5" />
+                      )}
+                      <span>{`Switch to ${nextThemeLabel} mode`}</span>
+                    </button>
+                    <div className="border-t border-border my-2"></div>
+                    <button
                       onClick={handleSignOut}
                       className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors text-red-500"
                     >
@@ -301,21 +355,39 @@ export function Layout() {
                   </>
                 ) : (
                   <>
-                    <div className="border-t border-border my-2"></div>
-                    <Link
-                      to="/signin"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="px-4 py-3 rounded-lg hover:bg-accent transition-colors text-center"
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      to="/signup"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="px-4 py-3 bg-gradient-to-r from-rose-500 to-red-700 text-white rounded-lg hover:shadow-lg transition-all text-center"
-                    >
-                      Sign Up
-                    </Link>
+                    <div className="rounded-2xl border border-border bg-card/70 p-2">
+                      <button
+                        type="button"
+                        onClick={() => setTheme(nextThemeLabel)}
+                        className="mb-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 hover:bg-accent transition-colors"
+                        aria-label={`Switch to ${nextThemeLabel} mode`}
+                        title={`Switch to ${nextThemeLabel} mode`}
+                      >
+                        {isDarkTheme ? (
+                          <Sun className="h-5 w-5" />
+                        ) : (
+                          <Moon className="h-5 w-5" />
+                        )}
+                        <span>{`Switch to ${nextThemeLabel} mode`}</span>
+                      </button>
+                      <div className="mb-2 h-px w-full bg-border" aria-hidden="true" />
+                      <div className="flex items-center gap-2">
+                        <Link
+                          to="/signin"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex-1 rounded-xl border border-border px-4 py-3 text-center hover:bg-accent transition-colors"
+                        >
+                          Sign In
+                        </Link>
+                        <Link
+                          to="/signup"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex-1 rounded-xl bg-gradient-to-r from-rose-500 to-red-700 px-4 py-3 text-center font-semibold text-white shadow-sm transition-all hover:shadow-md"
+                        >
+                          Sign Up
+                        </Link>
+                      </div>
+                    </div>
                   </>
                 )}
               </nav>
@@ -330,7 +402,7 @@ export function Layout() {
         ref={mainRef}
         className={`flex-1 overflow-x-hidden overflow-y-auto ${
           isAuthPage
-            ? "bg-zinc-950 flex justify-center items-start pt-4 md:pt-6 xl:items-center xl:pt-0"
+            ? "flex justify-center items-start pt-4 md:pt-6 xl:items-center xl:pt-0"
             : ""
         }`}
       >
@@ -453,5 +525,4 @@ export function Layout() {
     </div>
   );
 }
-
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router";
 import {
   adminSignInWithEmail,
@@ -32,12 +32,25 @@ export function AdminSignInPage() {
       ? String((location.state as { from?: string }).from ?? "/")
       : "/";
 
+  useEffect(() => {
+    const previousRootBackground = document.documentElement.style.backgroundColor;
+    const previousBodyBackground = document.body.style.backgroundColor;
+
+    document.documentElement.style.backgroundColor = "#001114";
+    document.body.style.backgroundColor = "#001114";
+
+    return () => {
+      document.documentElement.style.backgroundColor = previousRootBackground;
+      document.body.style.backgroundColor = previousBodyBackground;
+    };
+  }, []);
+
   if (user?.isAdmin) {
     return <Navigate to={redirectTarget} replace />;
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#001114] px-4 py-10">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-0">
           <div className="flex items-center gap-3">
@@ -120,3 +133,4 @@ export function AdminSignInPage() {
     </div>
   );
 }
+

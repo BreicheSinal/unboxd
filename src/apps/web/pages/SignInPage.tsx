@@ -84,7 +84,7 @@ export function SignInPage() {
         >
           <Link
             to="/"
-            className="mb-2 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [@media(max-width:450px)]:mb-3 [@media(max-width:450px)]:w-full [@media(max-width:450px)]:justify-start [@media(max-width:450px)]:rounded-none [@media(max-width:450px)]:border-x-0 [@media(max-width:450px)]:border-t-0 [@media(max-width:450px)]:px-4"
+            className="mb-2 inline-flex min-h-11 items-center gap-2 px-1 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground [@media(max-width:450px)]:mb-3 [@media(max-width:450px)]:w-full [@media(max-width:450px)]:justify-start [@media(max-width:450px)]:px-4"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Home

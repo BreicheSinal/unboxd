@@ -166,7 +166,7 @@ export function AdminUsersPage() {
                 <p className="mt-1 text-xs text-muted-foreground">Last seen: {formatDateTime(user.lastSeenAt ?? null)}</p>
                 <div className="mt-3">
                   {user.uid === currentAdminUid ? (
-                    <Badge variant="outline" className="border-0 bg-red-500/10 text-xs text-red-400">
+                    <Badge variant="outline" className="border-0 bg-destructive/15 text-xs text-destructive">
                       Current account
                     </Badge>
                   ) : (
@@ -256,7 +256,7 @@ export function AdminUsersPage() {
                     </td>
                     <td className="px-3 py-2">
                       {user.uid === currentAdminUid ? (
-                        <Badge variant="outline" className="border-0 bg-red-500/10 text-xs text-red-400">
+                        <Badge variant="outline" className="border-0 bg-destructive/15 text-xs text-destructive">
                           Current account
                         </Badge>
                       ) : (
